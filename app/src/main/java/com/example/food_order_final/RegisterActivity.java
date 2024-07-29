@@ -5,18 +5,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
 import com.basgeekball.awesomevalidation.utility.RegexTemplate;
+import com.example.food_order_final.models.User;
 import com.google.android.material.textfield.TextInputEditText;
-
-import javax.xml.validation.Validator;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -31,8 +26,35 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        initWidgets();
 
+        btnSubmitRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isValidate()) {
+                    DatabaseHelper dbHelper = new DatabaseHelper(RegisterActivity.this);
 
+                    String fullName = String.valueOf(etFullname.getText());
+                    String phoneNumber = String.valueOf(etPhoneNumber.getText());
+                    String email = String.valueOf(etEmail.getText());
+                    String username = String.valueOf(etUsername.getText());
+                    String password = String.valueOf(etPassword.getText());
+                    if (!dbHelper.checkUsername(username)) {
+                        User newUser = new User(username, phoneNumber, email, fullName, password);
+                        dbHelper.addUserToDatabase(newUser);
+                        Toast.makeText(RegisterActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        Toast.makeText(RegisterActivity.this, "Tên username đã tồn tại !", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(RegisterActivity.this, "Vui lòng kiểm tra lại thông tin !", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    protected void initWidgets(){
         etUsername = findViewById(R.id.etUsername);
         etPhoneNumber = findViewById(R.id.etPhoneNumber);
         etEmail = findViewById(R.id.etEmail);
@@ -40,7 +62,9 @@ public class RegisterActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         etRepeatPassword = findViewById(R.id.etRepeatPassword);
         btnSubmitRegister = findViewById(R.id.btnSubmitRegister);
+    }
 
+    protected Boolean isValidate(){
         awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
 
         awesomeValidation.addValidation(this, R.id.etUsername, RegexTemplate.NOT_EMPTY, R.string.invalid_username);
@@ -55,22 +79,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         awesomeValidation.addValidation(this, R.id.etRepeatPassword, R.id.etPassword, R.string.invalid_repeat_password);
 
-        btnSubmitRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (awesomeValidation.validate()) {
-                    Toast.makeText(RegisterActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(RegisterActivity.this, "Đăng ký thất bại", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-
-
-
-
+        return awesomeValidation.validate();
     }
-
-
 }
