@@ -1,6 +1,7 @@
 package com.example.food_order_final;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -21,6 +22,14 @@ public class LoadScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_load_screen);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        String username = sharedPreferences.getString("username", "Guest");
+        String password = sharedPreferences.getString("password", "Password");
+        DatabaseHelper dbHelper = new DatabaseHelper(LoadScreenActivity.this);
+        if (dbHelper.checkUsernamePassword(username, password)){
+            Intent intent = new Intent(LoadScreenActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
         Button startBtn = findViewById(R.id.startBtn);
 
         startBtn.setOnClickListener(new View.OnClickListener() {
