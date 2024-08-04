@@ -7,23 +7,33 @@ public class User {
     private String email;
     private String fullName;
     private String password;
+    private Role role;
 
-    public User(int id, String username, String phoneNumber, String email, String fullName, String password) {
+    public User(int id, String username, String phoneNumber, String email, String fullName, String password, Role role) {
         this.id = id;
         this.username = username;
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.fullName = fullName;
         this.password = password;
+        this.role = role;
     }
-
-    public User(String username, String phoneNumber, String email, String fullName, String password) {
+    public User(String username, String phoneNumber, String email, String fullName, String password, Role role) {
         this.username = username;
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.fullName = fullName;
         this.password = password;
+        this.role = role;
     }
+//    public User(String username, String phoneNumber, String email, String fullName, String password, Role role) {
+//        this.username = username;
+//        this.phoneNumber = phoneNumber;
+//        this.email = email;
+//        this.fullName = fullName;
+//        this.password = password;
+//        this.role = role;
+//    }
 
     public int getId() {
         return id;
@@ -71,5 +81,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

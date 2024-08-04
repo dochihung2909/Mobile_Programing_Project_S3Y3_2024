@@ -1,4 +1,4 @@
-package com.example.food_order_final;
+package com.example.food_order_final.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,15 +7,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
 import com.basgeekball.awesomevalidation.utility.RegexTemplate;
+import com.example.food_order_final.R;
+import com.example.food_order_final.database.DatabaseHelper;
+import com.example.food_order_final.hideSoftKeyboard;
 import com.google.android.material.textfield.TextInputEditText;
 
 public class LoginActivity extends AppCompatActivity {
@@ -54,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
                     String username = String.valueOf(etUsername.getText());
                     String password = String.valueOf(etPassword.getText());
 
-                    if (dbHelper.checkUsernamePassword(username, password)){
+                    if (dbHelper.userDao.isUserCredential(username, password)){
                         Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
 
                         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);

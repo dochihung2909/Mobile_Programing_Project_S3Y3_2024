@@ -1,6 +1,7 @@
-package com.example.food_order_final;
+package com.example.food_order_final.activity;
 
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -10,6 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
 import com.basgeekball.awesomevalidation.utility.RegexTemplate;
+import com.example.food_order_final.R;
+import com.example.food_order_final.dao.RoleDao;
+import com.example.food_order_final.database.DatabaseHelper;
+import com.example.food_order_final.models.Role;
 import com.example.food_order_final.models.User;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -39,9 +44,10 @@ public class RegisterActivity extends AppCompatActivity {
                     String email = String.valueOf(etEmail.getText());
                     String username = String.valueOf(etUsername.getText());
                     String password = String.valueOf(etPassword.getText());
-                    if (!dbHelper.checkUsername(username)) {
-                        User newUser = new User(username, phoneNumber, email, fullName, password);
-                        dbHelper.addUserToDatabase(newUser);
+                    if (!dbHelper.userDao.checkUsername(username)) {
+                        User newUser = new User(username, phoneNumber, email, fullName, password, new Role(1, "User"));
+//                        dbHelper.addUserToDatabase(newUser);
+                        dbHelper.userDao.insertUser(newUser);
                         Toast.makeText(RegisterActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
@@ -71,7 +77,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         awesomeValidation.addValidation(this, R.id.etPhoneNumber, "(84|0[3|5|7|8|9])+([0-9]{8})\\b", R.string.invalid_phone);
 
-        awesomeValidation.addValidation(this, R.id.etEmail, android.util.Patterns.EMAIL_ADDRESS, R.string.invalid_email);
+        awesomeValidation.addValidation(this, R.id.etEmail, Patterns.EMAIL_ADDRESS, R.string.invalid_email);
 
         awesomeValidation.addValidation(this, R.id.etFullname, RegexTemplate.NOT_EMPTY, R.string.invalid_fullname);
 
