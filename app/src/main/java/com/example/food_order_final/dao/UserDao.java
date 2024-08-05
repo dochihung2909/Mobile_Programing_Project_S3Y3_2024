@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Role;
@@ -90,14 +91,13 @@ public class UserDao {
     }
 
     public boolean isUserCredential(String username, String password) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
         boolean isValid = false;
         Cursor cursor = null;
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_USER_NAME
-                            + " WHERE " + DatabaseHelper.USER_USERNAME_FIELD + " = ? "
-                            + " AND " + DatabaseHelper.USER_PASSWORD_FIELD + " = ?",
-                    new String[]{username, password});
+                            + " WHERE " + DatabaseHelper.USER_USERNAME_FIELD + " = ? ",
+                    new String[]{username});
 
             if (cursor != null && cursor.moveToFirst()) {
                 int passwordColumnIndex = cursor.getColumnIndex(DatabaseHelper.USER_PASSWORD_FIELD);
@@ -112,7 +112,6 @@ public class UserDao {
             }
             db.close();
         }
-
         return isValid;
     }
 

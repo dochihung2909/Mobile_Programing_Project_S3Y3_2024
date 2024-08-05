@@ -77,10 +77,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public RestaurantDao resDao;
     public FoodCategoryDao foodCateDao;
     public FoodDao foodDao;
-    private Context context;
 
     public DatabaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.roleDao = new RoleDao(this);
+        this.userDao = new UserDao(this, this.roleDao);
+        this.resCateDao = new RestaurantCategoryDao(this);
+        this.resDao = new RestaurantDao(this, this.resCateDao);
+        this.foodCateDao = new FoodCategoryDao(this);
+        this.foodDao = new FoodDao(this, this.foodCateDao, this.resDao);
     }
 
     @Override
