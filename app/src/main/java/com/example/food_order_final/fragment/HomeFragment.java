@@ -1,14 +1,41 @@
 package com.example.food_order_final.fragment;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.food_order_final.R;
+import com.example.food_order_final.activity.MainActivity;
+import com.example.food_order_final.custom_activity.RestaurantCardView;
+import com.example.food_order_final.dao.RestaurantCategoryDao;
+import com.example.food_order_final.dao.RestaurantDao;
+import com.example.food_order_final.database.DatabaseHelper;
+import com.example.food_order_final.models.Restaurant;
+
+import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +48,9 @@ public class HomeFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    private LinearLayout lnHomeContainer;
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -62,5 +92,30 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initVariable();
+    }
+
+    public void initVariable() {
+        lnHomeContainer = getView().findViewById(R.id.lnHomeContainer);
+        RestaurantCardView restaurantCardView = new RestaurantCardView(getActivity());
+        DatabaseHelper databaseHelper = new DatabaseHelper(getActivity());
+        RestaurantCategoryDao restaurantCategoryDao = new RestaurantCategoryDao(databaseHelper);
+        RestaurantDao restaurantDao = new RestaurantDao(databaseHelper, restaurantCategoryDao);
+
+        Restaurant restaurant = restaurantDao.getRestaurantById(1);
+
+        restaurantCardView.setRestaurantName(restaurant.getName());
+
+        lnHomeContainer.addView(restaurantCardView);
+
+
+
+
+
     }
 }

@@ -21,7 +21,7 @@ import com.google.android.material.textfield.TextInputEditText;
 public class RegisterActivity extends AppCompatActivity {
 
 
-    private Button btnSubmitRegister, btnGoogleLogin;
+    private Button btnSubmitRegister, btnGoogleLogin, btnLoginActivity;
 
     private TextInputEditText etUsername,etPhoneNumber, etEmail, etFullname, etPassword, etRepeatPassword;
 
@@ -58,6 +58,10 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
+
+        btnLoginActivity.setOnClickListener(view -> {
+            finish();
+        });
     }
 
     protected void initWidgets(){
@@ -68,6 +72,7 @@ public class RegisterActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         etRepeatPassword = findViewById(R.id.etRepeatPassword);
         btnSubmitRegister = findViewById(R.id.btnSubmitRegister);
+        btnLoginActivity = findViewById(R.id.btnLoginActivity);
     }
 
     protected Boolean isValidate(){
