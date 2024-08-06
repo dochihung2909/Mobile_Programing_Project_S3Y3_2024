@@ -5,15 +5,43 @@
     android:layout_height="match_parent"
     tools:context=".fragment.HomeFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/lnHomeContainer"
         android:orientation="vertical"
+        android:paddingHorizontal="10dp"
         >
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Current Location"
+            android:id="@+id/tvCurrentLocation"
+            android:textSize="16dp"
+            android:layout_marginVertical="20dp"
+            />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Get Location"
+            android:layout_below="@+id/tvCurrentLocation"
+            android:id="@+id/btnGetLocation"/>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/lnHomeContainer"
+                android:orientation="vertical"
+                >
+
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
+    <!-- TODO: Update blank fragment layout -->
+
 
 </FrameLayout>

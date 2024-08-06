@@ -34,8 +34,11 @@ import com.example.food_order_final.dao.RestaurantDao;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Restaurant;
 
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -55,6 +58,9 @@ public class HomeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private TextView tvCurrentLocation;
+    private LocationManager locationManager;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -101,21 +107,45 @@ public class HomeFragment extends Fragment {
     }
 
     public void initVariable() {
-        lnHomeContainer = getView().findViewById(R.id.lnHomeContainer);
-        RestaurantCardView restaurantCardView = new RestaurantCardView(getActivity());
+
+        tvCurrentLocation = getView().findViewById(R.id.tvCurrentLocation);
+
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            }, 100);
+        }
+
+        LinearLayout lnHomeContainer = getView().findViewById(R.id.lnHomeContainer);
         DatabaseHelper databaseHelper = new DatabaseHelper(getActivity());
         RestaurantCategoryDao restaurantCategoryDao = new RestaurantCategoryDao(databaseHelper);
         RestaurantDao restaurantDao = new RestaurantDao(databaseHelper, restaurantCategoryDao);
+//        List<Restaurant> restaurants = restaurantDao.getAllRestaurant();
+//        Toast.makeText(getActivity(), "" + restaurants.size(), Toast.LENGTH_SHORT).show();
+        for (int i = 1; i<= 10;i++) {
+            Restaurant restaurant = restaurantDao.getRestaurantById(i);
+            RestaurantCardView restaurantCardView = new RestaurantCardView(getActivity());
+            restaurantCardView.setRestaurantName(restaurant.getName());
+            restaurantCardView.setRestaurantDistance(restaurant.getAddress());
+            lnHomeContainer.addView(restaurantCardView);
+        }
 
-        Restaurant restaurant = restaurantDao.getRestaurantById(1);
+        Button btnGetLocation = getView().findViewById(R.id.btnGetLocation);
 
-        restaurantCardView.setRestaurantName(restaurant.getName());
-
-        lnHomeContainer.addView(restaurantCardView);
-
-
-
-
-
+        btnGetLocation.setOnClickListener(view -> {
+            getLocation();
+        });
     }
+
+    @SuppressLint("MissingPermission")
+    private void getLocation() {
+        try {
+            locationManager = (LocationManager) getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000L, 5F, (LocationListener) getActivity());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
