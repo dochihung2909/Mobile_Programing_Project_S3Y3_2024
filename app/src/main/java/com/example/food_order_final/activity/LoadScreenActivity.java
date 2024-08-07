@@ -27,7 +27,7 @@ public class LoadScreenActivity extends AppCompatActivity {
         String username = sharedPreferences.getString("username", "Guest");
         String password = sharedPreferences.getString("password", "Password");
         DatabaseHelper dbHelper = new DatabaseHelper(LoadScreenActivity.this);
-        dbHelper.initializeDate();
+        dbHelper.initializeData();
         if (dbHelper.userDao.isUserCredential(username, password)){
             Intent intent = new Intent(LoadScreenActivity.this, MainActivity.class);
             startActivity(intent);

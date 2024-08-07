@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.format.DateUtils;
 
 import androidx.annotation.Nullable;
 
@@ -20,6 +21,9 @@ import com.example.food_order_final.models.Restaurant;
 import com.example.food_order_final.models.RestaurantCategory;
 import com.example.food_order_final.models.Role;
 import com.example.food_order_final.models.User;
+import com.example.food_order_final.util.DateUtil;
+
+import java.util.Date;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     // Database setup
@@ -37,39 +41,54 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Table Role columns
     public static final String ROLE_ID_FIELD = "id";
     public static final String ROLE_NAME_FIELD = "name";
+    public static final String ROLE_CREATED_DATE_FIELD = "created_date";
+    public static final String ROLE_UPDATED_DATE_FIELD = "updated_date";
 
     // Table User columns
     public static final String USER_ID_FIELD = "id";
     public static final String USER_FULL_NAME_FIELD = "full_name";
     public static final String USER_PHONE_NUMBER_FIELD = "phone_number";
     public static final String USER_EMAIL_FIELD = "email";
+    public static final String USER_AVATAR_FIELD = "avatar";
     public static final String USER_USERNAME_FIELD = "username";
     public static final String USER_PASSWORD_FIELD = "password";
     public static final String USER_ROLE_FIELD = "role_id";
+    public static final String USER_CREATED_DATE_FIELD = "created_date";
+    public static final String USER_UPDATED_DATE_FIELD = "updated_date";
 
 
     // Table Restaurant Category columns
     public static final String RESTAURANT_CATEGORY_ID_FIELD = "id";
     public static final String RESTAURANT_CATEGORY_NAME_FIELD = "name";
+    public static final String RESTAURANT_CATEGORY_CREATED_DATE_FIELD = "created_date";
+    public static final String RESTAURANT_CATEGORY_UPDATED_DATE_FIELD = "updated_date";
 
     // Table Restaurant columns
     public static final String RESTAURANT_ID_FIELD = "id";
     public static final String RESTAURANT_NAME_FIELD = "name";
     public static final String RESTAURANT_ADDRESS_FIELD = "address";
     public static final String RESTAURANT_PHONE_FIELD = "phone";
-    public static final String RESTAURANT_CATEGORY_FIELD = "category";
+    public static final String RESTAURANT_CATEGORY_FIELD = "category_id";
+    public static final String RESTAURANT_AVATAR_FIELD = "avatar";
     public static final String RESTAURANT_IS_PARTNER_FIELD = "is_partner";
+    public static final String RESTAURANT_RATING_FIELD = "rating";
+    public static final String RESTAURANT_CREATED_DATE_FIELD = "created_date";
+    public static final String RESTAURANT_UPDATED_DATE_FIELD = "updated_date";
 
     // Table Food Category columns
     public static final String FOOD_CATEGORY_ID_FIELD = "id";
     public static final String FOOD_CATEGORY_NAME_FIELD = "name";
+    public static final String FOOD_CATEGORY_CREATED_DATE_FIELD = "created_date";
+    public static final String FOOD_CATEGORY_UPDATED_DATE_FIELD = "updated_date";
 
     // Table Food columns
     public static final String FOOD_ID_FIELD = "id";
     public static final String FOOD_NAME_FIELD = "name";
     public static final String FOOD_PRICE_FIELD = "price";
-    public static final String FOOD_CATEGORY_FIELD = "category";
-    public static final String FOOD_RESTAURANT_FIELD = "restaurant";
+    public static final String FOOD_CATEGORY_FIELD = "category_id";
+    public static final String FOOD_RESTAURANT_FIELD = "restaurant_id";
+    public static final String FOOD_CREATED_DATE_FIELD = "created_date";
+    public static final String FOOD_UPDATED_DATE_FIELD = "updated_date";
 
     public RoleDao roleDao;
     public UserDao userDao;
@@ -92,51 +111,70 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String sqlRole = String.format("CREATE TABLE %s " +
                         "(%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        "%s TEXT)",
+                        "%s TEXT, " +
+                        "%s TIMESTAMP, %s TIMESTAMP)",
                 TABLE_ROLE_NAME,
                 ROLE_ID_FIELD,
-                ROLE_NAME_FIELD);
+                ROLE_NAME_FIELD,
+                ROLE_CREATED_DATE_FIELD, ROLE_UPDATED_DATE_FIELD);
         db.execSQL(sqlRole);
 
         String sqlUser = String.format("CREATE TABLE %s " +
                         "(%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        "%s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s INT)",
-                TABLE_USER_NAME, USER_ID_FIELD,
+                        "%s TEXT, %s TEXT, %s TEXT, " +
+                        "%s TEXT, %s TEXT, %s INTEGER, " +
+                        "%s VARCHAR, " +
+                        "%s TIMESTAMP, %s TIMESTAMP)",
+                TABLE_USER_NAME,
+                USER_ID_FIELD,
                 USER_USERNAME_FIELD, USER_PHONE_NUMBER_FIELD, USER_EMAIL_FIELD,
-                USER_FULL_NAME_FIELD, USER_PASSWORD_FIELD, USER_ROLE_FIELD);
+                USER_FULL_NAME_FIELD, USER_PASSWORD_FIELD, USER_ROLE_FIELD,
+                USER_AVATAR_FIELD,
+                USER_CREATED_DATE_FIELD, USER_UPDATED_DATE_FIELD);
         db.execSQL(sqlUser);
 
         String sqlRestaurantCate = String.format("CREATE TABLE %s " +
                         "(%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        "%s TEXT)",
+                        "%s TEXT, " +
+                        "%s TIMESTAMP, %s TIMESTAMP)",
                 TABLE_RESTAURANT_CATEGORY_NAME,
                 RESTAURANT_CATEGORY_ID_FIELD,
-                RESTAURANT_CATEGORY_NAME_FIELD);
+                RESTAURANT_CATEGORY_NAME_FIELD,
+                RESTAURANT_CATEGORY_CREATED_DATE_FIELD, RESTAURANT_CATEGORY_UPDATED_DATE_FIELD);
         db.execSQL(sqlRestaurantCate);
 
         String sqlRestaurant = String.format("CREATE TABLE %s " +
                         "(%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        "%s TEXT, %s TEXT, %s TEXT, %s TEXT, %s BOOLEAN)",
+                        "%s TEXT, %s TEXT, %s TEXT, " +
+                        "%s INTEGER, %s BOOLEAN, %s FLOAT, " +
+                        "%s VARCHAR, " +
+                        "%s TIMESTAMP, %s TIMESTAMP)",
                 TABLE_RESTAURANT_NAME,
                 RESTAURANT_ID_FIELD,
                 RESTAURANT_NAME_FIELD, RESTAURANT_ADDRESS_FIELD, RESTAURANT_PHONE_FIELD,
-                RESTAURANT_CATEGORY_FIELD, RESTAURANT_IS_PARTNER_FIELD);
+                RESTAURANT_CATEGORY_FIELD, RESTAURANT_IS_PARTNER_FIELD, RESTAURANT_RATING_FIELD,
+                RESTAURANT_AVATAR_FIELD,
+                RESTAURANT_CREATED_DATE_FIELD, RESTAURANT_UPDATED_DATE_FIELD);
         db.execSQL(sqlRestaurant);
 
         String sqlFoodCate = String.format("CREATE TABLE %s " +
                         "(%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        "%s TEXT)",
+                        "%s TEXT, " +
+                        "%s TIMESTAMP, %s TIMESTAMP)",
                 TABLE_FOOD_CATEGORY_NAME,
                 FOOD_CATEGORY_ID_FIELD,
-                FOOD_CATEGORY_NAME_FIELD);
+                FOOD_CATEGORY_NAME_FIELD,
+                FOOD_CATEGORY_CREATED_DATE_FIELD, FOOD_CATEGORY_UPDATED_DATE_FIELD);
         db.execSQL(sqlFoodCate);
 
         String sqlFood = String.format("CREATE TABLE %s " +
                         "(%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        "%s TEXT, %s TEXT, %s TEXT, %s TEXT)",
+                        "%s TEXT, %s FLOAT, %s INTEGER, %s INTEGER, " +
+                        "%s TIMESTAMP, %s TIMESTAMP)",
                 TABLE_FOOD_NAME,
                 FOOD_ID_FIELD,
-                FOOD_NAME_FIELD, FOOD_PRICE_FIELD, FOOD_CATEGORY_FIELD, FOOD_RESTAURANT_FIELD);
+                FOOD_NAME_FIELD, FOOD_PRICE_FIELD, FOOD_CATEGORY_FIELD, FOOD_RESTAURANT_FIELD,
+                FOOD_CREATED_DATE_FIELD, FOOD_UPDATED_DATE_FIELD);
         db.execSQL(sqlFood);
     }
 
@@ -146,75 +184,84 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addUserToDatabase(User user){
-        SQLiteDatabase db = this.getWritableDatabase();
+    public ContentValues getRoleContentValues(Role role) {
         ContentValues contentValues = new ContentValues();
+        contentValues.put(ROLE_ID_FIELD, role.getId());
+        contentValues.put(ROLE_NAME_FIELD, role.getName());
+//        contentValues.put(ROLE_CREATED_DATE_FIELD, role.getCreatedDate().toString());
+        contentValues.put(ROLE_CREATED_DATE_FIELD, DateUtil.dateToTimestamp(role.getCreatedDate()));
+        contentValues.put(ROLE_UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(role.getUpdatedDate()));
+
+        return contentValues;
+    }
+    public ContentValues getUserContentValues(User user) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(USER_ID_FIELD, user.getId());
         contentValues.put(USER_USERNAME_FIELD, user.getUsername());
         contentValues.put(USER_PHONE_NUMBER_FIELD, user.getPhoneNumber());
         contentValues.put(USER_EMAIL_FIELD, user.getEmail());
         contentValues.put(USER_FULL_NAME_FIELD, user.getFullName());
-        contentValues.put(USER_PASSWORD_FIELD, user.getPassword());
-        db.insert(TABLE_USER_NAME, null, contentValues);
-        db.close();
+        contentValues.put(USER_ROLE_FIELD, user.getRole().getId());
+        contentValues.put(USER_AVATAR_FIELD, user.getAvatar());
+        contentValues.put(USER_CREATED_DATE_FIELD, DateUtil.dateToTimestamp(user.getCreatedDate()));
+        contentValues.put(USER_UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(user.getUpdatedDate()));
+
+        return contentValues;
     }
 
-    public Boolean checkUsername(String username) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
-        boolean exists = false;
+    public ContentValues getResCateContentValues(RestaurantCategory resCate) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(RESTAURANT_CATEGORY_ID_FIELD, resCate.getId());
+        contentValues.put(RESTAURANT_CATEGORY_NAME_FIELD, resCate.getName());
+        contentValues.put(RESTAURANT_CATEGORY_CREATED_DATE_FIELD, DateUtil.dateToTimestamp(resCate.getCreatedDate()));
+        contentValues.put(RESTAURANT_CATEGORY_UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(resCate.getUpdatedDate()));
 
-        try {
-            cursor = db.rawQuery("SELECT * FROM "
-                    + TABLE_USER_NAME
-                    + " WHERE "
-                    + USER_USERNAME_FIELD
-                    + " = ?", new String[]{username});
-
-            if (cursor.moveToFirst()) {
-                exists = true;
-            }
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            db.close();
-        }
-
-        return exists;
+        return contentValues;
     }
 
-    public boolean checkUsernamePassword(String username, String password){
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
-        boolean exists = false;
+    public ContentValues getRestaurantContentValues(Restaurant restaurant) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(RESTAURANT_ID_FIELD, restaurant.getId());
+        contentValues.put(RESTAURANT_NAME_FIELD, restaurant.getName());
+        contentValues.put(RESTAURANT_ADDRESS_FIELD, restaurant.getAddress());
+        contentValues.put(RESTAURANT_PHONE_FIELD, restaurant.getPhoneNumber());
+        contentValues.put(RESTAURANT_AVATAR_FIELD, restaurant.getAvatar());
+        contentValues.put(RESTAURANT_CATEGORY_FIELD, restaurant.getCategory().getId());
+        contentValues.put(RESTAURANT_IS_PARTNER_FIELD, restaurant.isPartner());
+        contentValues.put(RESTAURANT_CREATED_DATE_FIELD, DateUtil.dateToTimestamp(restaurant.getCreatedDate()));
+        contentValues.put(RESTAURANT_UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(restaurant.getUpdatedDate()));
 
-        try {
-            cursor = db.rawQuery("SELECT * FROM "
-                    + TABLE_USER_NAME
-                    + " WHERE "
-                    + USER_USERNAME_FIELD
-                    + " = ?"
-                    + " AND "
-                    + USER_PASSWORD_FIELD
-                    + " = ?", new String[]{username, password});
-
-            if (cursor.moveToFirst()) {
-                exists = true;
-            }
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            db.close();
-        }
-        return exists;
+        return contentValues;
     }
 
-    public void initializeDate() {
+    public ContentValues getFoodCateContentValues(FoodCategory foodCate) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseHelper.FOOD_CATEGORY_ID_FIELD, foodCate.getId());
+        contentValues.put(DatabaseHelper.FOOD_CATEGORY_NAME_FIELD, foodCate.getName());
+        contentValues.put(FOOD_CATEGORY_CREATED_DATE_FIELD, DateUtil.dateToTimestamp(foodCate.getCreatedDate()));
+        contentValues.put(FOOD_CATEGORY_UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(foodCate.getUpdatedDate()));
+
+        return contentValues;
+    }
+
+    public ContentValues getFoodContentValues(Food food) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseHelper.FOOD_ID_FIELD, food.getId());
+        contentValues.put(DatabaseHelper.FOOD_NAME_FIELD, food.getName());
+        contentValues.put(DatabaseHelper.FOOD_PRICE_FIELD, food.getPrice());
+        contentValues.put(DatabaseHelper.FOOD_CATEGORY_FIELD, food.getCategory().getId());
+        contentValues.put(DatabaseHelper.FOOD_RESTAURANT_FIELD, food.getRestaurant().getId());
+        contentValues.put(FOOD_CREATED_DATE_FIELD, DateUtil.dateToTimestamp(food.getCreatedDate()));
+        contentValues.put(FOOD_UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(food.getUpdatedDate()));
+
+        return contentValues;
+    }
+
+    public void initializeData() {
         SQLiteDatabase db = this.getWritableDatabase();
         //Role data
-        Role adminRole = new Role(0, "Admin");
-        Role userRole = new Role(1, "User");
+        Role adminRole = new Role(0, "Admin", new Date(), new Date());
+        Role userRole = new Role(1, "User", new Date(), new Date());
         roleDao.insertRole(adminRole);
         roleDao.insertRole(userRole);
 

@@ -1,30 +1,29 @@
 package com.example.food_order_final.models;
 
 import java.util.ArrayList;
+import java.util.Date;
 
-public class Restaurant {
+public class Restaurant extends Base{
     private int id;
     private String name;
     private String address;
     private String phoneNumber;
     private RestaurantCategory category;
     private boolean isPartner;
+    private double rating;
+    private String avatar;
 
-    public Restaurant(int id, String name, String address, String phoneNumber, RestaurantCategory category, boolean isPartner) {
+    public Restaurant(int id, String name, String address, String phoneNumber, RestaurantCategory category, String avatar, boolean isPartner, double rating, Date createdDate, Date updatedDate) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.category = category;
+        this.avatar = avatar;
         this.isPartner = isPartner;
-    }
-
-    public Restaurant(String name, String address, String phoneNumber, RestaurantCategory category, boolean isPartner) {
-        this.name = name;
-        this.address = address;
-        this.phoneNumber = phoneNumber;
-        this.category = category;
-        this.isPartner = isPartner;
+        this.rating = rating;
+        this.setCreatedDate(createdDate);
+        this.setUpdatedDate(updatedDate);
     }
 
     public Restaurant(String name, String address, String phoneNumber, RestaurantCategory category) {
@@ -33,6 +32,11 @@ public class Restaurant {
         this.phoneNumber = phoneNumber;
         this.category = category;
         this.isPartner = false;
+        this.rating = 0.0;
+        this.setCreatedDate(new Date());
+        this.avatar = null;
+        this.setCreatedDate(new Date());
+        this.setUpdatedDate(new Date());
     }
 
     public int getId() {
@@ -81,5 +85,21 @@ public class Restaurant {
 
     public void setPartner(boolean partner) {
         isPartner = partner;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

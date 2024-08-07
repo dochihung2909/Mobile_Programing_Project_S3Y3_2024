@@ -10,32 +10,28 @@ import com.example.food_order_final.models.Restaurant;
 import com.example.food_order_final.models.RestaurantCategory;
 import com.example.food_order_final.models.Role;
 import com.example.food_order_final.models.User;
+import com.example.food_order_final.util.DateUtil;
 import com.google.common.primitives.Booleans;
 
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class RestaurantDao {
+public class RestaurantDao extends BaseDao{
     private DatabaseHelper dbHelper;
     RestaurantCategoryDao resCateDao;
 
     public RestaurantDao(DatabaseHelper dbHelper, RestaurantCategoryDao resCateDao) {
+        super(dbHelper);
         this.dbHelper = dbHelper;
         this.resCateDao = resCateDao;
     }
 
     public void insertRestaurant(Restaurant restaurant){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseHelper.RESTAURANT_NAME_FIELD, restaurant.getName());
-        contentValues.put(DatabaseHelper.RESTAURANT_ADDRESS_FIELD, restaurant.getAddress());
-        contentValues.put(DatabaseHelper.RESTAURANT_PHONE_FIELD, restaurant.getPhoneNumber());
-        contentValues.put(DatabaseHelper.RESTAURANT_CATEGORY_FIELD, restaurant.getCategory().getId());
-        contentValues.put(DatabaseHelper.RESTAURANT_IS_PARTNER_FIELD, restaurant.isPartner());
-
+        ContentValues contentValues = dbHelper.getRestaurantContentValues(restaurant);
         db.insert(DatabaseHelper.TABLE_RESTAURANT_NAME, null, contentValues);
         db.close();
     }
@@ -49,6 +45,7 @@ public class RestaurantDao {
         contentValues.put(DatabaseHelper.RESTAURANT_PHONE_FIELD, restaurant.getPhoneNumber());
         contentValues.put(DatabaseHelper.RESTAURANT_CATEGORY_FIELD, restaurant.getCategory().getId());
         contentValues.put(DatabaseHelper.RESTAURANT_IS_PARTNER_FIELD, restaurant.isPartner());
+        contentValues.put(DatabaseHelper.RESTAURANT_AVATAR_FIELD, restaurant.getAvatar());
 
         String whereClause = DatabaseHelper.RESTAURANT_ID_FIELD + " = ? ";
         String[] whereArgs = new String[]{String.valueOf(restaurant.getId())};
@@ -64,82 +61,105 @@ public class RestaurantDao {
         String whereClause = DatabaseHelper.RESTAURANT_ID_FIELD + " = ?";
         String[] whereArgs = new String[]{String.valueOf(restaurantId)};
 
-        db.delete(DatabaseHelper.TABLE_USER_NAME, whereClause, whereArgs);
+        db.delete(DatabaseHelper.TABLE_RESTAURANT_NAME, whereClause, whereArgs);
         db.close();
+    }
+
+    public List<Restaurant> getAllRestaurants() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        List<Restaurant> restaurants = new ArrayList<>();
+        Cursor cursor = null;
+
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_NAME,
+                    null);
+            if (cursor != null && cursor.moveToFirst()) {
+                int id = getInt(cursor, DatabaseHelper.RESTAURANT_ID_FIELD);
+                String name = getString(cursor, DatabaseHelper.RESTAURANT_NAME_FIELD);
+                String address = getString(cursor, DatabaseHelper.RESTAURANT_ADDRESS_FIELD);
+                String phone = getString(cursor, DatabaseHelper.RESTAURANT_PHONE_FIELD);
+                int cateId = getInt(cursor, DatabaseHelper.RESTAURANT_CATEGORY_FIELD);
+                RestaurantCategory resCate = resCateDao.getRestaurantCategoryById(cateId);
+                String avatar = getString(cursor, DatabaseHelper.RESTAURANT_AVATAR_FIELD);
+                boolean isPartner = getBoolean(cursor, DatabaseHelper.RESTAURANT_IS_PARTNER_FIELD);
+                double rating = getDouble(cursor, DatabaseHelper.RESTAURANT_RATING_FIELD);
+                String createdDateString = getString(cursor, DatabaseHelper.RESTAURANT_CREATED_DATE_FIELD);
+                String updatedDateString = getString(cursor, DatabaseHelper.RESTAURANT_UPDATED_DATE_FIELD);
+                Date createdDate = DateUtil.timestampToDate(createdDateString);
+                Date updatedDate = DateUtil.timestampToDate(updatedDateString);
+
+                restaurants.add(new Restaurant(id, name, address, phone, resCate, avatar, isPartner,
+                        rating, createdDate, updatedDate));
+            }
+        } finally {
+            if(cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+        return restaurants;
     }
 
     public Restaurant getRestaurantById(int resId) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Restaurant restaurant = null;
         Cursor cursor = null;
+
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_NAME
                             + " WHERE " + DatabaseHelper.RESTAURANT_ID_FIELD + " = ?",
                     new String[]{String.valueOf(resId)});
             if (cursor != null && cursor.moveToFirst()) {
-                int idIndex = cursor.getColumnIndex(DatabaseHelper.RESTAURANT_ID_FIELD);
-                int nameIndex = cursor.getColumnIndex(DatabaseHelper.RESTAURANT_NAME_FIELD);
-                int addressIndex = cursor.getColumnIndex(DatabaseHelper.RESTAURANT_ADDRESS_FIELD);
-                int phoneIndex = cursor.getColumnIndex(DatabaseHelper.RESTAURANT_PHONE_FIELD);
-                int cateIndex = cursor.getColumnIndex(DatabaseHelper.RESTAURANT_CATEGORY_FIELD);
-                int isPartnerIndex = cursor.getColumnIndex(DatabaseHelper.RESTAURANT_IS_PARTNER_FIELD);
-                if (idIndex != -1 && nameIndex != -1 && addressIndex != -1 && phoneIndex != -1 &&
-                        cateIndex != -1 && isPartnerIndex != -1) {
-                    int id = cursor.getInt(idIndex);
-                    String name = cursor.getString(nameIndex);
-                    String address = cursor.getString(nameIndex);
-                    String phone = cursor.getString(nameIndex);
-                    int cateId = cursor.getInt(nameIndex);
-                    boolean isPartner = cursor.getInt(nameIndex) > 0;
-                    RestaurantCategory resCate = resCateDao.getRestaurantCategoryById(cateId);
-                    restaurant = new Restaurant(id, name, address, phone, resCate, isPartner);
-                } else {
-                    throw new RuntimeException("Column index not found !");
-                }
+                int id = getInt(cursor, DatabaseHelper.RESTAURANT_ID_FIELD);
+                String name = getString(cursor, DatabaseHelper.RESTAURANT_NAME_FIELD);
+                String address = getString(cursor, DatabaseHelper.RESTAURANT_ADDRESS_FIELD);
+                String phone = getString(cursor, DatabaseHelper.RESTAURANT_PHONE_FIELD);
+                int cateId = getInt(cursor, DatabaseHelper.RESTAURANT_CATEGORY_FIELD);
+                RestaurantCategory resCate = resCateDao.getRestaurantCategoryById(cateId);
+                String avatar = getString(cursor, DatabaseHelper.RESTAURANT_AVATAR_FIELD);
+                boolean isPartner = getBoolean(cursor, DatabaseHelper.RESTAURANT_IS_PARTNER_FIELD);
+                double rating = getDouble(cursor, DatabaseHelper.RESTAURANT_RATING_FIELD);
+                String createdDateString = getString(cursor, DatabaseHelper.RESTAURANT_CREATED_DATE_FIELD);
+                String updatedDateString = getString(cursor, DatabaseHelper.RESTAURANT_UPDATED_DATE_FIELD);
+                Date createdDate = DateUtil.timestampToDate(createdDateString);
+                Date updatedDate = DateUtil.timestampToDate(updatedDateString);
+
+                restaurant = new Restaurant(id, name, address, phone, resCate, avatar, isPartner, rating, createdDate, updatedDate);
             }
         } finally {
-            if(cursor != null) {
+            if(cursor != null)
                 cursor.close();
-            }
             db.close();
         }
+
         return restaurant;
     }
 
-    public List<Restaurant> findRestaurantByName(String resName) {
+    public List<Restaurant> findRestaurantsByName(String resName) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = null;
         List<Restaurant> restaurants = new ArrayList<>();
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_NAME
-                            + " WHERE " + DatabaseHelper.RESTAURANT_NAME_FIELD + " = ? ",
-                    new String[]{resName});
-
+                            + " WHERE " + DatabaseHelper.RESTAURANT_ID_FIELD + " LIKE ?",
+                    new String[]{"%" + resName + "%"});
             if (cursor != null && cursor.moveToFirst()) {
-                do {
-                    int idIdx = cursor.getColumnIndex(DatabaseHelper.USER_ID_FIELD);
-                    int nameIdx = cursor.getColumnIndex(DatabaseHelper.RESTAURANT_NAME_FIELD);
-                    int addressIdx = cursor.getColumnIndex(DatabaseHelper.RESTAURANT_ADDRESS_FIELD);
-                    int phoneIdx = cursor.getColumnIndex(DatabaseHelper.RESTAURANT_PHONE_FIELD);
-                    int cateIdx = cursor.getColumnIndex(DatabaseHelper.RESTAURANT_CATEGORY_FIELD);
-                    int isPartnerIdx = cursor.getColumnIndex(DatabaseHelper.RESTAURANT_IS_PARTNER_FIELD);
+                int id = getInt(cursor, DatabaseHelper.RESTAURANT_ID_FIELD);
+                String name = getString(cursor, DatabaseHelper.RESTAURANT_NAME_FIELD);
+                String address = getString(cursor, DatabaseHelper.RESTAURANT_ADDRESS_FIELD);
+                String phone = getString(cursor, DatabaseHelper.RESTAURANT_PHONE_FIELD);
+                int cateId = getInt(cursor, DatabaseHelper.RESTAURANT_CATEGORY_FIELD);
+                RestaurantCategory resCate = resCateDao.getRestaurantCategoryById(cateId);
+                String avatar = getString(cursor, DatabaseHelper.RESTAURANT_AVATAR_FIELD);
+                boolean isPartner = getBoolean(cursor, DatabaseHelper.RESTAURANT_IS_PARTNER_FIELD);
+                double rating = getDouble(cursor, DatabaseHelper.RESTAURANT_RATING_FIELD);
+                String createdDateString = getString(cursor, DatabaseHelper.RESTAURANT_CREATED_DATE_FIELD);
+                String updatedDateString = getString(cursor, DatabaseHelper.RESTAURANT_UPDATED_DATE_FIELD);
+                Date createdDate = DateUtil.timestampToDate(createdDateString);
+                Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
-                    if (idIdx != -1 && nameIdx != -1 && addressIdx != -1 &&
-                            phoneIdx != -1 && cateIdx != -1 && isPartnerIdx != -1) {
-
-                        int id = cursor.getInt(idIdx);
-                        String nameValue = cursor.getString(nameIdx);
-                        String addressValue = cursor.getString(addressIdx);
-                        String phoneValue = cursor.getString(phoneIdx);
-                        int resCateId = cursor.getInt(cateIdx);
-                        boolean isPartnerValue = cursor.getInt(isPartnerIdx) > 0;
-
-                        RestaurantCategory resCate = resCateDao.getRestaurantCategoryById(resCateId);
-                        Restaurant restaurant = new Restaurant(id, nameValue, addressValue, phoneValue, resCate, isPartnerValue);
-                        restaurants.add(restaurant);
-                    }
-                } while (cursor.moveToNext());
+                restaurants.add(new Restaurant(id, name, address, phone, resCate, avatar, isPartner, rating, createdDate, updatedDate));
             }
         } finally {
             if(cursor != null) {
@@ -147,6 +167,7 @@ public class RestaurantDao {
             }
             db.close();
         }
+
         return restaurants;
     }
 
