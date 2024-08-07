@@ -19,6 +19,7 @@ public class Cart extends Base{
         this.user_id = user_id;
         this.restaurant_id = restaurant_id;
         this.setCreatedDate(new Date());
+        this.setUpdatedDate(new Date());
     }
 
     public int getUser_id() {

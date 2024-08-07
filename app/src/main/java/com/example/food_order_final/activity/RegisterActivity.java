@@ -18,6 +18,8 @@ import com.example.food_order_final.models.Role;
 import com.example.food_order_final.models.User;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.Date;
+
 public class RegisterActivity extends AppCompatActivity {
 
 
@@ -45,7 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
                     String username = String.valueOf(etUsername.getText());
                     String password = String.valueOf(etPassword.getText());
                     if (!dbHelper.userDao.checkUsername(username)) {
-                        User newUser = new User(username, phoneNumber, email, fullName, password, new Role(1, "User"));
+                        User newUser = new User(username, phoneNumber, email, fullName, password, new Role(1, "User", new Date(), new Date()));
 //                        dbHelper.addUserToDatabase(newUser);
                         dbHelper.userDao.insertUser(newUser);
                         Toast.makeText(RegisterActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();

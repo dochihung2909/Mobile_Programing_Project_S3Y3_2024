@@ -1,16 +1,28 @@
 package com.example.food_order_final.models;
 
-public class OrderDetail {
+import java.util.Date;
+
+public class OrderDetail extends Base{
     private int id;
     private Food food;
     private int quantity;
     private double price;
 
-    public OrderDetail(int id, Food food, int quantity, double price) {
+    public OrderDetail(int id, Food food, int quantity, double price, Date createdDate, Date updatedDate) {
         this.id = id;
         this.food = food;
         this.quantity = quantity;
         this.price = price;
+        this.setCreatedDate(createdDate);
+        this.setUpdatedDate(updatedDate);
+    }
+
+    public OrderDetail(Food food, int quantity, double price) {
+        this.food = food;
+        this.quantity = quantity;
+        this.price = price;
+        this.setCreatedDate(new Date());
+        this.setUpdatedDate(new Date());
     }
 
     public int getId() {

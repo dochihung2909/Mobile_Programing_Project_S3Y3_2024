@@ -7,19 +7,23 @@ import android.database.sqlite.SQLiteDatabase;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.RestaurantCategory;
 import com.example.food_order_final.models.Role;
+import com.example.food_order_final.util.DateUtil;
 
-public class RestaurantCategoryDao {
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
+public class RestaurantCategoryDao extends BaseDao{
     private DatabaseHelper dbHelper;
+
     public RestaurantCategoryDao(DatabaseHelper dbHelper) {
+        super(dbHelper);
         this.dbHelper = dbHelper;
     }
 
     public void insertRestaurantCategory(RestaurantCategory resCate){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseHelper.RESTAURANT_CATEGORY_ID_FIELD, resCate.getId());
-        contentValues.put(DatabaseHelper.RESTAURANT_CATEGORY_NAME_FIELD, resCate.getName());
+        ContentValues contentValues = dbHelper.getResCateContentValues(resCate);
         db.insert(DatabaseHelper.TABLE_RESTAURANT_CATEGORY_NAME, null, contentValues);
         db.close();
     }
@@ -28,12 +32,12 @@ public class RestaurantCategoryDao {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseHelper.RESTAURANT_CATEGORY_ID_FIELD, resCate.getId());
         contentValues.put(DatabaseHelper.RESTAURANT_CATEGORY_NAME_FIELD, resCate.getName());
+        contentValues.put(DatabaseHelper.RESTAURANT_CATEGORY_UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
 
         String whereClause = DatabaseHelper.RESTAURANT_CATEGORY_ID_FIELD + " = ? ";
         String[] whereArgs = new String[]{String.valueOf(resCate.getId())};
-        int rowAffected = db.update(DatabaseHelper.TABLE_ROLE_NAME, contentValues, whereClause, whereArgs);
+        int rowAffected = db.update(DatabaseHelper.TABLE_RESTAURANT_CATEGORY_NAME, contentValues, whereClause, whereArgs);
 
         db.close();
         return rowAffected;
@@ -48,6 +52,33 @@ public class RestaurantCategoryDao {
         db.close();
     }
 
+    public List<RestaurantCategory> getAllRestaurantCategories() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        List<RestaurantCategory> resCategories = new ArrayList<>();
+
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_CATEGORY_NAME,
+                    null);
+            if (cursor != null && cursor.moveToFirst()) {
+                int id = getInt(cursor, DatabaseHelper.RESTAURANT_CATEGORY_ID_FIELD);
+                String name = getString(cursor, DatabaseHelper.RESTAURANT_CATEGORY_NAME_FIELD);
+                String createdDateString = getString(cursor, DatabaseHelper.RESTAURANT_CATEGORY_CREATED_DATE_FIELD);
+                String updatedDateString = getString(cursor, DatabaseHelper.RESTAURANT_CATEGORY_UPDATED_DATE_FIELD);
+                Date createdDate = DateUtil.timestampToDate(createdDateString);
+                Date updatedDate = DateUtil.timestampToDate(updatedDateString);
+
+                resCategories.add(new RestaurantCategory(id, name, createdDate, updatedDate));
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+
+        return resCategories;
+    }
+
     public RestaurantCategory getRestaurantCategoryById(int resCateId) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         RestaurantCategory resCate = null;
@@ -57,15 +88,14 @@ public class RestaurantCategoryDao {
                             + " WHERE " + DatabaseHelper.RESTAURANT_CATEGORY_ID_FIELD + " = ?",
                     new String[]{String.valueOf(resCateId)});
             if (cursor != null && cursor.moveToFirst()) {
-                int idIndex = cursor.getColumnIndex(DatabaseHelper.RESTAURANT_CATEGORY_ID_FIELD);
-                int nameIndex = cursor.getColumnIndex(DatabaseHelper.RESTAURANT_CATEGORY_NAME_FIELD);
-                if (idIndex != -1 && nameIndex != -1) {
-                    int id = cursor.getInt(idIndex);
-                    String name = cursor.getString(nameIndex);
-                    resCate = new RestaurantCategory(id, name);
-                } else {
-                    throw new RuntimeException("Column index not found !");
-                }
+                int id = getInt(cursor, DatabaseHelper.RESTAURANT_CATEGORY_ID_FIELD);
+                String name = getString(cursor, DatabaseHelper.RESTAURANT_CATEGORY_NAME_FIELD);
+                String createdDateString = getString(cursor, DatabaseHelper.RESTAURANT_CATEGORY_CREATED_DATE_FIELD);
+                String updatedDateString = getString(cursor, DatabaseHelper.RESTAURANT_CATEGORY_UPDATED_DATE_FIELD);
+                Date createdDate = DateUtil.timestampToDate(createdDateString);
+                Date updatedDate = DateUtil.timestampToDate(updatedDateString);
+
+                resCate = new RestaurantCategory(id, name, createdDate, updatedDate);
             }
         } finally {
             if(cursor != null) {
@@ -73,6 +103,7 @@ public class RestaurantCategoryDao {
             }
             db.close();
         }
+
         return resCate;
     }
 

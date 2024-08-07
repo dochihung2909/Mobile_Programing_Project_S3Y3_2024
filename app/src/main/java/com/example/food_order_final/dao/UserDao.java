@@ -9,28 +9,27 @@ import android.util.Log;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Role;
 import com.example.food_order_final.models.User;
+import com.example.food_order_final.util.DateUtil;
 
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class UserDao {
+public class UserDao extends BaseDao{
     private DatabaseHelper dbHelper;
     private RoleDao roleDao;
 
     public UserDao(DatabaseHelper dbHelper, RoleDao roleDao) {
+        super(dbHelper);
         this.dbHelper = dbHelper;
         this.roleDao = roleDao;
     }
 
     public void insertUser(User user){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseHelper.USER_USERNAME_FIELD, user.getUsername());
-        contentValues.put(DatabaseHelper.USER_PHONE_NUMBER_FIELD, user.getPhoneNumber());
-        contentValues.put(DatabaseHelper.USER_EMAIL_FIELD, user.getEmail());
-        contentValues.put(DatabaseHelper.USER_FULL_NAME_FIELD, user.getFullName());
+        ContentValues contentValues = dbHelper.getUserContentValues(user);
 
         String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
         contentValues.put(DatabaseHelper.USER_PASSWORD_FIELD, hashedPassword);
@@ -41,11 +40,13 @@ public class UserDao {
 
     public int updateUser(User user){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
+
         ContentValues contentValues = new ContentValues();
         contentValues.put(DatabaseHelper.USER_USERNAME_FIELD, user.getUsername());
         contentValues.put(DatabaseHelper.USER_PHONE_NUMBER_FIELD, user.getPhoneNumber());
         contentValues.put(DatabaseHelper.USER_EMAIL_FIELD, user.getEmail());
         contentValues.put(DatabaseHelper.USER_FULL_NAME_FIELD, user.getFullName());
+        contentValues.put(DatabaseHelper.USER_UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
 
         String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
         contentValues.put(DatabaseHelper.USER_PASSWORD_FIELD, hashedPassword);
@@ -81,9 +82,8 @@ public class UserDao {
                 exists = true;
             }
         } finally {
-            if(cursor != null) {
+            if(cursor != null)
                 cursor.close();
-            }
             db.close();
         }
 
@@ -107,58 +107,122 @@ public class UserDao {
                 }
             }
         } finally {
-            if (cursor != null) {
+            if (cursor != null)
                 cursor.close();
-            }
             db.close();
         }
         return isValid;
     }
 
-    public List<User> findUserByUsername(String username) {
+    public List<User> getAllUsers() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        List<User> users = new ArrayList<>();
+
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_USER_NAME,
+                    null);
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    int id = getInt(cursor, DatabaseHelper.USER_ID_FIELD);
+                    String username = getString(cursor, DatabaseHelper.USER_USERNAME_FIELD);
+                    String phone = getString(cursor, DatabaseHelper.USER_PHONE_NUMBER_FIELD);
+                    String email = getString(cursor, DatabaseHelper.USER_EMAIL_FIELD);
+                    String fullName = getString(cursor, DatabaseHelper.USER_FULL_NAME_FIELD);
+                    String password = getString(cursor, DatabaseHelper.USER_PASSWORD_FIELD);
+                    int role_id = getInt(cursor, DatabaseHelper.USER_ROLE_FIELD);
+                    Role role = roleDao.getRoleById(role_id);
+                    String avatar = getString(cursor, DatabaseHelper.USER_AVATAR_FIELD);
+                    String createdDateString = getString(cursor, DatabaseHelper.USER_CREATED_DATE_FIELD);
+                    String updatedDateString = getString(cursor, DatabaseHelper.USER_UPDATED_DATE_FIELD);
+                    Date createdDate = DateUtil.timestampToDate(createdDateString);
+                    Date updatedDate = DateUtil.timestampToDate(updatedDateString);
+
+                    users.add(new User(id, username, email, phone, fullName, password, role, avatar, createdDate, updatedDate));
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+
+        return users;
+    }
+
+    public List<User> findUserByUsername(String name) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = null;
         List<User> users = new ArrayList<>();
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_USER_NAME
-                    + " WHERE " + DatabaseHelper.USER_USERNAME_FIELD + " = ? ",
-                    new String[]{username});
+                    + " WHERE " + DatabaseHelper.USER_USERNAME_FIELD + " LIKE ?",
+                    new String[]{"%" + name + "%"});
 
             if(cursor != null && cursor.moveToFirst()) {
                 do {
-                    int idIdx = cursor.getColumnIndex(DatabaseHelper.USER_ID_FIELD);
-                    int usernameIdx = cursor.getColumnIndex(DatabaseHelper.USER_USERNAME_FIELD);
-                    int phoneIdx = cursor.getColumnIndex(DatabaseHelper.USER_PHONE_NUMBER_FIELD);
-                    int emailIdx = cursor.getColumnIndex(DatabaseHelper.USER_EMAIL_FIELD);
-                    int fullNameIdx = cursor.getColumnIndex(DatabaseHelper.USER_FULL_NAME_FIELD);
-                    int passwordIdx = cursor.getColumnIndex(DatabaseHelper.USER_PASSWORD_FIELD);
-                    int roleIdx = cursor.getColumnIndex(DatabaseHelper.USER_ROLE_FIELD);
+                    int id = getInt(cursor, DatabaseHelper.USER_ID_FIELD);
+                    String username = getString(cursor, DatabaseHelper.USER_USERNAME_FIELD);
+                    String phone = getString(cursor, DatabaseHelper.USER_PHONE_NUMBER_FIELD);
+                    String email = getString(cursor, DatabaseHelper.USER_EMAIL_FIELD);
+                    String fullName = getString(cursor, DatabaseHelper.USER_FULL_NAME_FIELD);
+                    String password = getString(cursor, DatabaseHelper.USER_PASSWORD_FIELD);
+                    int role_id = getInt(cursor, DatabaseHelper.USER_ROLE_FIELD);
+                    Role role = roleDao.getRoleById(role_id);
+                    String avatar = getString(cursor, DatabaseHelper.USER_AVATAR_FIELD);
+                    String createdDateString = getString(cursor, DatabaseHelper.USER_CREATED_DATE_FIELD);
+                    String updatedDateString = getString(cursor, DatabaseHelper.USER_UPDATED_DATE_FIELD);
+                    Date createdDate = DateUtil.timestampToDate(createdDateString);
+                    Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
-                    if (idIdx != -1 && usernameIdx != -1 && phoneIdx != -1 &&
-                            emailIdx != -1 && fullNameIdx != -1 && passwordIdx != -1 &&
-                            roleIdx != -1) {
-                        int id = cursor.getInt(idIdx);
-                        String usernameValue = cursor.getString(usernameIdx);
-                        String phoneValue = cursor.getString(phoneIdx);
-                        String emailValue = cursor.getString(emailIdx);
-                        String fullNameValue = cursor.getString(fullNameIdx);
-                        String passwordValue = cursor.getString(passwordIdx);
-                        int roleId = cursor.getInt(roleIdx);
-
-                        Role role = roleDao.getRoleById(roleId);
-
-                        User user = new User(id, usernameValue, phoneValue, emailValue, fullNameValue, passwordValue, role);
-                        users.add(user);
-                    }
+                    users.add(new User(id, username, email, phone, fullName, password, role, avatar, createdDate, updatedDate));
                 } while(cursor.moveToNext());
             }
         } finally {
-            if(cursor != null) {
+            if(cursor != null)
                 cursor.close();
-            }
             db.close();
         }
+
+        return users;
+    }
+
+    public List<User> findUsersByName(String name) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        List<User> users = new ArrayList<>();
+
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_USER_NAME
+                            + " WHERE " + DatabaseHelper.USER_FULL_NAME_FIELD + " LIKE ?",
+                    new String[]{"%" + name + "%"});
+
+            if(cursor != null && cursor.moveToFirst()) {
+                do {
+                    int id = getInt(cursor, DatabaseHelper.USER_ID_FIELD);
+                    String username = getString(cursor, DatabaseHelper.USER_USERNAME_FIELD);
+                    String phone = getString(cursor, DatabaseHelper.USER_PHONE_NUMBER_FIELD);
+                    String email = getString(cursor, DatabaseHelper.USER_EMAIL_FIELD);
+                    String fullName = getString(cursor, DatabaseHelper.USER_FULL_NAME_FIELD);
+                    String password = getString(cursor, DatabaseHelper.USER_PASSWORD_FIELD);
+                    int role_id = getInt(cursor, DatabaseHelper.USER_ROLE_FIELD);
+                    Role role = roleDao.getRoleById(role_id);
+                    String avatar = getString(cursor, DatabaseHelper.USER_AVATAR_FIELD);
+                    String createdDateString = getString(cursor, DatabaseHelper.USER_CREATED_DATE_FIELD);
+                    String updatedDateString = getString(cursor, DatabaseHelper.USER_UPDATED_DATE_FIELD);
+                    Date createdDate = DateUtil.timestampToDate(createdDateString);
+                    Date updatedDate = DateUtil.timestampToDate(updatedDateString);
+
+                    users.add(new User(id, username, email, phone, fullName, password, role, avatar, createdDate, updatedDate));
+                } while(cursor.moveToNext());
+            }
+        } finally {
+            if(cursor != null)
+                cursor.close();
+            db.close();
+        }
+
         return users;
     }
 

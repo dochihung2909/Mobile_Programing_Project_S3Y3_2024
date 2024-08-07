@@ -1,6 +1,8 @@
 package com.example.food_order_final.models;
 
-public class User {
+import java.util.Date;
+
+public class User extends Base{
     private int id;
     private String username;
     private String phoneNumber;
@@ -8,8 +10,9 @@ public class User {
     private String fullName;
     private String password;
     private Role role;
+    private String avatar;
 
-    public User(int id, String username, String phoneNumber, String email, String fullName, String password, Role role) {
+    public User(int id, String username, String phoneNumber, String email, String fullName, String password, Role role, String avatar, Date createdDate, Date updatedDate) {
         this.id = id;
         this.username = username;
         this.phoneNumber = phoneNumber;
@@ -17,6 +20,9 @@ public class User {
         this.fullName = fullName;
         this.password = password;
         this.role = role;
+        this.avatar = avatar;
+        this.setCreatedDate(createdDate);
+        this.setUpdatedDate(updatedDate);
     }
     public User(String username, String phoneNumber, String email, String fullName, String password, Role role) {
         this.username = username;
@@ -25,15 +31,10 @@ public class User {
         this.fullName = fullName;
         this.password = password;
         this.role = role;
+        this.avatar = null;
+        this.setCreatedDate(new Date());
+        this.setUpdatedDate(new Date());
     }
-//    public User(String username, String phoneNumber, String email, String fullName, String password, Role role) {
-//        this.username = username;
-//        this.phoneNumber = phoneNumber;
-//        this.email = email;
-//        this.fullName = fullName;
-//        this.password = password;
-//        this.role = role;
-//    }
 
     public int getId() {
         return id;
@@ -89,5 +90,13 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }
