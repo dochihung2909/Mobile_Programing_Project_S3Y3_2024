@@ -11,21 +11,82 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:src="@drawable/undraw_breakfast_psiw"
-        android:id="@+id/backgroundImg"
+        android:id="@+id/ivRestaurantAvatar"
         />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/backgroundImg">
+        android:layout_below="@+id/ivRestaurantAvatar">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hủ Tiếu Nam Vang, Bò kho Gà Ác"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:id="@+id/tvRestaurantName"
+                    />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hủ Tiếu Nam Vang, Bò kho Gà Ác"
-            android:textSize="16dp"
-            android:textStyle="bold"
-            />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:id="@+id/restaurantRatingContainer">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/baseline_star_24"/>
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="|"
+                        android:paddingHorizontal="10dp"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvRestaurantTime"
+                        android:text="Restaurant time"
+
+                        />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:background="@color/separateColor"
+                android:layout_marginBottom="10dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="10dp"
+                android:id="@+id/foodsContainer">
+
+            </LinearLayout>
+        </LinearLayout>
+
+
     </ScrollView>
 
 </RelativeLayout>

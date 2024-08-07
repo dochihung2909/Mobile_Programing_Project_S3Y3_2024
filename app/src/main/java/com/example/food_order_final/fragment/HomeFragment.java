@@ -3,6 +3,7 @@ package com.example.food_order_final.fragment;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -28,6 +29,7 @@ import android.widget.Toast;
 
 import com.example.food_order_final.R;
 import com.example.food_order_final.activity.MainActivity;
+import com.example.food_order_final.activity.RestaurantActivity;
 import com.example.food_order_final.custom_activity.RestaurantCardView;
 import com.example.food_order_final.dao.RestaurantCategoryDao;
 import com.example.food_order_final.dao.RestaurantDao;
@@ -124,8 +126,15 @@ public class HomeFragment extends Fragment {
         Toast.makeText(getActivity(), "" + restaurants.size(), Toast.LENGTH_SHORT).show();
         for (Restaurant restaurant: restaurants) {
             RestaurantCardView restaurantCardView = new RestaurantCardView(getActivity());
+
             restaurantCardView.setRestaurantName(restaurant.getName());
             restaurantCardView.setRestaurantDistance(restaurant.getAddress());
+
+            restaurantCardView.setOnClickListener(view -> {
+                Intent intent = new Intent(getActivity(), RestaurantActivity.class);
+                intent.putExtra("restaurant", restaurant.getId());
+                startActivity(intent);
+            });
             lnHomeContainer.addView(restaurantCardView);
         }
 
