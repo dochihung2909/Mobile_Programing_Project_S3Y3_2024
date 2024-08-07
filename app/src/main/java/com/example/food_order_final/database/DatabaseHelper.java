@@ -68,7 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String RESTAURANT_NAME_FIELD = "name";
     public static final String RESTAURANT_ADDRESS_FIELD = "address";
     public static final String RESTAURANT_PHONE_FIELD = "phone";
-    public static final String RESTAURANT_CATEGORY_FIELD = "category_id";
+    public static final String RESTAURANT_CATEGORY_FIELD = "category";
     public static final String RESTAURANT_AVATAR_FIELD = "avatar";
     public static final String RESTAURANT_IS_PARTNER_FIELD = "is_partner";
     public static final String RESTAURANT_RATING_FIELD = "rating";
@@ -85,8 +85,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String FOOD_ID_FIELD = "id";
     public static final String FOOD_NAME_FIELD = "name";
     public static final String FOOD_PRICE_FIELD = "price";
-    public static final String FOOD_CATEGORY_FIELD = "category_id";
-    public static final String FOOD_RESTAURANT_FIELD = "restaurant_id";
+    public static final String FOOD_CATEGORY_FIELD = "category";
+    public static final String FOOD_RESTAURANT_FIELD = "restaurant";
     public static final String FOOD_CREATED_DATE_FIELD = "created_date";
     public static final String FOOD_UPDATED_DATE_FIELD = "updated_date";
 
@@ -196,7 +196,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     public ContentValues getUserContentValues(User user) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(USER_ID_FIELD, user.getId());
         contentValues.put(USER_USERNAME_FIELD, user.getUsername());
         contentValues.put(USER_PHONE_NUMBER_FIELD, user.getPhoneNumber());
         contentValues.put(USER_EMAIL_FIELD, user.getEmail());
@@ -211,7 +210,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public ContentValues getResCateContentValues(RestaurantCategory resCate) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(RESTAURANT_CATEGORY_ID_FIELD, resCate.getId());
         contentValues.put(RESTAURANT_CATEGORY_NAME_FIELD, resCate.getName());
         contentValues.put(RESTAURANT_CATEGORY_CREATED_DATE_FIELD, DateUtil.dateToTimestamp(resCate.getCreatedDate()));
         contentValues.put(RESTAURANT_CATEGORY_UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(resCate.getUpdatedDate()));
@@ -221,7 +219,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public ContentValues getRestaurantContentValues(Restaurant restaurant) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(RESTAURANT_ID_FIELD, restaurant.getId());
         contentValues.put(RESTAURANT_NAME_FIELD, restaurant.getName());
         contentValues.put(RESTAURANT_ADDRESS_FIELD, restaurant.getAddress());
         contentValues.put(RESTAURANT_PHONE_FIELD, restaurant.getPhoneNumber());
@@ -236,7 +233,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public ContentValues getFoodCateContentValues(FoodCategory foodCate) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseHelper.FOOD_CATEGORY_ID_FIELD, foodCate.getId());
         contentValues.put(DatabaseHelper.FOOD_CATEGORY_NAME_FIELD, foodCate.getName());
         contentValues.put(FOOD_CATEGORY_CREATED_DATE_FIELD, DateUtil.dateToTimestamp(foodCate.getCreatedDate()));
         contentValues.put(FOOD_CATEGORY_UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(foodCate.getUpdatedDate()));
@@ -246,7 +242,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public ContentValues getFoodContentValues(Food food) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseHelper.FOOD_ID_FIELD, food.getId());
         contentValues.put(DatabaseHelper.FOOD_NAME_FIELD, food.getName());
         contentValues.put(DatabaseHelper.FOOD_PRICE_FIELD, food.getPrice());
         contentValues.put(DatabaseHelper.FOOD_CATEGORY_FIELD, food.getCategory().getId());

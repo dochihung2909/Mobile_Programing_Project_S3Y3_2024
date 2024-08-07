@@ -120,10 +120,9 @@ public class HomeFragment extends Fragment {
         DatabaseHelper databaseHelper = new DatabaseHelper(getActivity());
         RestaurantCategoryDao restaurantCategoryDao = new RestaurantCategoryDao(databaseHelper);
         RestaurantDao restaurantDao = new RestaurantDao(databaseHelper, restaurantCategoryDao);
-//        List<Restaurant> restaurants = restaurantDao.getAllRestaurant();
-//        Toast.makeText(getActivity(), "" + restaurants.size(), Toast.LENGTH_SHORT).show();
-        for (int i = 1; i<= 10;i++) {
-            Restaurant restaurant = restaurantDao.getRestaurantById(i);
+        List<Restaurant> restaurants = restaurantDao.getAllRestaurants();
+        Toast.makeText(getActivity(), "" + restaurants.size(), Toast.LENGTH_SHORT).show();
+        for (Restaurant restaurant: restaurants) {
             RestaurantCardView restaurantCardView = new RestaurantCardView(getActivity());
             restaurantCardView.setRestaurantName(restaurant.getName());
             restaurantCardView.setRestaurantDistance(restaurant.getAddress());

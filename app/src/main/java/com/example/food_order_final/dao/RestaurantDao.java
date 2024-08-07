@@ -75,23 +75,25 @@ public class RestaurantDao extends BaseDao{
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_NAME,
                     null);
             if (cursor != null && cursor.moveToFirst()) {
-                int id = getInt(cursor, DatabaseHelper.RESTAURANT_ID_FIELD);
-                String name = getString(cursor, DatabaseHelper.RESTAURANT_NAME_FIELD);
-                String address = getString(cursor, DatabaseHelper.RESTAURANT_ADDRESS_FIELD);
-                String phone = getString(cursor, DatabaseHelper.RESTAURANT_PHONE_FIELD);
-                int cateId = getInt(cursor, DatabaseHelper.RESTAURANT_CATEGORY_FIELD);
-                RestaurantCategory resCate = resCateDao.getRestaurantCategoryById(cateId);
-                String avatar = getString(cursor, DatabaseHelper.RESTAURANT_AVATAR_FIELD);
-                boolean isPartner = getBoolean(cursor, DatabaseHelper.RESTAURANT_IS_PARTNER_FIELD);
-                double rating = getDouble(cursor, DatabaseHelper.RESTAURANT_RATING_FIELD);
-                String createdDateString = getString(cursor, DatabaseHelper.RESTAURANT_CREATED_DATE_FIELD);
-                String updatedDateString = getString(cursor, DatabaseHelper.RESTAURANT_UPDATED_DATE_FIELD);
-                Date createdDate = DateUtil.timestampToDate(createdDateString);
-                Date updatedDate = DateUtil.timestampToDate(updatedDateString);
+                do {
+                    int id = getInt(cursor, DatabaseHelper.RESTAURANT_ID_FIELD);
+                    String name = getString(cursor, DatabaseHelper.RESTAURANT_NAME_FIELD);
+                    String address = getString(cursor, DatabaseHelper.RESTAURANT_ADDRESS_FIELD);
+                    String phone = getString(cursor, DatabaseHelper.RESTAURANT_PHONE_FIELD);
+                    int cateId = getInt(cursor, DatabaseHelper.RESTAURANT_CATEGORY_FIELD);
+                    RestaurantCategory resCate = resCateDao.getRestaurantCategoryById(cateId);
+                    String avatar = getString(cursor, DatabaseHelper.RESTAURANT_AVATAR_FIELD);
+                    boolean isPartner = getBoolean(cursor, DatabaseHelper.RESTAURANT_IS_PARTNER_FIELD);
+                    double rating = getDouble(cursor, DatabaseHelper.RESTAURANT_RATING_FIELD);
+                    String createdDateString = getString(cursor, DatabaseHelper.RESTAURANT_CREATED_DATE_FIELD);
+                    String updatedDateString = getString(cursor, DatabaseHelper.RESTAURANT_UPDATED_DATE_FIELD);
+                    Date createdDate = DateUtil.timestampToDate(createdDateString);
+                    Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
-                restaurants.add(new Restaurant(id, name, address, phone, resCate, avatar, isPartner,
-                        rating, createdDate, updatedDate));
-            } 
+                    restaurants.add(new Restaurant(id, name, address, phone, resCate, avatar, isPartner,
+                            rating, createdDate, updatedDate));
+                } while(cursor.moveToNext());
+            }
         } finally {
             if(cursor != null) {
                 cursor.close();

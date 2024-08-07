@@ -16,6 +16,9 @@ import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Role;
 
 public class LoadScreenActivity extends AppCompatActivity {
+    DatabaseHelper dbHelper = new DatabaseHelper(LoadScreenActivity.this);
+
+    SharedPreferences prefs = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +29,7 @@ public class LoadScreenActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         String username = sharedPreferences.getString("username", "Guest");
         String password = sharedPreferences.getString("password", "Password");
-        DatabaseHelper dbHelper = new DatabaseHelper(LoadScreenActivity.this);
-        dbHelper.initializeData();
+        prefs = getSharedPreferences("com.example.food_order_final", MODE_PRIVATE);
         if (dbHelper.userDao.isUserCredential(username, password)){
             Intent intent = new Intent(LoadScreenActivity.this, MainActivity.class);
             startActivity(intent);
@@ -57,5 +59,16 @@ public class LoadScreenActivity extends AppCompatActivity {
                 }, 100);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (prefs.getBoolean("firstrun", true)) {
+            // Do first run stuff here then set 'firstrun' as false
+            dbHelper.initializeData();
+            prefs.edit().putBoolean("firstrun", false).commit();
+        }
     }
 }
