@@ -47,19 +47,4 @@
         android:id="@+id/tvWelcome"
         android:gravity="center"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Current Location"
-        android:id="@+id/tvCurrentLocation"
-        android:textSize="16dp"
-        android:layout_marginVertical="20dp"
-        />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Get Location"
-        android:layout_below="@+id/tvCurrentLocation"
-        android:id="@+id/btnGetLocation"/>
 </RelativeLayout>

@@ -15,6 +15,7 @@ import com.google.common.primitives.Booleans;
 
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -64,7 +65,7 @@ public class RestaurantDao extends BaseDao{
         db.delete(DatabaseHelper.TABLE_RESTAURANT_NAME, whereClause, whereArgs);
         db.close();
     }
-
+ 
     public List<Restaurant> getAllRestaurants() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         List<Restaurant> restaurants = new ArrayList<>();
@@ -90,13 +91,13 @@ public class RestaurantDao extends BaseDao{
 
                 restaurants.add(new Restaurant(id, name, address, phone, resCate, avatar, isPartner,
                         rating, createdDate, updatedDate));
-            }
+            } 
         } finally {
             if(cursor != null) {
                 cursor.close();
             }
             db.close();
-        }
+        } 
         return restaurants;
     }
 
