@@ -8,13 +8,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:clickable="false">
 
         <ImageView
             android:id="@+id/imageRestaurant"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:src="@drawable/ic_launcher_background"
+            android:clickable="false"
             />
 
         <LinearLayout
@@ -22,7 +24,8 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:gravity="center_vertical"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:clickable="false">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -30,12 +33,14 @@
                 android:id="@+id/tvRestaurantName"
                 android:text="Ăn Vặt Yum Yum - Mì Trộn &amp; Cá viên chiên"
                 android:textStyle="bold"
-                android:layout_marginBottom="5dp"/>
+                android:layout_marginBottom="5dp"
+                android:clickable="false"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:clickable="false">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -46,14 +51,16 @@
                     android:drawableLeft="@drawable/baseline_star_24"
                     android:textSize="13dp"
                     android:drawablePadding="2dp"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center"
+                    android:clickable="false"/>
 
                 <TextView
                     android:layout_width="2dp"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="2dp"
                     android:layout_height="match_parent"
-                    android:background="@drawable/separate"/>
+                    android:background="@drawable/separate"
+                    android:clickable="false"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -62,6 +69,7 @@
                     android:text="0.8km"
                     android:padding="8dp"
                     android:textSize="13dp"
+                    android:clickable="false"
                     />
 
                 <TextView
@@ -69,7 +77,8 @@
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="2dp"
                     android:layout_height="match_parent"
-                    android:background="@drawable/separate"/>
+                    android:background="@drawable/separate"
+                    android:clickable="false"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -78,6 +87,7 @@
                     android:text="22 phút"
                     android:padding="8dp"
                     android:textSize="13dp"
+                    android:clickable="false"
                     />
 
             </LinearLayout>
@@ -89,5 +99,6 @@
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
         android:layout_height="10dp"
-        android:background="@drawable/separate"/>
+        android:background="@drawable/separate"
+        android:clickable="false"/>
 </LinearLayout>

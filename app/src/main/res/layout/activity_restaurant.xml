@@ -8,10 +8,19 @@
     tools:context=".activity.RestaurantActivity">
 
     <ImageView
+        android:id="@+id/ivRestaurantAvatar"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:src="@drawable/undraw_breakfast_psiw"
-        android:id="@+id/ivRestaurantAvatar"
+        android:src="@drawable/undraw_breakfast_psiw"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_arrow_back_24"
+        android:background="@drawable/circle_button"
+        android:padding="5dp"
+        android:layout_margin="20dp"
+        android:id="@+id/btnBackToMain"
         />
 
     <ScrollView
@@ -48,10 +57,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:id="@+id/restaurantRatingContainer">
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/baseline_star_24"/>
+
                     </LinearLayout>
                     <TextView
                         android:layout_width="wrap_content"
@@ -70,6 +76,16 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Restaurant Address"
+                android:id="@+id/tvRestaurantAddress"
+                android:textColor="@color/textSecondaryColor"
+                android:paddingHorizontal="10dp"
+                android:paddingBottom="10dp"
+                />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="8dp"
@@ -78,15 +94,21 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:paddingHorizontal="10dp"
                 android:id="@+id/foodsContainer">
+
 
             </LinearLayout>
         </LinearLayout>
 
 
     </ScrollView>
+
+    <com.example.food_order_final.custom_activity.CartCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        />
 
 </RelativeLayout>

@@ -3,6 +3,7 @@ package com.example.food_order_final.activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -11,6 +12,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -37,6 +39,7 @@ import com.example.food_order_final.fragment.FavouriteFragment;
 import com.example.food_order_final.fragment.HomeFragment;
 import com.example.food_order_final.fragment.OrderFragment;
 import com.example.food_order_final.models.Restaurant;
+import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;
@@ -44,9 +47,9 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements LocationListener{
 
-    private TextView tvWelcome;
     private FrameLayout frameLayout;
     private TabLayout tabLayout;
+
 
 
     @SuppressLint("SetTextI18n")
@@ -65,7 +68,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
 
         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         String username = sharedPreferences.getString("username", "Guest");
-        tvWelcome.setText("Welcome " + username);
+        tabLayout.getTabAt(2).setText(username);
+
 
         getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new HomeFragment())
                 .addToBackStack(null)
@@ -107,11 +111,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
     }
 
     private void initWidgets() {
-        tvWelcome = (TextView) findViewById(R.id.tvWelcome);
         frameLayout = (FrameLayout) findViewById(R.id.frameLayout);
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
-
-
     }
 
     @Override

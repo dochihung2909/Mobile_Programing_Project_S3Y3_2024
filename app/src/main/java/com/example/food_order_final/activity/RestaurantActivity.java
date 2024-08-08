@@ -1,10 +1,14 @@
 package com.example.food_order_final.activity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +25,7 @@ import com.example.food_order_final.dao.RestaurantCategoryDao;
 import com.example.food_order_final.dao.RestaurantDao;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Food;
+import com.example.food_order_final.models.Restaurant;
 
 import java.util.List;
 
@@ -28,8 +33,10 @@ public class RestaurantActivity extends AppCompatActivity {
 
     LinearLayout foodsContainer, restaurantRatingContainer;
 
-    TextView tvRestaurantName, tvRestaurantTime;
+    TextView tvRestaurantName, tvRestaurantTime, tvRestaurantAddress;
     ImageView ivRestaurantAvatar;
+
+    ImageButton btnBackToMain;
 
 
     @Override
@@ -44,32 +51,44 @@ public class RestaurantActivity extends AppCompatActivity {
             return insets;
         });
 
-//        String restaurantId = getIntent().getStringExtra("restaurant");
-//
-        DatabaseHelper dbhelper = new DatabaseHelper(RestaurantActivity.this);
-        RestaurantDao restaurantDao = new RestaurantDao(
-                dbhelper,
-                new RestaurantCategoryDao(dbhelper));
-//        Restaurant restaurant = restaurantDao.getRestaurantById(Integer.parseInt(restaurantId));
-//        tvRestaurantName.setText(restaurant.getName());
+        btnBackToMain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
-        for (int i = 1;i<=4;i++) {
-            ImageView imageStar = new ImageView(RestaurantActivity.this);
-            imageStar.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            imageStar.setImageResource(R.drawable.baseline_star_24);
-            restaurantRatingContainer.addView(imageStar);
-        }
+        int restaurantId = getIntent().getIntExtra("restaurant", -1);
+        Toast.makeText(this, "" + restaurantId, Toast.LENGTH_SHORT).show();
+//
+        if (restaurantId != -1) {
+            DatabaseHelper dbhelper = new DatabaseHelper(RestaurantActivity.this);
+            RestaurantDao restaurantDao = new RestaurantDao(
+                    dbhelper,
+                    new RestaurantCategoryDao(dbhelper));
+            Restaurant restaurant = restaurantDao.getRestaurantById((restaurantId));
+            tvRestaurantName.setText(restaurant.getName());
+            tvRestaurantAddress.setText(restaurant.getAddress());
+
+            for (int i = 1; i <= restaurant.getId();i++) {
+                ImageView imageStar = new ImageView(RestaurantActivity.this);
+                imageStar.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                imageStar.setImageResource(R.drawable.baseline_star_24);
+                restaurantRatingContainer.addView(imageStar);
+            }
 //
 //
 //        // Get all foods of restaurant and render
-        FoodDao foodDao = new FoodDao(dbhelper, new FoodCategoryDao(dbhelper), restaurantDao);
-        List<Food> foods = foodDao.findFoodByName("Pizza");
-        for (Food food: foods) {
-            FoodCardView foodCardView = new FoodCardView(RestaurantActivity.this);
-            foodCardView.setTvFoodName(food.getName());
-            foodCardView.setTvFoodDiscountPrice(food.getPrice());
-            foodsContainer.addView(foodCardView);
+            FoodDao foodDao = new FoodDao(dbhelper, new FoodCategoryDao(dbhelper), restaurantDao);
+            List<Food> foods = foodDao.getFoodsByRestaurantId(restaurantId);
+            for (Food food: foods) {
+                FoodCardView foodCardView = new FoodCardView(RestaurantActivity.this);
+                foodCardView.setTvFoodName(food.getName());
+                foodCardView.setTvFoodDiscountPrice(food.getPrice());
+                foodsContainer.addView(foodCardView);
+            }
         }
+
 
 
 
@@ -81,5 +100,7 @@ public class RestaurantActivity extends AppCompatActivity {
         tvRestaurantName = findViewById(R.id.tvRestaurantName);
         tvRestaurantTime = findViewById(R.id.tvRestaurantTime);
         ivRestaurantAvatar = findViewById(R.id.ivRestaurantAvatar);
+        tvRestaurantAddress = findViewById(R.id.tvRestaurantAddress);
+        btnBackToMain = findViewById(R.id.btnBackToMain);
     }
 }

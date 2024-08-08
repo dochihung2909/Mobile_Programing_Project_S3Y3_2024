@@ -130,10 +130,13 @@ public class HomeFragment extends Fragment {
             restaurantCardView.setRestaurantName(restaurant.getName());
             restaurantCardView.setRestaurantDistance(restaurant.getAddress());
 
-            restaurantCardView.setOnClickListener(view -> {
-                Intent intent = new Intent(getActivity(), RestaurantActivity.class);
-                intent.putExtra("restaurant", restaurant.getId());
-                startActivity(intent);
+            restaurantCardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), RestaurantActivity.class);
+                    intent.putExtra("restaurant", restaurant.getId());
+                    startActivity(intent);
+                }
             });
             lnHomeContainer.addView(restaurantCardView);
         }

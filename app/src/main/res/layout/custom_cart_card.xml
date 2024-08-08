@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:background="@color/white"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_shopping_cart_24"
+            android:paddingRight="10dp"
+
+            />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Restaurant Name"
+                android:id="@+id/tvRestaurantName"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:singleLine="true"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total dishes"
+                    android:textSize="14dp"
+                    android:id="@+id/tvTotalDishes"
+                    android:textColor="@color/textSecondaryColor"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" - "
+                    android:textSize="14dp"
+                    android:textColor="@color/textSecondaryColor"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" Total price "
+                    android:textSize="14dp"
+                    android:id="@+id/tvTotalPrice"
+                    android:textColor="@color/textSecondaryColor"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_close_24"
+        android:background="@drawable/circle_button"
+        android:id="@+id/btnDeleteCart"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        />
+
+</RelativeLayout>
