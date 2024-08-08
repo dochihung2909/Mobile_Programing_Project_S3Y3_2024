@@ -186,7 +186,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public ContentValues getRoleContentValues(Role role) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ROLE_ID_FIELD, role.getId());
+//        contentValues.put(ROLE_ID_FIELD, role.getId());
         contentValues.put(ROLE_NAME_FIELD, role.getName());
 //        contentValues.put(ROLE_CREATED_DATE_FIELD, role.getCreatedDate().toString());
         contentValues.put(ROLE_CREATED_DATE_FIELD, DateUtil.dateToTimestamp(role.getCreatedDate()));
@@ -255,128 +255,135 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void initializeData() {
         SQLiteDatabase db = this.getWritableDatabase();
         //Role data
-        Role adminRole = new Role(0, "Admin", new Date(), new Date());
-        Role userRole = new Role(1, "User", new Date(), new Date());
-        roleDao.insertRole(adminRole);
-        roleDao.insertRole(userRole);
+        roleDao.insertRole(new Role("Admin"));
+        roleDao.insertRole(new Role("User"));
+        Role adminRole = roleDao.getRoleByName("Admin");
+        Role userRole = roleDao.getRoleByName("User");
 
         // User data
-        User u1 = new User("halent", "0364452867", "hung@gmail.com",
-                "Nguyễn Văn Hùng", "123", adminRole);
-        User u2 = new User("john_doe", "0987654321", "john.doe@example.com",
-                "John Doe", "123", adminRole);
-        User u3 = new User("alice_smith", "0912345678", "alice.smith@example.com",
-                "Alice Smith", "123", userRole);
-        User u4 = new User("bob_jones", "0901234567", "bob.jones@example.com",
-                "Bob Jones", "123", userRole);
-        User u5 = new User("carol_brown", "0987123456", "carol.brown@example.com",
-                "Carol Brown", "123", userRole);
-        User u6 = new User("dave_wilson", "0898765432", "dave.wilson@example.com",
-                "Dave Wilson", "123", userRole);
-        User u7 = new User("eve_white", "0876543210", "eve.white@example.com",
-                "Eve White", "123", userRole);
-        User u8 = new User("frank_black", "0865432109", "frank.black@example.com",
-                "Frank Black", "123", userRole);
-        User u9 = new User("grace_green", "0854321098", "grace.green@example.com",
-                "Grace Green", "123", userRole);
-        User u10 = new User("henry_adams", "0843210987", "henry.adams@example.com",
-                "Henry Adams", "123", userRole);
-        userDao.insertUser(u1);
-        userDao.insertUser(u2);
-        userDao.insertUser(u3);
-        userDao.insertUser(u4);
-        userDao.insertUser(u5);
-        userDao.insertUser(u6);
-        userDao.insertUser(u7);
-        userDao.insertUser(u8);
-        userDao.insertUser(u9);
-        userDao.insertUser(u10);
+        userDao.insertUser(new User("ngynhg", "0364452867", "hung@gmail.com",
+                "Nguyễn Văn Hùng", "123", adminRole));
+        userDao.insertUser(new User("tranquangh", "0976543210", "tranquangh@gmail.com",
+                "Trần Quang Hải", "123", adminRole));
+        userDao.insertUser(new User("lethanhh", "0912345679", "lethanhh@gmail.com",
+                "Lê Thanh Hà", "123", userRole));
+        userDao.insertUser(new User("nguyenducm", "0901234568", "nguyenducm@gmail.com",
+                "Nguyễn Đức Minh", "123", userRole));
+        userDao.insertUser(new User("hoangthi", "0987123457", "hoangthi@gmail.com",
+                "Hoàng Thị Lan", "123", userRole));
+        userDao.insertUser(new User("phanvanq", "0898765433", "phanvanq@gmail.com",
+                "Phan Văn Quân", "123", userRole));
+        userDao.insertUser(new User("vuongthanh", "0876543211", "vuongthanh@gmail.com",
+                "Vương Thành", "123", userRole));
+        userDao.insertUser(new User("daohoang", "0865432110", "daohoang@gmail.com",
+                "Đào Hoàng Nam", "123", userRole));
+        userDao.insertUser(new User("ngoanguyen", "0854321099", "ngoanguyen@gmail.com",
+                "Ngô Anh Nguyễn", "123", userRole));
+        userDao.insertUser(new User("phamquang", "0843210988", "phamquang@gmail.com",
+                "Phạm Quang Hưng", "123", userRole));
+
+        User user1 = userDao.getUserByUsername("ngynhg");
+        User user2 = userDao.getUserByUsername("tranquangh");
+        User user3 = userDao.getUserByUsername("lethanhh");
+        User user4 = userDao.getUserByUsername("nguyenducm");
+        User user5 = userDao.getUserByUsername("hoangthi");
+        User user6 = userDao.getUserByUsername("phanvanq");
+        User user7 = userDao.getUserByUsername("vuongthanh");
+        User user8 = userDao.getUserByUsername("daohoang");
+        User user9 = userDao.getUserByUsername("ngoanguyen");
+        User user10 = userDao.getUserByUsername("phamquang");
+
 
         //Restaurant Category data
-        RestaurantCategory rc1 = new RestaurantCategory("Noodles");
-        RestaurantCategory rc2 = new RestaurantCategory("Pizza");
-        RestaurantCategory rc3 = new RestaurantCategory("Burgers");
-        RestaurantCategory rc4 = new RestaurantCategory("Sushi");
-        RestaurantCategory rc5 = new RestaurantCategory("Mexican");
-        RestaurantCategory rc6 = new RestaurantCategory("Indian");
-        RestaurantCategory rc7 = new RestaurantCategory("Chinese");
-        RestaurantCategory rc8 = new RestaurantCategory("Italian");
-        RestaurantCategory rc9 = new RestaurantCategory("Desserts");
-        resCateDao.insertRestaurantCategory(rc1);
-        resCateDao.insertRestaurantCategory(rc2);
-        resCateDao.insertRestaurantCategory(rc3);
-        resCateDao.insertRestaurantCategory(rc4);
-        resCateDao.insertRestaurantCategory(rc5);
-        resCateDao.insertRestaurantCategory(rc6);
-        resCateDao.insertRestaurantCategory(rc7);
-        resCateDao.insertRestaurantCategory(rc8);
-        resCateDao.insertRestaurantCategory(rc9);
+        resCateDao.insertRestaurantCategory(new RestaurantCategory("Mỳ"));
+        resCateDao.insertRestaurantCategory(new RestaurantCategory("Pizza"));
+        resCateDao.insertRestaurantCategory(new RestaurantCategory("Burgers"));
+        resCateDao.insertRestaurantCategory(new RestaurantCategory("Sushi"));
+        resCateDao.insertRestaurantCategory(new RestaurantCategory("Món Mexico"));
+        resCateDao.insertRestaurantCategory(new RestaurantCategory("Món Ấn Độ"));
+        resCateDao.insertRestaurantCategory(new RestaurantCategory("Món Trung Quốc"));
+        resCateDao.insertRestaurantCategory(new RestaurantCategory("Món Ý"));
+        resCateDao.insertRestaurantCategory(new RestaurantCategory("Tráng miệng"));
+
+        RestaurantCategory rc1 = resCateDao.getRestaurantCategoryByName("Mỳ");
+        RestaurantCategory rc2 = resCateDao.getRestaurantCategoryByName("Pizza");
+        RestaurantCategory rc3 = resCateDao.getRestaurantCategoryByName("Burgers");
+        RestaurantCategory rc4 = resCateDao.getRestaurantCategoryByName("Sushi");
+        RestaurantCategory rc5 = resCateDao.getRestaurantCategoryByName("Món Mexico");
+        RestaurantCategory rc6 = resCateDao.getRestaurantCategoryByName("Món Ấn Độ");
+        RestaurantCategory rc7 = resCateDao.getRestaurantCategoryByName("Món Trung Quốc");
+        RestaurantCategory rc8 = resCateDao.getRestaurantCategoryByName("Món Ý");
+        RestaurantCategory rc9 = resCateDao.getRestaurantCategoryByName("Tráng miệng");
+
 
         // Restaurant data
-        Restaurant res1 = new Restaurant("KFC", "123 Washington", "057265484", rc1);
-        Restaurant res2 = new Restaurant("Domino's Pizza", "456 Elm Street", "0123456789", rc2);
-        Restaurant res3 = new Restaurant("Burger King", "789 Oak Avenue", "0987654321", rc3);
-        Restaurant res4 = new Restaurant("Sakura Sushi", "321 Pine Road", "0234567890", rc4);
-        Restaurant res5 = new Restaurant("Taco Bell", "654 Maple Lane", "0345678901", rc5);
-        Restaurant res6 = new Restaurant("Curry House", "987 Birch Boulevard", "0456789012", rc6);
-        Restaurant res7 = new Restaurant("Great Wall Chinese", "135 Cedar Street", "0567890123", rc7);
-        Restaurant res8 = new Restaurant("La Dolce Vita", "246 Fir Street", "0678901234", rc8);
-        Restaurant res9 = new Restaurant("Sweet Tooth", "357 Spruce Road", "0789012345", rc9);
-        Restaurant res10 = new Restaurant("Panda Express", "468 Willow Drive", "0890123456", rc7);
-        resDao.insertRestaurant(res1);
-        resDao.insertRestaurant(res2);
-        resDao.insertRestaurant(res3);
-        resDao.insertRestaurant(res4);
-        resDao.insertRestaurant(res5);
-        resDao.insertRestaurant(res6);
-        resDao.insertRestaurant(res7);
-        resDao.insertRestaurant(res8);
-        resDao.insertRestaurant(res9);
-        resDao.insertRestaurant(res10);
+        resDao.insertRestaurant(new Restaurant("Gà Rán KFC", "123 Nguyễn Thị Minh Khai, Phường Bến Nghé, Quận 1, Thành phố Hồ Chí Minh", "057265484", rc1));
+        resDao.insertRestaurant(new Restaurant("Pizza Domino's", "456 Lê Lai, Phường Bến Thành, Quận 1, Thành phố Hồ Chí Minh", "0123456789", rc2));
+        resDao.insertRestaurant(new Restaurant("Burgers King", "789 Phạm Văn Đồng, Phường 11, Quận Bình Thạnh, Thành phố Hồ Chí Minh", "0987654321", rc3));
+        resDao.insertRestaurant(new Restaurant("Sakura Sushi", "321 Đinh Tiên Hoàng, Phường 1, Quận 1, Thành phố Hồ Chí Minh", "0234567890", rc4));
+        resDao.insertRestaurant(new Restaurant("Taco Bell", "654 Nguyễn Huệ, Phường Bến Nghé, Quận 1, Thành phố Hồ Chí Minh", "0345678901", rc5));
+        resDao.insertRestaurant(new Restaurant("Nhà Hàng Cà Ri", "987 Bùi Viện, Phường Phạm Ngũ Lão, Quận 1, Thành phố Hồ Chí Minh", "0456789012", rc6));
+        resDao.insertRestaurant(new Restaurant("Nhà Hàng Đại Trường Thành", "135 Nguyễn Thị Thập, Phường Tân Phú, Quận 7, Thành phố Hồ Chí Minh", "0567890123", rc7));
+        resDao.insertRestaurant(new Restaurant("La Dolce Vita", "246 Trường Sơn, Phường 15, Quận Tân Bình, Thành phố Hồ Chí Minh", "0678901234", rc8));
+        resDao.insertRestaurant(new Restaurant("Quán Ngọt Ngào", "357 Nguyễn Đình Chiểu, Phường 5, Quận 3, Thành phố Hồ Chí Minh", "0789012345", rc9));
+        resDao.insertRestaurant(new Restaurant("Nhà Hàng Panda", "468 Cách Mạng Tháng Tám, Phường 11, Quận 3, Thành phố Hồ Chí Minh", "0890123456", rc7));
+
+        Restaurant res1 = resDao.getRestaurantByName("Gà Rán KFC");
+        Restaurant res2 = resDao.getRestaurantByName("Pizza Domino's");
+        Restaurant res3 = resDao.getRestaurantByName("Burgers King");
+        Restaurant res4 = resDao.getRestaurantByName("Sakura Sushi");
+        Restaurant res5 = resDao.getRestaurantByName("Taco Bell");
+        Restaurant res6 = resDao.getRestaurantByName("Nhà Hàng Cà Ri");
+        Restaurant res7 = resDao.getRestaurantByName("Nhà Hàng Đại Trường Thành");
+        Restaurant res8 = resDao.getRestaurantByName("La Dolce Vita");
+        Restaurant res9 = resDao.getRestaurantByName("Quán Ngọt Ngào");
+        Restaurant res10 = resDao.getRestaurantByName("Nhà Hàng Panda");
 
         //Food Category data
-        FoodCategory fc1 = new FoodCategory("Spaghetti");
-        FoodCategory fc2 = new FoodCategory("Pizza");
-        FoodCategory fc3 = new FoodCategory("Sushi");
-        FoodCategory fc4 = new FoodCategory("Burgers");
-        FoodCategory fc5 = new FoodCategory("Tacos");
-        FoodCategory fc6 = new FoodCategory("Salads");
-        FoodCategory fc7 = new FoodCategory("Sandwiches");
-        FoodCategory fc8 = new FoodCategory("Desserts");
-        FoodCategory fc9 = new FoodCategory("Seafood");
-        FoodCategory fc10 = new FoodCategory("Soups");
-        foodCateDao.insertFoodCategory(fc1);
-        foodCateDao.insertFoodCategory(fc2);
-        foodCateDao.insertFoodCategory(fc3);
-        foodCateDao.insertFoodCategory(fc4);
-        foodCateDao.insertFoodCategory(fc5);
-        foodCateDao.insertFoodCategory(fc6);
-        foodCateDao.insertFoodCategory(fc7);
-        foodCateDao.insertFoodCategory(fc8);
-        foodCateDao.insertFoodCategory(fc9);
-        foodCateDao.insertFoodCategory(fc10);
+        foodCateDao.insertFoodCategory(new FoodCategory("Mì Ý"));
+        foodCateDao.insertFoodCategory(new FoodCategory("Pizza"));
+        foodCateDao.insertFoodCategory(new FoodCategory("Sushi"));
+        foodCateDao.insertFoodCategory(new FoodCategory("Burgers"));
+        foodCateDao.insertFoodCategory(new FoodCategory("Tacos"));
+        foodCateDao.insertFoodCategory(new FoodCategory("Salad"));
+        foodCateDao.insertFoodCategory(new FoodCategory("Bánh Mì"));
+        foodCateDao.insertFoodCategory(new FoodCategory("Tráng Miệng"));
+        foodCateDao.insertFoodCategory(new FoodCategory("Hải Sản"));
+        foodCateDao.insertFoodCategory(new FoodCategory("Súp"));
+
+        FoodCategory fc1 = foodCateDao.getFoodCategoryByName("Mì Ý");
+        FoodCategory fc2 = foodCateDao.getFoodCategoryByName("Pizza");
+        FoodCategory fc3 = foodCateDao.getFoodCategoryByName("Sushi");
+        FoodCategory fc4 = foodCateDao.getFoodCategoryByName("Burgers");
+        FoodCategory fc5 = foodCateDao.getFoodCategoryByName("Tacos");
+        FoodCategory fc6 = foodCateDao.getFoodCategoryByName("Salad");
+        FoodCategory fc7 = foodCateDao.getFoodCategoryByName("Bánh Mì");
+        FoodCategory fc8 = foodCateDao.getFoodCategoryByName("Tráng Miệng");
+        FoodCategory fc9 = foodCateDao.getFoodCategoryByName("Hải Sản");
+        FoodCategory fc10 = foodCateDao.getFoodCategoryByName("Súp");
 
         // Food data
-        Food f1 = new Food("Minced beef spaghetti", 45000, fc1, res1);
-        Food f2 = new Food("Pepperoni Pizza", 55000, fc2, res2);
-        Food f3 = new Food("California Roll", 60000, fc3, res4);
-        Food f4 = new Food("Cheeseburger", 40000, fc4, res3);
-        Food f5 = new Food("Beef Tacos", 35000, fc5, res5);
-        Food f6 = new Food("Caesar Salad", 30000, fc6, res6);
-        Food f7 = new Food("Club Sandwich", 32000, fc7, res7);
-        Food f8 = new Food("Chocolate Cake", 28000, fc8, res8);
-        Food f9 = new Food("Grilled Salmon", 70000, fc9, res9);
-        Food f10 = new Food("Tom Yum Soup", 33000, fc9, res4);
-        foodDao.insertFood(f1);
-        foodDao.insertFood(f2);
-        foodDao.insertFood(f3);
-        foodDao.insertFood(f4);
-        foodDao.insertFood(f5);
-        foodDao.insertFood(f6);
-        foodDao.insertFood(f7);
-        foodDao.insertFood(f8);
-        foodDao.insertFood(f9);
-        foodDao.insertFood(f10);
+        foodDao.insertFood(new Food("Mì Ý Bò Băm", 45000, fc1, res1));
+        foodDao.insertFood(new Food("Pizza Pepperoni", 55000, fc2, res2));
+        foodDao.insertFood(new Food("Sushi California", 60000, fc3, res4));
+        foodDao.insertFood(new Food("Bánh Hamburger Phô Mai", 40000, fc4, res3));
+        foodDao.insertFood(new Food("Tacos Bò", 35000, fc5, res5));
+        foodDao.insertFood(new Food("Salad Caesar", 30000, fc6, res6));
+        foodDao.insertFood(new Food("Bánh Mì Club", 32000, fc7, res7));
+        foodDao.insertFood(new Food("Bánh Chocolate", 28000, fc8, res8));
+        foodDao.insertFood(new Food("Cá Hồi Nướng", 70000, fc9, res9));
+        foodDao.insertFood(new Food("Súp Tom Yum", 33000, fc10, res10));
+
+        Food f1 = new Food("Mì Ý Bò Băm", 45000, fc1, res1);
+        Food f2 = new Food("Pizza Pepperoni", 55000, fc2, res2);
+        Food f3 = new Food("Sushi California", 60000, fc3, res4);
+        Food f4 = new Food("Bánh Hamburger Phô Mai", 40000, fc4, res3);
+        Food f5 = new Food("Tacos Bò", 35000, fc5, res5);
+        Food f6 = new Food("Salad Caesar", 30000, fc6, res6);
+        Food f7 = new Food("Bánh Mì Club", 32000, fc7, res7);
+        Food f8 = new Food("Bánh Chocolate", 28000, fc8, res8);
+        Food f9 = new Food("Cá Hồi Nướng", 70000, fc9, res9);
+        Food f10 = new Food("Súp Tom Yum", 33000, fc10, res10);
     }
 
 
