@@ -106,4 +106,30 @@ public class FoodCategoryDao extends BaseDao{
         return foodCate;
     }
 
+    public FoodCategory getFoodCategoryByName(String foodCateName) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        FoodCategory foodCategory = null;
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_CATEGORY_NAME
+                            + " WHERE " + DatabaseHelper.FOOD_CATEGORY_NAME_FIELD + " = ?",
+                    new String[]{foodCateName});
+            if (cursor != null && cursor.moveToFirst()) {
+                int id = getInt(cursor, DatabaseHelper.FOOD_CATEGORY_ID_FIELD);
+                String name = getString(cursor, DatabaseHelper.FOOD_CATEGORY_NAME_FIELD);
+                String createdDateString = getString(cursor, DatabaseHelper.FOOD_CATEGORY_CREATED_DATE_FIELD);
+                String updatedDateString = getString(cursor, DatabaseHelper.FOOD_CATEGORY_UPDATED_DATE_FIELD);
+                Date createdDate = DateUtil.timestampToDate(createdDateString);
+                Date updatedDate = DateUtil.timestampToDate(updatedDateString);
+
+                foodCategory = new FoodCategory(id, name, createdDate, updatedDate);
+            }
+        } finally {
+            if(cursor != null)
+                cursor.close();
+            db.close();
+        }
+        return foodCategory;
+    }
+
 }

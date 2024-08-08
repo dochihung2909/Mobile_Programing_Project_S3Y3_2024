@@ -107,4 +107,30 @@ public class RestaurantCategoryDao extends BaseDao{
         return resCate;
     }
 
+    public RestaurantCategory getRestaurantCategoryByName(String resCateName) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        RestaurantCategory restaurantCategory = null;
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_CATEGORY_NAME
+                            + " WHERE " + DatabaseHelper.RESTAURANT_CATEGORY_NAME_FIELD + " = ?",
+                    new String[]{resCateName});
+            if (cursor != null && cursor.moveToFirst()) {
+                int id = getInt(cursor, DatabaseHelper.RESTAURANT_CATEGORY_ID_FIELD);
+                String name = getString(cursor, DatabaseHelper.RESTAURANT_CATEGORY_NAME_FIELD);
+                String createdDateString = getString(cursor, DatabaseHelper.RESTAURANT_CATEGORY_CREATED_DATE_FIELD);
+                String updatedDateString = getString(cursor, DatabaseHelper.RESTAURANT_CATEGORY_UPDATED_DATE_FIELD);
+                Date createdDate = DateUtil.timestampToDate(createdDateString);
+                Date updatedDate = DateUtil.timestampToDate(updatedDateString);
+
+                restaurantCategory = new RestaurantCategory(id, name, createdDate, updatedDate);
+            }
+        } finally {
+            if(cursor != null)
+                cursor.close();
+            db.close();
+        }
+        return restaurantCategory;
+    }
+
 }
