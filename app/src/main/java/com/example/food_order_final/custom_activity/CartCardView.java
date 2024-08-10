@@ -55,12 +55,12 @@ public class CartCardView extends RelativeLayout {
         });
     }
 
-    public void setTvTotalPrice(String tvTotalPrice) {
-        this.tvTotalPrice.setText(tvTotalPrice);
+    public void setTvTotalPrice(double totalPrice) {
+        this.tvTotalPrice.setText(String.valueOf(totalPrice));
     }
 
-    public void setTvTotalDishes(String tvTotalDishes) {
-        this.tvTotalDishes.setText(tvTotalDishes);
+    public void setTvTotalDishes(int totalDishes) {
+        this.tvTotalDishes.setText(String.valueOf(totalDishes));
     }
 
     public void setTvRestaurantName(String tvRestaurantName) {

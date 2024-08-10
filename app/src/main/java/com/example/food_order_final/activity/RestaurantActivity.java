@@ -1,5 +1,6 @@
 package com.example.food_order_final.activity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,29 +8,35 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.food_order_final.R;
+import com.example.food_order_final.custom_activity.CartCardView;
 import com.example.food_order_final.custom_activity.FoodCardView;
 import com.example.food_order_final.custom_activity.RestaurantCardView;
+import com.example.food_order_final.dao.CartDao;
 import com.example.food_order_final.dao.FoodCategoryDao;
 import com.example.food_order_final.dao.FoodDao;
 import com.example.food_order_final.dao.RestaurantCategoryDao;
 import com.example.food_order_final.dao.RestaurantDao;
 import com.example.food_order_final.database.DatabaseHelper;
+import com.example.food_order_final.models.Cart;
 import com.example.food_order_final.models.Food;
 import com.example.food_order_final.models.Restaurant;
 
 import java.util.List;
 
-public class RestaurantActivity extends AppCompatActivity {
+public class RestaurantActivity extends AppCompatActivity implements FoodCardView.OnActionListener {
 
     LinearLayout foodsContainer, restaurantRatingContainer;
 
@@ -37,6 +44,13 @@ public class RestaurantActivity extends AppCompatActivity {
     ImageView ivRestaurantAvatar;
 
     ImageButton btnBackToMain;
+
+    RelativeLayout mainLayout;
+
+    Restaurant restaurant;
+
+    DatabaseHelper dbhelper;
+
 
 
     @Override
@@ -59,14 +73,15 @@ public class RestaurantActivity extends AppCompatActivity {
         });
 
         int restaurantId = getIntent().getIntExtra("restaurant", -1);
+
         Toast.makeText(this, "" + restaurantId, Toast.LENGTH_SHORT).show();
 //
         if (restaurantId != -1) {
-            DatabaseHelper dbhelper = new DatabaseHelper(RestaurantActivity.this);
+            dbhelper = new DatabaseHelper(RestaurantActivity.this);
             RestaurantDao restaurantDao = new RestaurantDao(
                     dbhelper,
                     new RestaurantCategoryDao(dbhelper));
-            Restaurant restaurant = restaurantDao.getRestaurantById((restaurantId));
+            this.restaurant = restaurantDao.getRestaurantById((restaurantId));
             tvRestaurantName.setText(restaurant.getName());
             tvRestaurantAddress.setText(restaurant.getAddress());
 
@@ -83,15 +98,13 @@ public class RestaurantActivity extends AppCompatActivity {
             List<Food> foods = foodDao.getFoodsByRestaurantId(restaurantId);
             for (Food food: foods) {
                 FoodCardView foodCardView = new FoodCardView(RestaurantActivity.this);
+
+                foodCardView.setFood(food);
                 foodCardView.setTvFoodName(food.getName());
                 foodCardView.setTvFoodDiscountPrice(food.getPrice());
                 foodsContainer.addView(foodCardView);
             }
         }
-
-
-
-
     }
 
     private void init() {
@@ -102,5 +115,17 @@ public class RestaurantActivity extends AppCompatActivity {
         ivRestaurantAvatar = findViewById(R.id.ivRestaurantAvatar);
         tvRestaurantAddress = findViewById(R.id.tvRestaurantAddress);
         btnBackToMain = findViewById(R.id.btnBackToMain);
+        mainLayout = findViewById(R.id.main);
+    }
+
+    @Override
+    public void onActionCompleted(Cart cart) {
+        CartCardView cartCardView = new CartCardView(RestaurantActivity.this);
+        cartCardView.setTvRestaurantName(this.restaurant.getName());
+        dbhelper = new DatabaseHelper(RestaurantActivity.this);
+        CartDao cartDao = new CartDao(dbhelper);
+        cartCardView.setTvTotalDishes(cartDao.getTotalDishes(cart.getId()));
+        cartCardView.setTvTotalPrice(cartDao.getTotalAmount(cart.getId()));
+        mainLayout.addView(cartCardView);
     }
 }

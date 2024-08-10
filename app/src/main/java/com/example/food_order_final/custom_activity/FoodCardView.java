@@ -1,6 +1,7 @@
 package com.example.food_order_final.custom_activity;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,13 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.example.food_order_final.R;
+import com.example.food_order_final.dao.CartDao;
+import com.example.food_order_final.dao.RestaurantDao;
+import com.example.food_order_final.dao.UserDao;
+import com.example.food_order_final.database.DatabaseHelper;
+import com.example.food_order_final.models.Cart;
+import com.example.food_order_final.models.Food;
+import com.example.food_order_final.models.User;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -18,8 +26,23 @@ import java.util.Locale;
 
 public class FoodCardView extends LinearLayout {
 
-    TextView tvFoodName, tvFoodSold, tvFoodLiked, tvFoodDiscountPrice, tvFoodDefaultPrice, tvFoodDescription, btnAddToCard;
+    TextView tvFoodName, tvFoodSold, tvFoodLiked, tvFoodDiscountPrice, tvFoodDefaultPrice, tvFoodDescription, btnAddToCart;
+    int foodId;
+
+    private Food food;
     ImageView ivFoodAvatar;
+
+    private CartDao cartDao;
+
+    private UserDao userDao;
+
+    private RestaurantDao restaurantDao;
+
+    private OnActionListener onActionListener;
+
+    public interface OnActionListener {
+        void onActionCompleted(Cart cart);
+    }
 
     public FoodCardView(Context context) {
         super(context);
@@ -54,8 +77,45 @@ public class FoodCardView extends LinearLayout {
         tvFoodDiscountPrice = view.findViewById(R.id.tvFoodDiscountPrice);
         tvFoodDefaultPrice = view.findViewById(R.id.tvFoodDefaultPrice);
         tvFoodDescription = view.findViewById(R.id.tvFoodDescription);
-        btnAddToCard = view.findViewById(R.id.btnAddToCard);
+        btnAddToCart = view.findViewById(R.id.btnAddToCart);
         ivFoodAvatar = view.findViewById(R.id.ivFoodAvatar);
+
+        btnAddToCart.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseHelper dbHelper = new DatabaseHelper(context);
+                cartDao = new CartDao(dbHelper, userDao, restaurantDao);
+                SharedPreferences sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+                String username = sharedPreferences.getString("username", "");
+                if (username != "") {
+                    User currentUser = userDao.getUsersByUsername(username);
+                    Cart cart = cartDao.addToCard(currentUser, food.getRestaurant(), food, 1);
+                    if (onActionListener != null) {
+                        onActionListener.onActionCompleted(cart);
+                    }
+                }
+
+            }
+        });
+    }
+
+    public void setOnActionListener(OnActionListener listener) {
+        this.onActionListener = listener;
+    }
+    public int getFoodId() {
+        return foodId;
+    }
+
+    public void setFoodId(int foodId) {
+        this.foodId = foodId;
+    }
+
+    public Food getFood() {
+        return food;
+    }
+
+    public void setFood(Food food) {
+        this.food = food;
     }
 
     public String getTvFoodName() {

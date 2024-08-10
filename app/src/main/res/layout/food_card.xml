@@ -131,21 +131,60 @@
                     android:layout_weight="1"
                     />
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="right"
+                    android:gravity="center"
+                    android:id="@+id/layoutInCart"
+                    android:visibility="gone"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:paddingHorizontal="10dp"
+                        android:layout_margin="0dp"
+                        android:layout_height="wrap_content"
+                        android:background="@color/primaryColor"
+                        android:textColor="@color/white"
+                        android:id="@+id/btnMinus"
+                        android:text="-"
+                        android:textSize="20dp"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:gravity="center"
+                        android:text="1"/>
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:paddingHorizontal="10dp"
+                        android:layout_margin="0dp"
+                        android:layout_height="wrap_content"
+                        android:background="@color/primaryColor"
+                        android:textColor="@color/white"
+                        android:id="@+id/btnplus"
+                        android:text="+"
+                        android:textSize="20dp"
+                        />
+                </LinearLayout>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:paddingHorizontal="10dp"
                     android:layout_margin="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
                     android:background="@color/primaryColor"
                     android:textColor="@color/white"
-                    android:id="@+id/btnAddToCard"
-                    android:text="+"
+                    android:id="@+id/btnAddToCart"
                     android:textSize="20dp"
+                    android:text="+"
                     />
-
-
-
 
             </LinearLayout>
 

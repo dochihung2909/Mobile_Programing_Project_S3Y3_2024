@@ -36,12 +36,14 @@ public class User extends Base{
         this.setUpdatedDate(new Date());
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
+    public User(int id, String username, String phoneNumber, String email, String fullName, Role role, String avatar) {
         this.id = id;
+        this.username = username;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.fullName = fullName;
+        this.role = role;
+        this.avatar = avatar;
     }
 
     public String getUsername() {

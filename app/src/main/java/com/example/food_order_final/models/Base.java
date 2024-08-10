@@ -3,9 +3,10 @@ package com.example.food_order_final.models;
 import java.util.Date;
 
 public abstract class Base {
-    private int id;
+    protected int id;
     private Date createdDate;
     private Date updatedDate;
+
 
     public Date update(){
         return this.updatedDate = new Date();
@@ -13,10 +14,6 @@ public abstract class Base {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public Date getCreatedDate() {

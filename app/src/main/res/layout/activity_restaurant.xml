@@ -26,50 +26,52 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/ivRestaurantAvatar">
+        android:layout_below="@+id/ivRestaurantAvatar"
+        android:layout_marginTop="0dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:padding="10dp">
+
                 <TextView
+                    android:id="@+id/tvRestaurantName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Hủ Tiếu Nam Vang, Bò kho Gà Ác"
                     android:textSize="20dp"
-                    android:textStyle="bold"
-                    android:id="@+id/tvRestaurantName"
-                    />
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <LinearLayout
+                        android:id="@+id/restaurantRatingContainer"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:id="@+id/restaurantRatingContainer">
+                        android:orientation="horizontal">
 
                     </LinearLayout>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="|"
-                        android:paddingHorizontal="10dp"
-                        />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingHorizontal="10dp"
+                        android:text="|" />
+
+                    <TextView
                         android:id="@+id/tvRestaurantTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="Restaurant time"
 
                         />
@@ -77,26 +79,25 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tvRestaurantAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Restaurant Address"
-                android:id="@+id/tvRestaurantAddress"
-                android:textColor="@color/textSecondaryColor"
                 android:paddingHorizontal="10dp"
                 android:paddingBottom="10dp"
-                />
+                android:text="Restaurant Address"
+                android:textColor="@color/textSecondaryColor" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="8dp"
-                android:background="@color/separateColor"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:background="@color/separateColor" />
 
             <LinearLayout
+                android:id="@+id/foodsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:id="@+id/foodsContainer">
+                android:orientation="vertical">
 
 
             </LinearLayout>

@@ -152,10 +152,44 @@ public class UserDao extends BaseDao{
         return users;
     }
 
-    public List<User> getUsersByUsername(String name) {
+    public User getUserById(int userId) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = null;
-        List<User> users = new ArrayList<>();
+        User user = null;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_USER_NAME
+                            + " WHERE " + DatabaseHelper.ID_FIELD + " = ?",
+                    new String[]{String.valueOf(userId)});
+            if (cursor != null &&  cursor.moveToFirst()) {
+                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
+                String username = getString(cursor, DatabaseHelper.USER_USERNAME_FIELD);
+                String phone = getString(cursor, DatabaseHelper.USER_PHONE_NUMBER_FIELD);
+                String email = getString(cursor, DatabaseHelper.USER_EMAIL_FIELD);
+                String fullName = getString(cursor, DatabaseHelper.USER_FULL_NAME_FIELD);
+                int role_id = getInt(cursor, DatabaseHelper.USER_ROLE_FIELD);
+                Role role = roleDao.getRoleById(role_id);
+                String avatar = getString(cursor, DatabaseHelper.USER_AVATAR_FIELD);
+
+                user = (new User(id, username, email, phone, fullName, role, avatar));
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+        return user;
+
+    }
+
+    public User getUsersByUsername(String name) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        User user = null;
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_USER_NAME
@@ -163,23 +197,21 @@ public class UserDao extends BaseDao{
                     new String[]{"%" + name + "%"});
 
             if(cursor != null && cursor.moveToFirst()) {
-                do {
-                    int id = getInt(cursor, DatabaseHelper.ID_FIELD);
-                    String username = getString(cursor, DatabaseHelper.USER_USERNAME_FIELD);
-                    String phone = getString(cursor, DatabaseHelper.USER_PHONE_NUMBER_FIELD);
-                    String email = getString(cursor, DatabaseHelper.USER_EMAIL_FIELD);
-                    String fullName = getString(cursor, DatabaseHelper.USER_FULL_NAME_FIELD);
-                    String password = getString(cursor, DatabaseHelper.USER_PASSWORD_FIELD);
-                    int role_id = getInt(cursor, DatabaseHelper.USER_ROLE_FIELD);
-                    Role role = roleDao.getRoleById(role_id);
-                    String avatar = getString(cursor, DatabaseHelper.USER_AVATAR_FIELD);
-                    String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
-                    String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
-                    Date createdDate = DateUtil.timestampToDate(createdDateString);
-                    Date updatedDate = DateUtil.timestampToDate(updatedDateString);
+                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
+                String username = getString(cursor, DatabaseHelper.USER_USERNAME_FIELD);
+                String phone = getString(cursor, DatabaseHelper.USER_PHONE_NUMBER_FIELD);
+                String email = getString(cursor, DatabaseHelper.USER_EMAIL_FIELD);
+                String fullName = getString(cursor, DatabaseHelper.USER_FULL_NAME_FIELD);
+                String password = getString(cursor, DatabaseHelper.USER_PASSWORD_FIELD);
+                int role_id = getInt(cursor, DatabaseHelper.USER_ROLE_FIELD);
+                Role role = roleDao.getRoleById(role_id);
+                String avatar = getString(cursor, DatabaseHelper.USER_AVATAR_FIELD);
+                String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
+                String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
+                Date createdDate = DateUtil.timestampToDate(createdDateString);
+                Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
-                    users.add(new User(id, username, email, phone, fullName, password, role, avatar, createdDate, updatedDate));
-                } while(cursor.moveToNext());
+                user = (new User(id, username, email, phone, fullName, password, role, avatar, createdDate, updatedDate));
             }
         } finally {
             if(cursor != null)
@@ -187,7 +219,7 @@ public class UserDao extends BaseDao{
             db.close();
         }
 
-        return users;
+        return user;
     }
 
     public List<User> getUsersByName(String name) {

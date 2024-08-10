@@ -15,6 +15,8 @@ import com.example.food_order_final.dao.RestaurantCategoryDao;
 import com.example.food_order_final.dao.RestaurantDao;
 import com.example.food_order_final.dao.RoleDao;
 import com.example.food_order_final.dao.UserDao;
+import com.example.food_order_final.models.Cart;
+import com.example.food_order_final.models.CartDetail;
 import com.example.food_order_final.models.Food;
 import com.example.food_order_final.models.FoodCategory;
 import com.example.food_order_final.models.Restaurant;
@@ -50,7 +52,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String CART_DETAIL_FOOD_FIELD = "food_id";
     public static final String CART_DETAIL_CART_FIELD = "cart_id";
     public static final String CART_DETAIL_QUANTITY_FIELD = "quantity";
-    public static final String CART_ORDER_DETAIL_PRICE_FIELD = "price";
+    public static final String CART_DETAIL_PRICE_FIELD = "price";
 
     // Table Cart columns
     public static final String CART_USER_FIELD = "user_id";
@@ -278,6 +280,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(DatabaseHelper.FOOD_RESTAURANT_FIELD, food.getRestaurant().getId());
         contentValues.put(CREATED_DATE_FIELD, DateUtil.dateToTimestamp(food.getCreatedDate()));
         contentValues.put(UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(food.getUpdatedDate()));
+
+        return contentValues;
+    }
+
+
+
+    public ContentValues getCartContentValues(Cart cart) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseHelper.CART_USER_FIELD, cart.getUser().getId());
+        contentValues.put(DatabaseHelper.CART_RESTAURANT_FIELD, cart.getRestaurant().getId());
+        contentValues.put(CREATED_DATE_FIELD, DateUtil.dateToTimestamp(cart.getCreatedDate()));
+        contentValues.put(UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(cart.getUpdatedDate()));
+
+        return contentValues;
+    }
+
+
+
+    public ContentValues getCartDetailContentValues(CartDetail cartDetail) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseHelper.CART_DETAIL_FOOD_FIELD, cartDetail.getFood().getId());
+        contentValues.put(DatabaseHelper.CART_DETAIL_QUANTITY_FIELD, cartDetail.getQuantity());
+        contentValues.put(DatabaseHelper.CART_DETAIL_CART_FIELD, cartDetail.getCart().getId());
+        contentValues.put(DatabaseHelper.CART_DETAIL_PRICE_FIELD, cartDetail.getPrice());
+        contentValues.put(CREATED_DATE_FIELD, DateUtil.dateToTimestamp(cartDetail.getCreatedDate()));
+        contentValues.put(UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(cartDetail.getUpdatedDate()));
 
         return contentValues;
     }

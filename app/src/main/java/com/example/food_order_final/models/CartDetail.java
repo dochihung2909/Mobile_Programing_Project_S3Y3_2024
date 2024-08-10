@@ -9,32 +9,25 @@ public class CartDetail extends Base{
     private double price;
     private Cart cart;
 
-    public CartDetail(int id, Food food, int quantity, double price, Date createdDate, Date updatedDate, Cart cart) {
+    public CartDetail(int id, Food food, int quantity, Date createdDate, Date updatedDate, Cart cart) {
         this.id = id;
         this.food = food;
         this.quantity = quantity;
-        this.price = price;
+        this.price = food.getPrice() * quantity;
         this.setCreatedDate(createdDate);
         this.setUpdatedDate(updatedDate);
         this.cart = cart;
     }
 
-    public CartDetail(Food food, int quantity, double price, Cart cart) {
+    public CartDetail(Food food, int quantity, Cart cart) {
         this.food = food;
         this.quantity = quantity;
-        this.price = price;
+        this.price = food.getPrice() * quantity;
         this.setCreatedDate(new Date());
         this.setUpdatedDate(new Date());
         this.cart = cart;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public Food getFood() {
         return food;
