@@ -48,12 +48,12 @@ public class UserDao extends BaseDao{
         contentValues.put(DatabaseHelper.USER_PHONE_NUMBER_FIELD, user.getPhoneNumber());
         contentValues.put(DatabaseHelper.USER_EMAIL_FIELD, user.getEmail());
         contentValues.put(DatabaseHelper.USER_FULL_NAME_FIELD, user.getFullName());
-        contentValues.put(DatabaseHelper.USER_UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
+        contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
 
         String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
         contentValues.put(DatabaseHelper.USER_PASSWORD_FIELD, hashedPassword);
 
-        String whereClause = DatabaseHelper.USER_ID_FIELD + " = ? ";
+        String whereClause = DatabaseHelper.ID_FIELD + " = ? ";
         String[] whereArgs = new String[]{String.valueOf(user.getId())};
 
         int rowAffected = db.update(DatabaseHelper.TABLE_USER_NAME, contentValues, whereClause, whereArgs);
@@ -64,7 +64,7 @@ public class UserDao extends BaseDao{
 
     public void deleteUser(int userId) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        String whereClause = DatabaseHelper.USER_ID_FIELD + " = ?";
+        String whereClause = DatabaseHelper.ID_FIELD + " = ?";
         String[] whereArgs = new String[]{String.valueOf(userId)};
 
         db.delete(DatabaseHelper.TABLE_USER_NAME, whereClause, whereArgs);
@@ -126,7 +126,7 @@ public class UserDao extends BaseDao{
                     null);
             if (cursor != null && cursor.moveToFirst()) {
                 do {
-                    int id = getInt(cursor, DatabaseHelper.USER_ID_FIELD);
+                    int id = getInt(cursor, DatabaseHelper.ID_FIELD);
                     String username = getString(cursor, DatabaseHelper.USER_USERNAME_FIELD);
                     String phone = getString(cursor, DatabaseHelper.USER_PHONE_NUMBER_FIELD);
                     String email = getString(cursor, DatabaseHelper.USER_EMAIL_FIELD);
@@ -135,8 +135,8 @@ public class UserDao extends BaseDao{
                     int role_id = getInt(cursor, DatabaseHelper.USER_ROLE_FIELD);
                     Role role = roleDao.getRoleById(role_id);
                     String avatar = getString(cursor, DatabaseHelper.USER_AVATAR_FIELD);
-                    String createdDateString = getString(cursor, DatabaseHelper.USER_CREATED_DATE_FIELD);
-                    String updatedDateString = getString(cursor, DatabaseHelper.USER_UPDATED_DATE_FIELD);
+                    String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
+                    String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
                     Date createdDate = DateUtil.timestampToDate(createdDateString);
                     Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
@@ -164,7 +164,7 @@ public class UserDao extends BaseDao{
 
             if(cursor != null && cursor.moveToFirst()) {
                 do {
-                    int id = getInt(cursor, DatabaseHelper.USER_ID_FIELD);
+                    int id = getInt(cursor, DatabaseHelper.ID_FIELD);
                     String username = getString(cursor, DatabaseHelper.USER_USERNAME_FIELD);
                     String phone = getString(cursor, DatabaseHelper.USER_PHONE_NUMBER_FIELD);
                     String email = getString(cursor, DatabaseHelper.USER_EMAIL_FIELD);
@@ -173,8 +173,8 @@ public class UserDao extends BaseDao{
                     int role_id = getInt(cursor, DatabaseHelper.USER_ROLE_FIELD);
                     Role role = roleDao.getRoleById(role_id);
                     String avatar = getString(cursor, DatabaseHelper.USER_AVATAR_FIELD);
-                    String createdDateString = getString(cursor, DatabaseHelper.USER_CREATED_DATE_FIELD);
-                    String updatedDateString = getString(cursor, DatabaseHelper.USER_UPDATED_DATE_FIELD);
+                    String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
+                    String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
                     Date createdDate = DateUtil.timestampToDate(createdDateString);
                     Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
@@ -202,7 +202,7 @@ public class UserDao extends BaseDao{
 
             if(cursor != null && cursor.moveToFirst()) {
                 do {
-                    int id = getInt(cursor, DatabaseHelper.USER_ID_FIELD);
+                    int id = getInt(cursor, DatabaseHelper.ID_FIELD);
                     String username = getString(cursor, DatabaseHelper.USER_USERNAME_FIELD);
                     String phone = getString(cursor, DatabaseHelper.USER_PHONE_NUMBER_FIELD);
                     String email = getString(cursor, DatabaseHelper.USER_EMAIL_FIELD);
@@ -211,8 +211,8 @@ public class UserDao extends BaseDao{
                     int role_id = getInt(cursor, DatabaseHelper.USER_ROLE_FIELD);
                     Role role = roleDao.getRoleById(role_id);
                     String avatar = getString(cursor, DatabaseHelper.USER_AVATAR_FIELD);
-                    String createdDateString = getString(cursor, DatabaseHelper.USER_CREATED_DATE_FIELD);
-                    String updatedDateString = getString(cursor, DatabaseHelper.USER_UPDATED_DATE_FIELD);
+                    String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
+                    String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
                     Date createdDate = DateUtil.timestampToDate(createdDateString);
                     Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
@@ -239,7 +239,7 @@ public class UserDao extends BaseDao{
                     new String[]{userUsername});
 
             if (cursor != null && cursor.moveToFirst()) {
-                int id = getInt(cursor, DatabaseHelper.USER_ID_FIELD);
+                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
                 String username = getString(cursor, DatabaseHelper.USER_USERNAME_FIELD);
                 String phone = getString(cursor, DatabaseHelper.USER_PHONE_NUMBER_FIELD);
                 String email = getString(cursor, DatabaseHelper.USER_EMAIL_FIELD);
@@ -248,8 +248,8 @@ public class UserDao extends BaseDao{
                 int role_id = getInt(cursor, DatabaseHelper.USER_ROLE_FIELD);
                 Role role = roleDao.getRoleById(role_id);
                 String avatar = getString(cursor, DatabaseHelper.USER_AVATAR_FIELD);
-                String createdDateString = getString(cursor, DatabaseHelper.USER_CREATED_DATE_FIELD);
-                String updatedDateString = getString(cursor, DatabaseHelper.USER_UPDATED_DATE_FIELD);
+                String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
+                String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
                 Date createdDate = DateUtil.timestampToDate(createdDateString);
                 Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 

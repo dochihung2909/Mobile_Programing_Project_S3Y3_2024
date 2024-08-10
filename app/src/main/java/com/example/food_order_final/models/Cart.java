@@ -7,15 +7,15 @@ public class Cart extends Base{
     private int id;
     private Date orderDate;
     private double totalAmount;
-    private List<OrderDetail> orderDetails;
+    private List<CartDetail> cartDetails;
     private int user_id;
     private int restaurant_id;
 
-    public Cart(int id, Date orderDate, double totalAmount, List<OrderDetail> orderDetails, int user_id, int restaurant_id) {
+    public Cart(int id, Date orderDate, double totalAmount, List<CartDetail> cartDetails, int user_id, int restaurant_id) {
         this.id = id;
         this.orderDate = orderDate;
         this.totalAmount = totalAmount;
-        this.orderDetails = orderDetails;
+        this.cartDetails = cartDetails;
         this.user_id = user_id;
         this.restaurant_id = restaurant_id;
         this.setCreatedDate(new Date());
@@ -62,11 +62,11 @@ public class Cart extends Base{
         this.totalAmount = totalAmount;
     }
 
-    public List<OrderDetail> getOrderDetails() {
-        return orderDetails;
+    public List<CartDetail> getOrderDetails() {
+        return cartDetails;
     }
 
-    public void setOrderDetails(List<OrderDetail> orderDetails) {
-        this.orderDetails = orderDetails;
+    public void setOrderDetails(List<CartDetail> cartDetails) {
+        this.cartDetails = cartDetails;
     }
 }

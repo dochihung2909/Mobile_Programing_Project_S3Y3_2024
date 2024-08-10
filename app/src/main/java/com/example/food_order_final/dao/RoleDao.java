@@ -39,9 +39,9 @@ public class RoleDao extends BaseDao {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(DatabaseHelper.ROLE_NAME_FIELD, role.getName());
-        contentValues.put(DatabaseHelper.ROLE_UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
+        contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
 
-        String whereClause = DatabaseHelper.ROLE_ID_FIELD + " = ? ";
+        String whereClause = DatabaseHelper.ID_FIELD + " = ? ";
         String[] whereArgs = new String[]{String.valueOf(role.getId())};
         int rowAffected = db.update(DatabaseHelper.TABLE_ROLE_NAME, contentValues, whereClause, whereArgs);
 
@@ -51,7 +51,7 @@ public class RoleDao extends BaseDao {
 
     public void deleteRole(int roleId) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        String whereClause = DatabaseHelper.ROLE_ID_FIELD + " = ?";
+        String whereClause = DatabaseHelper.ID_FIELD + " = ?";
         String[] whereArgs = new String[]{String.valueOf(roleId)};
 
         db.delete(DatabaseHelper.TABLE_ROLE_NAME, whereClause, whereArgs);
@@ -66,10 +66,10 @@ public class RoleDao extends BaseDao {
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_ROLE_NAME, null);
             do {
-                int id = getInt(cursor, DatabaseHelper.ROLE_ID_FIELD);
+                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
                 String name = getString(cursor, DatabaseHelper.ROLE_NAME_FIELD);
-                String createdDateString = getString(cursor, DatabaseHelper.ROLE_CREATED_DATE_FIELD);
-                String updatedDateString = getString(cursor, DatabaseHelper.ROLE_UPDATED_DATE_FIELD);
+                String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
+                String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
                 Date createdDate = DateUtil.timestampToDate(createdDateString);
                 Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
@@ -90,14 +90,14 @@ public class RoleDao extends BaseDao {
         Cursor cursor = null;
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_ROLE_NAME
-                    + " WHERE " + DatabaseHelper.ROLE_ID_FIELD + " = ?",
+                    + " WHERE " + DatabaseHelper.ID_FIELD + " = ?",
                     new String[]{String.valueOf(roleId)});
             if (cursor != null && cursor.moveToFirst()) {
-                int id = getInt(cursor, DatabaseHelper.ROLE_ID_FIELD);
+                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
                 String name = getString(cursor, DatabaseHelper.ROLE_NAME_FIELD);
-                String createdDateString = getString(cursor, DatabaseHelper.ROLE_CREATED_DATE_FIELD);
+                String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
                 Date createdDate = DateUtil.timestampToDate(createdDateString);
-                String updatedDateString = getString(cursor, DatabaseHelper.ROLE_CREATED_DATE_FIELD);
+                String updatedDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
                 Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
                 role = new Role(id, name, createdDate, updatedDate);
@@ -119,11 +119,11 @@ public class RoleDao extends BaseDao {
                             + " WHERE " + DatabaseHelper.ROLE_NAME_FIELD + " = ?",
                     new String[]{roleName});
             if (cursor != null && cursor.moveToFirst()) {
-                int id = getInt(cursor, DatabaseHelper.ROLE_ID_FIELD);
+                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
                 String name = getString(cursor, DatabaseHelper.ROLE_NAME_FIELD);
-                String createdDateString = getString(cursor, DatabaseHelper.ROLE_CREATED_DATE_FIELD);
+                String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
                 Date createdDate = DateUtil.timestampToDate(createdDateString);
-                String updatedDateString = getString(cursor, DatabaseHelper.ROLE_CREATED_DATE_FIELD);
+                String updatedDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
                 Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
                 role = new Role(id, name, createdDate, updatedDate);
@@ -146,10 +146,10 @@ public class RoleDao extends BaseDao {
                     " WHERE " + DatabaseHelper.ROLE_NAME_FIELD + " LIKE ?",
                     new String[]{"%" + roleName + "%"});
             do {
-                int id = getInt(cursor, DatabaseHelper.ROLE_ID_FIELD);
+                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
                 String name = getString(cursor, DatabaseHelper.ROLE_NAME_FIELD);
-                String createdDateString = getString(cursor, DatabaseHelper.ROLE_CREATED_DATE_FIELD);
-                String updatedDateString = getString(cursor, DatabaseHelper.ROLE_UPDATED_DATE_FIELD);
+                String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
+                String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
                 Date createdDate = DateUtil.timestampToDate(createdDateString);
                 Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 

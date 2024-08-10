@@ -41,9 +41,9 @@ public class FoodDao extends BaseDao{
         contentValues.put(DatabaseHelper.FOOD_PRICE_FIELD, food.getPrice());
         contentValues.put(DatabaseHelper.FOOD_CATEGORY_FIELD, food.getCategory().getId());
         contentValues.put(DatabaseHelper.FOOD_RESTAURANT_FIELD, food.getRestaurant().getId());
-        contentValues.put(DatabaseHelper.FOOD_UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
+        contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
 
-        String whereClause = DatabaseHelper.FOOD_ID_FIELD + " = ? ";
+        String whereClause = DatabaseHelper.ID_FIELD + " = ? ";
         String[] whereArgs = new String[]{String.valueOf(food.getId())};
 
         int rowAffected = db.update(DatabaseHelper.TABLE_FOOD_NAME, contentValues, whereClause, whereArgs);
@@ -53,7 +53,7 @@ public class FoodDao extends BaseDao{
 
     public void deleteFood(int foodId) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        String whereClause = DatabaseHelper.FOOD_ID_FIELD + " = ?";
+        String whereClause = DatabaseHelper.ID_FIELD + " = ?";
         String[] whereArgs = new String[]{String.valueOf(foodId)};
 
         db.delete(DatabaseHelper.TABLE_FOOD_NAME, whereClause, whereArgs);
@@ -72,15 +72,15 @@ public class FoodDao extends BaseDao{
 
             if (cursor != null && cursor.moveToFirst()) {
                 do {
-                    int id = getInt(cursor, DatabaseHelper.FOOD_ID_FIELD);
+                    int id = getInt(cursor, DatabaseHelper.ID_FIELD);
                     String name = getString(cursor, DatabaseHelper.FOOD_NAME_FIELD);
                     double price = getDouble(cursor, DatabaseHelper.FOOD_PRICE_FIELD);
                     int category_id = getInt(cursor, DatabaseHelper.FOOD_CATEGORY_FIELD);
                     FoodCategory foodCate = foodCategoryDao.getFoodCategoryById(category_id);
                     int restaurant_id = getInt(cursor, DatabaseHelper.FOOD_RESTAURANT_FIELD);
                     Restaurant restaurant = restaurantDao.getRestaurantById(restaurant_id);
-                    String createdDateString = getString(cursor, DatabaseHelper.FOOD_CREATED_DATE_FIELD);
-                    String updatedDateString = getString(cursor, DatabaseHelper.FOOD_UPDATED_DATE_FIELD);
+                    String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
+                    String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
                     Date createdDate = DateUtil.timestampToDate(createdDateString);
                     Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
@@ -108,16 +108,16 @@ public class FoodDao extends BaseDao{
 
             if (cursor != null && cursor.moveToFirst()) {
                 do {
-                    int id = getInt(cursor, DatabaseHelper.FOOD_ID_FIELD);
+                    int id = getInt(cursor, DatabaseHelper.ID_FIELD);
                     String name = getString(cursor, DatabaseHelper.FOOD_NAME_FIELD);
                     double price  = getDouble(cursor, DatabaseHelper.FOOD_PRICE_FIELD);
                     int categoryId = getInt(cursor, DatabaseHelper.FOOD_CATEGORY_FIELD);
                     FoodCategory category = foodCategoryDao.getFoodCategoryById(categoryId);
                     int restaurantId = getInt(cursor, DatabaseHelper.FOOD_RESTAURANT_FIELD);
                     Restaurant restaurant = restaurantDao.getRestaurantById(restaurantId);
-                    String createdDateString = getString(cursor, DatabaseHelper.FOOD_CREATED_DATE_FIELD);
+                    String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
                     Date createdDate = DateUtil.timestampToDate(createdDateString);
-                    String updatedDateString = getString(cursor, DatabaseHelper.FOOD_UPDATED_DATE_FIELD);
+                    String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
                     Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
                     foods.add(new Food(id, name, price, category, restaurant, createdDate, updatedDate));
