@@ -34,7 +34,7 @@ public class FoodCategoryDao extends BaseDao{
         ContentValues contentValues = new ContentValues();
         contentValues.put(DatabaseHelper.FOOD_CATEGORY_NAME_FIELD, foodCate.getName());
 
-        String whereClause = DatabaseHelper.FOOD_CATEGORY_ID_FIELD + " = ? ";
+        String whereClause = DatabaseHelper.ID_FIELD + " = ? ";
         String[] whereArgs = new String[]{String.valueOf(foodCate.getId())};
         int rowAffected = db.update(DatabaseHelper.TABLE_FOOD_CATEGORY_NAME, contentValues, whereClause, whereArgs);
 
@@ -44,7 +44,7 @@ public class FoodCategoryDao extends BaseDao{
 
     public void deleteFoodCategory(int foodCateId) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        String whereClause = DatabaseHelper.FOOD_CATEGORY_ID_FIELD + " = ?";
+        String whereClause = DatabaseHelper.ID_FIELD + " = ?";
         String[] whereArgs = new String[]{String.valueOf(foodCateId)};
 
         db.delete(DatabaseHelper.TABLE_FOOD_CATEGORY_NAME, whereClause, whereArgs);
@@ -60,10 +60,10 @@ public class FoodCategoryDao extends BaseDao{
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_CATEGORY_NAME,
                     null);
             if (cursor != null && cursor.moveToFirst()) {
-                int id = getInt(cursor, DatabaseHelper.FOOD_CATEGORY_ID_FIELD);
+                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
                 String name = getString(cursor, DatabaseHelper.FOOD_CATEGORY_NAME_FIELD);
-                String createdDateString = getString(cursor, DatabaseHelper.FOOD_CATEGORY_CREATED_DATE_FIELD);
-                String updatedDateString = getString(cursor, DatabaseHelper.FOOD_CATEGORY_UPDATED_DATE_FIELD);
+                String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
+                String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
                 Date createdDate = DateUtil.timestampToDate(createdDateString);
                 Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
@@ -85,13 +85,13 @@ public class FoodCategoryDao extends BaseDao{
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_CATEGORY_NAME
-                            + " WHERE " + DatabaseHelper.FOOD_CATEGORY_ID_FIELD + " = ?",
+                            + " WHERE " + DatabaseHelper.ID_FIELD + " = ?",
                     new String[]{String.valueOf(resCateId)});
             if (cursor != null && cursor.moveToFirst()) {
-                int id = getInt(cursor, DatabaseHelper.FOOD_CATEGORY_ID_FIELD);
+                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
                 String name = getString(cursor, DatabaseHelper.FOOD_CATEGORY_NAME_FIELD);
-                String createdDateString = getString(cursor, DatabaseHelper.FOOD_CATEGORY_CREATED_DATE_FIELD);
-                String updatedDateString = getString(cursor, DatabaseHelper.FOOD_CATEGORY_UPDATED_DATE_FIELD);
+                String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
+                String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
                 Date createdDate = DateUtil.timestampToDate(createdDateString);
                 Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
@@ -115,10 +115,10 @@ public class FoodCategoryDao extends BaseDao{
                             + " WHERE " + DatabaseHelper.FOOD_CATEGORY_NAME_FIELD + " = ?",
                     new String[]{foodCateName});
             if (cursor != null && cursor.moveToFirst()) {
-                int id = getInt(cursor, DatabaseHelper.FOOD_CATEGORY_ID_FIELD);
+                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
                 String name = getString(cursor, DatabaseHelper.FOOD_CATEGORY_NAME_FIELD);
-                String createdDateString = getString(cursor, DatabaseHelper.FOOD_CATEGORY_CREATED_DATE_FIELD);
-                String updatedDateString = getString(cursor, DatabaseHelper.FOOD_CATEGORY_UPDATED_DATE_FIELD);
+                String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
+                String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
                 Date createdDate = DateUtil.timestampToDate(createdDateString);
                 Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
