@@ -36,7 +36,9 @@ public class ReviewDao extends BaseDao{
         contentValues.put(DatabaseHelper.REVIEW_COMMENT_FIELD, review.getComment());
         contentValues.put(DatabaseHelper.REVIEW_USER_FIELD, review.getUser().getId());
         contentValues.put(DatabaseHelper.REVIEW_RESTAURANT_FIELD, review.getRestaurant().getId());
+        contentValues.put(DatabaseHelper.REVIEW_RATING_FIELD, review.getRating());
         contentValues.put(DatabaseHelper.CREATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
+        contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
 
         result = db.insert(DatabaseHelper.TABLE_REVIEW_NAME, null, contentValues);
 

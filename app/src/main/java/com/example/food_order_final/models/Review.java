@@ -4,6 +4,8 @@ import java.util.Date;
 
 public class Review extends Base{
     private String comment;
+
+    private int id;
     private User user;
     private Restaurant restaurant;
     double rating;
@@ -25,6 +27,10 @@ public class Review extends Base{
         this.restaurant = restaurant;
         this.setCreatedDate(new Date());
         this.setUpdatedDate(new Date());
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getComment() {

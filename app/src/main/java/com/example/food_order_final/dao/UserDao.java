@@ -33,25 +33,25 @@ public class UserDao extends BaseDao{
     public long insertUser(User user){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        if (!dbHelper.userDao.checkUsername(user.getUsername())) {
-            throw new IllegalArgumentException("Invalid username: Username already exists.");
-        }
-
-        if (!user.getUsername().matches("^[\\S]{3,}$")) {
-            throw new IllegalArgumentException("Invalid username: Must be at least 3 non-whitespace characters.");
-        }
-
-        if (!user.getEmail().matches(String.valueOf(Patterns.EMAIL_ADDRESS))) {
-            throw new IllegalArgumentException("Invalid email address.");
-        }
-
-        if (!user.getPhoneNumber().matches("(84|0[3|5|7|8|9])+([0-9]{8})\\b")) {
-            throw new IllegalArgumentException("Invalid phone number format.");
-        }
-
-        if (!user.getPassword().matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$")) {
-            throw new IllegalArgumentException("Invalid password: Must be at least 8 characters, including letters, numbers, and special characters.");
-        }
+//        if (!dbHelper.userDao.checkUsername(user.getUsername())) {
+//            throw new IllegalArgumentException("Invalid username: Username already exists.");
+//        }
+//
+//        if (!user.getUsername().matches("^[\\S]{3,}$")) {
+//            throw new IllegalArgumentException("Invalid username: Must be at least 3 non-whitespace characters.");
+//        }
+//
+//        if (!user.getEmail().matches(String.valueOf(Patterns.EMAIL_ADDRESS))) {
+//            throw new IllegalArgumentException("Invalid email address.");
+//        }
+//
+//        if (!user.getPhoneNumber().matches("(84|0[3|5|7|8|9])+([0-9]{8})\\b")) {
+//            throw new IllegalArgumentException("Invalid phone number format.");
+//        }
+//
+//        if (!user.getPassword().matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$")) {
+//            throw new IllegalArgumentException("Invalid password: Must be at least 8 characters, including letters, numbers, and special characters.");
+//        }
 
         ContentValues contentValues = dbHelper.getUserContentValues(user);
         String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());

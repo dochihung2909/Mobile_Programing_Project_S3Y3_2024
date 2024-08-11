@@ -226,6 +226,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 REVIEW_USER_FIELD + " INTEGER, " +
                 REVIEW_RESTAURANT_FIELD + " INTEGER, " +
                 REVIEW_COMMENT_FIELD + " TEXT, " +
+                REVIEW_RATING_FIELD + " FLOAT, " +
+                CREATED_DATE_FIELD + " TIMESTAMP, " +
+                UPDATED_DATE_FIELD + " TIMESTAMP, " +
                 "FOREIGN KEY (" + REVIEW_USER_FIELD + ") REFERENCES " + TABLE_USER_NAME + "(" + ID_FIELD + "), "+
                 "FOREIGN KEY (" + REVIEW_RESTAURANT_FIELD + ") REFERENCES " + TABLE_RESTAURANT_NAME + "(" + ID_FIELD + "))";
         db.execSQL(sqlReview);
