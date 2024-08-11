@@ -42,12 +42,6 @@ public class FoodCardView extends LinearLayout {
 
     private RestaurantDao restaurantDao;
 
-    private OnActionListener onActionListener;
-
-    public interface OnActionListener {
-        void onActionCompleted(Cart cart);
-    }
-
     public FoodCardView(Context context) {
         super(context);
         init(context);
@@ -96,19 +90,11 @@ public class FoodCardView extends LinearLayout {
                 if (username != "Guest") { 
                     User currentUser = userDao.getUserByUsername(username);
                     Cart cart = cartDao.addToCard(currentUser, food.getRestaurant(), food, 1);
-
                     Toast.makeText(context, "" + cart.getId(), Toast.LENGTH_SHORT).show();
-//                    if (onActionListener != null) {
-//                        onActionListener.onActionCompleted(cart);
-//                    }
                 }
 
             }
         });
-    }
-
-    public void setOnActionListener(OnActionListener listener) {
-        this.onActionListener = listener;
     }
     public int getFoodId() {
         return foodId;

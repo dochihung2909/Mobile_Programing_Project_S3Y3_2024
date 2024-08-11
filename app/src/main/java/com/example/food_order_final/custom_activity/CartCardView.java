@@ -1,22 +1,31 @@
 package com.example.food_order_final.custom_activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.Scroller;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import com.example.food_order_final.R;
+import com.example.food_order_final.activity.CartActivity;
+import com.example.food_order_final.activity.MainActivity;
+import com.example.food_order_final.activity.RestaurantActivity;
 
 public class CartCardView extends RelativeLayout {
 
     private TextView tvTotalPrice, tvTotalDishes, tvRestaurantName;
 
     private ImageButton btnDeleteCart;
+
+    private RelativeLayout mainLayout;
+
 
     public CartCardView(Context context) {
         super(context);
@@ -46,6 +55,7 @@ public class CartCardView extends RelativeLayout {
         tvTotalDishes = view.findViewById(R.id.tvTotalDishes);
         tvTotalPrice = view.findViewById(R.id.tvTotalPrice);
         btnDeleteCart = view.findViewById(R.id.btnDeleteCart);
+        mainLayout = view.findViewById(R.id.mainLayout);
 
         btnDeleteCart.setOnClickListener(new OnClickListener() {
             @Override

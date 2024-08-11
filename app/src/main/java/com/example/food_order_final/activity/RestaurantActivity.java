@@ -1,5 +1,7 @@
 package com.example.food_order_final.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,10 +32,13 @@ import com.example.food_order_final.dao.FoodCategoryDao;
 import com.example.food_order_final.dao.FoodDao;
 import com.example.food_order_final.dao.RestaurantCategoryDao;
 import com.example.food_order_final.dao.RestaurantDao;
+import com.example.food_order_final.dao.RoleDao;
+import com.example.food_order_final.dao.UserDao;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Cart;
 import com.example.food_order_final.models.Food;
 import com.example.food_order_final.models.Restaurant;
+import com.example.food_order_final.models.User;
 
 import java.util.List;
 
@@ -83,7 +88,25 @@ public class RestaurantActivity extends AppCompatActivity {
                     dbhelper,
                     new RestaurantCategoryDao(dbhelper));
             this.restaurant = restaurantDao.getRestaurantById((restaurantId));
-            Log.d("Restaurant", this.restaurant.getName());
+
+
+            SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+            String username = sharedPreferences.getString("username", "Guest");
+            UserDao userDao = new UserDao(dbhelper, new RoleDao(dbhelper));
+            User currentUser = userDao.getUserByUsername(username);
+            CartDao cartDao = new CartDao(dbhelper);
+            Cart cart = cartDao.getCartByUserId(currentUser.getId(), restaurantId);
+
+            CartCardView cartCardView = new CartCardView(RestaurantActivity.this);
+            cartCardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(RestaurantActivity.this, CartActivity.class);
+                    intent.putExtra("cartId", cart.getId());
+                    startActivity(intent);
+                }
+            });
+            mainLayout.addView(cartCardView);
             tvRestaurantName.setText(restaurant.getName());
             tvRestaurantAddress.setText(restaurant.getAddress());
 
@@ -100,7 +123,6 @@ public class RestaurantActivity extends AppCompatActivity {
             List<Food> foods = foodDao.getFoodsByRestaurantId(restaurantId);
             for (Food food: foods) {
                 FoodCardView foodCardView = new FoodCardView(RestaurantActivity.this);
-
                 foodCardView.setFood(food);
                 foodCardView.setTvFoodName(food.getName());
                 foodCardView.setTvFoodDiscountPrice(food.getPrice());
@@ -118,16 +140,7 @@ public class RestaurantActivity extends AppCompatActivity {
         tvRestaurantAddress = findViewById(R.id.tvRestaurantAddress);
         btnBackToMain = findViewById(R.id.btnBackToMain);
         mainLayout = findViewById(R.id.main);
-    }
 
-//    @Override
-//    public void onActionCompleted(Cart cart) {
-//        CartCardView cartCardView = new CartCardView(RestaurantActivity.this);
-//        cartCardView.setTvRestaurantName(this.restaurant.getName());
-//        dbhelper = new DatabaseHelper(RestaurantActivity.this);
-//        CartDao cartDao = new CartDao(dbhelper);
-//        cartCardView.setTvTotalDishes(cartDao.getTotalDishes(cart.getId()));
-//        cartCardView.setTvTotalPrice(cartDao.getTotalAmount(cart.getId()));
-//        mainLayout.addView(cartCardView);
-//    }
+
+    }
 }

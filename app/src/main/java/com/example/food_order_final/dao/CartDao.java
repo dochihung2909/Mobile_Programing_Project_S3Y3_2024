@@ -70,7 +70,37 @@ public class CartDao extends BaseDao {
                 User user = userDao.getUserById(userId);
                 int restaurant_id = getInt(cursor, DatabaseHelper.CART_RESTAURANT_FIELD);
                 Restaurant restaurant = restaurantDao.getRestaurantById(restaurant_id);
-                Log.d("cartRestaurantId", String.valueOf(restaurant.getId()));
+                cart = new Cart(id, user, restaurant);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return cart;
+    }
+
+    public Cart getCartById(int cartId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        Cart cart = null;
+        userDao = new UserDao(dbHelper, new RoleDao(dbHelper));
+        restaurantDao = new RestaurantDao(dbHelper, new RestaurantCategoryDao(dbHelper));
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_CART_NAME +
+                            " WHERE " + DatabaseHelper.ID_FIELD + " = ?",
+                    new String[]{String.valueOf(cartId)});
+            if (cursor != null && cursor.moveToFirst()) {
+                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
+                int userId = getInt(cursor, DatabaseHelper.CART_USER_FIELD);
+                User user = userDao.getUserById(userId);
+                int restaurant_id = getInt(cursor, DatabaseHelper.CART_RESTAURANT_FIELD);
+                Restaurant restaurant = restaurantDao.getRestaurantById(restaurant_id);
                 cart = new Cart(id, user, restaurant);
             }
 

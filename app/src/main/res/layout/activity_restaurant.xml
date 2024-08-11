@@ -106,10 +106,4 @@
 
     </ScrollView>
 
-    <com.example.food_order_final.custom_activity.CartCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        />
-
 </RelativeLayout>

@@ -17,5 +17,80 @@
         android:id="@+id/btnBackToMain"
         />
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/btnBackToMain"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/foodsContainer">
+
+            <com.example.food_order_final.custom_activity.FoodCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@drawable/top_border">
+
+        <ImageView
+            android:layout_marginHorizontal="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_shopping_cart_24"/>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginHorizontal="10dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="75.000đ"
+                android:layout_gravity="right"
+                android:textColor="@color/textSecondaryColor"
+                android:id="@+id/tvFoodDefaultPrice"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="75.000đ"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:textColor="@color/primaryColor"
+                android:id="@+id/tvFoodDiscountPrice"/>
+        </LinearLayout>
+        
+        <android.widget.Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/no_style_btn"
+            android:text="Giao hàng"
+            android:textColor="@color/white"
+            android:id="@+id/btnOrderSubmit"
+            />
+
+    </LinearLayout>
+
+
 
 </RelativeLayout>

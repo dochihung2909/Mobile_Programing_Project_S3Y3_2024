@@ -60,6 +60,13 @@ public class FoodDao extends BaseDao{
         db.close();
     }
 
+    public Food getFoodById(int foodId) {
+        Food food = null;
+
+
+        return food;
+    }
+
     public List<Food> getFoodsByName(String foodName) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = null;
@@ -132,5 +139,49 @@ public class FoodDao extends BaseDao{
         }
 
         return foods;
+    }
+
+    public List<Food> getAllFoodsInCart(int cartId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        List<Food> foods = new ArrayList<>();
+        try {
+            cursor = db.rawQuery("SELECT f.* FROM " + DatabaseHelper.TABLE_CART_NAME + " c " +
+                    "INNER JOIN " + DatabaseHelper.TABLE_CART_DETAIL_NAME + " cd ON c." + DatabaseHelper.ID_FIELD + " = cd." + DatabaseHelper.CART_DETAIL_CART_FIELD + " " +
+                    "INNER JOIN " + DatabaseHelper.TABLE_FOOD_NAME + " f ON cd." + DatabaseHelper.CART_DETAIL_FOOD_FIELD + " = f." + DatabaseHelper.ID_FIELD + " " +
+                    "WHERE c." + DatabaseHelper.ID_FIELD + " = ?", new String[]{String.valueOf(cartId)});
+
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    foods.add(getFoodInfo(cursor));
+                } while(cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return foods;
+    }
+
+    public Food getFoodInfo(Cursor cursor) {
+        int id = getInt(cursor, DatabaseHelper.ID_FIELD);
+        String name = getString(cursor, DatabaseHelper.FOOD_NAME_FIELD);
+        double price  = getDouble(cursor, DatabaseHelper.FOOD_PRICE_FIELD);
+        double discount  = getDouble(cursor, DatabaseHelper.FOOD_DISCOUNT_FIELD);
+        int categoryId = getInt(cursor, DatabaseHelper.FOOD_CATEGORY_FIELD);
+        FoodCategory category = foodCategoryDao.getFoodCategoryById(categoryId);
+        int restaurantId = getInt(cursor, DatabaseHelper.FOOD_RESTAURANT_FIELD);
+        Restaurant restaurant = restaurantDao.getRestaurantById(restaurantId);
+        String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
+        Date createdDate = DateUtil.timestampToDate(createdDateString);
+        String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
+        Date updatedDate = DateUtil.timestampToDate(updatedDateString);
+
+        return (new Food(id, name, price, discount, category, restaurant, createdDate, updatedDate));
     }
 }
