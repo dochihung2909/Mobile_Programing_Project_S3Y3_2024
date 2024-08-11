@@ -66,6 +66,36 @@ public class RestaurantDao extends BaseDao{
         db.delete(DatabaseHelper.TABLE_RESTAURANT_NAME, whereClause, whereArgs);
         db.close();
     }
+
+    public int updateRestaurantRating(int restaurantId) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cursor = null;
+        int result = -1;
+
+        try {
+            cursor = db.rawQuery("SELECT AVG(" + DatabaseHelper.REVIEW_RATING_FIELD
+                            + ") AS averageRating FROM " + DatabaseHelper.TABLE_REVIEW_NAME
+                            + " WHERE " + DatabaseHelper.REVIEW_RESTAURANT_FIELD + " = ?",
+                    new String[]{String.valueOf(restaurantId)});
+            if (cursor.moveToFirst()) {
+                ContentValues contentValues = new ContentValues();
+                double averageRating = getDouble(cursor, DatabaseHelper.RESTAURANT_RATING_FIELD);
+                contentValues.put(DatabaseHelper.RESTAURANT_RATING_FIELD, averageRating);
+                String whereClause = DatabaseHelper.ID_FIELD + " = ?";
+                String[] whereArgs = new String[]{String.valueOf(restaurantId)};
+                result = db.update(DatabaseHelper.TABLE_RESTAURANT_NAME, contentValues, whereClause, whereArgs);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+
+        if (result == -1)
+            throw new IllegalArgumentException("Failed to update rating.");
+
+        return result;
+    }
  
     public List<Restaurant> getAllRestaurants() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();

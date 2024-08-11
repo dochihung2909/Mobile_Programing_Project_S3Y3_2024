@@ -88,7 +88,7 @@ public class FoodCardView extends LinearLayout {
                 SharedPreferences sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
                 String username = sharedPreferences.getString("username", "");
                 if (username != "") {
-                    User currentUser = userDao.getUsersByUsername(username);
+                    User currentUser = userDao.getUserByUsername(username);
                     Cart cart = cartDao.addToCard(currentUser, food.getRestaurant(), food, 1);
                     if (onActionListener != null) {
                         onActionListener.onActionCompleted(cart);

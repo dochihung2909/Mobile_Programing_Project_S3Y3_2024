@@ -2,10 +2,8 @@ package com.example.food_order_final.database;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.text.format.DateUtils;
 
 import androidx.annotation.Nullable;
 
@@ -13,6 +11,7 @@ import com.example.food_order_final.dao.FoodCategoryDao;
 import com.example.food_order_final.dao.FoodDao;
 import com.example.food_order_final.dao.RestaurantCategoryDao;
 import com.example.food_order_final.dao.RestaurantDao;
+import com.example.food_order_final.dao.ReviewDao;
 import com.example.food_order_final.dao.RoleDao;
 import com.example.food_order_final.dao.UserDao;
 import com.example.food_order_final.models.Cart;
@@ -21,11 +20,10 @@ import com.example.food_order_final.models.Food;
 import com.example.food_order_final.models.FoodCategory;
 import com.example.food_order_final.models.Restaurant;
 import com.example.food_order_final.models.RestaurantCategory;
+import com.example.food_order_final.models.Review;
 import com.example.food_order_final.models.Role;
 import com.example.food_order_final.models.User;
 import com.example.food_order_final.util.DateUtil;
-
-import java.util.Date;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     // Database setup
@@ -40,6 +38,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_FOOD_CATEGORY_NAME = "FoodCategory";
     public static final String TABLE_FOOD_NAME = "Food";
     public static final String TABLE_CART_NAME = "Cart";
+    public static final String TABLE_REVIEW_NAME = "Review";
 
     public static final String TABLE_CART_DETAIL_NAME = "CartDetail";
 
@@ -92,8 +91,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Table Food columns
     public static final String FOOD_NAME_FIELD = "name";
     public static final String FOOD_PRICE_FIELD = "price";
+    public static final String FOOD_DISCOUNT_FIELD = "discount";
     public static final String FOOD_CATEGORY_FIELD = "category";
     public static final String FOOD_RESTAURANT_FIELD = "restaurant";
+
+    // Table Review columns
+    public static final String REVIEW_USER_FIELD = "user_id";
+    public static final String REVIEW_RESTAURANT_FIELD = "restaurant_id";
+    public static final String REVIEW_COMMENT_FIELD = "comment";
+    public static final String REVIEW_RATING_FIELD = "rating";
 
     public RoleDao roleDao;
     public UserDao userDao;
@@ -101,6 +107,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public RestaurantDao resDao;
     public FoodCategoryDao foodCateDao;
     public FoodDao foodDao;
+    public ReviewDao reviewDao;
 
     public DatabaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -110,6 +117,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         this.resDao = new RestaurantDao(this, this.resCateDao);
         this.foodCateDao = new FoodCategoryDao(this);
         this.foodDao = new FoodDao(this, this.foodCateDao, this.resDao);
+        this.reviewDao = new ReviewDao(this, this.userDao, this.resDao);
     }
 
     @Override
@@ -179,6 +187,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ID_FIELD + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 FOOD_NAME_FIELD + " TEXT, " +
                 FOOD_PRICE_FIELD + " FLOAT, " +
+                FOOD_DISCOUNT_FIELD + " FLOAT, " +
                 FOOD_CATEGORY_FIELD + " INTEGER, " +
                 FOOD_RESTAURANT_FIELD + " INTEGER, " +
                 CREATED_DATE_FIELD + " TIMESTAMP, " +
@@ -208,6 +217,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY (" + CART_DETAIL_CART_FIELD + ") REFERENCES " + TABLE_CART_NAME + "(" + ID_FIELD + "), " +
                 "FOREIGN KEY (" + CART_DETAIL_FOOD_FIELD + ") REFERENCES " + TABLE_FOOD_NAME + "(" + ID_FIELD + "))";
         db.execSQL(sqlCartDetail);
+
+        String sqlReview = "CREATE TABLE " + TABLE_REVIEW_NAME + " (" +
+                ID_FIELD + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                REVIEW_USER_FIELD + " INTEGER, " +
+                REVIEW_RESTAURANT_FIELD + " INTEGER, " +
+                REVIEW_COMMENT_FIELD + " TEXT, " +
+                "FOREIGN KEY (" + REVIEW_USER_FIELD + ") REFERENCES " + TABLE_USER_NAME + "(" + ID_FIELD + "), "+
+                "FOREIGN KEY (" + REVIEW_RESTAURANT_FIELD + ") REFERENCES " + TABLE_RESTAURANT_NAME + "(" + ID_FIELD + "))";
+        db.execSQL(sqlReview);
     }
 
     @Override
@@ -442,6 +460,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Food f8 = new Food("Bánh Chocolate", 28000, fc8, res8);
         Food f9 = new Food("Cá Hồi Nướng", 70000, fc9, res9);
         Food f10 = new Food("Súp Tom Yum", 33000, fc10, res10);
+
+        reviewDao.insertReview(new Review("Rất ngon, dịch vụ tuyệt vời!", 5.0, user1, res1));
+        reviewDao.insertReview(new Review("Pizza rất thơm, nhưng giá hơi cao.", 4.0, user2, res2));
+        reviewDao.insertReview(new Review("Sushi rất tươi ngon, không gian đẹp.", 4.5, user3, res4));
+        reviewDao.insertReview(new Review("Hamburger hơi bị nhạt, cần thêm gia vị.", 3.5, user4, res3));
+        reviewDao.insertReview(new Review("Tacos rất tuyệt, nhưng món tráng miệng không ngon lắm.", 4.0, user5, res5));
+        reviewDao.insertReview(new Review("Salad rất tươi, dịch vụ rất nhanh.", 4.5, user6, res6));
+        reviewDao.insertReview(new Review("Bánh mì rất ngon, giá cả hợp lý.", 4.0, user7, res7));
+        reviewDao.insertReview(new Review("Bánh chocolate không được như kỳ vọng.", 2.5, user8, res8));
+        reviewDao.insertReview(new Review("Cá hồi nướng rất ngon, không gian thoải mái.", 5.0, user9, res9));
+        reviewDao.insertReview(new Review("Súp Tom Yum có vị hơi chua, cần điều chỉnh.", 3.5, user10, res10));
+
     }
 
 
