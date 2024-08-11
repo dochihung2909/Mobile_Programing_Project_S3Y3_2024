@@ -89,11 +89,11 @@ public class FoodCardView extends LinearLayout {
             public void onClick(View v) {
                 DatabaseHelper dbHelper = new DatabaseHelper(context);
                 cartDao = new CartDao(dbHelper, userDao, restaurantDao);
-                SharedPreferences sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+                SharedPreferences sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE); 
                 String username = sharedPreferences.getString("username", "Guest");
                 userDao = new UserDao(dbHelper, new RoleDao(dbHelper));
 
-                if (username != "Guest") {
+                if (username != "Guest") { 
                     User currentUser = userDao.getUserByUsername(username);
                     Cart cart = cartDao.addToCard(currentUser, food.getRestaurant(), food, 1);
 
