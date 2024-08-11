@@ -1,5 +1,6 @@
 package com.example.food_order_final.custom_activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.AttributeSet;
@@ -30,8 +31,11 @@ import java.util.Locale;
 
 public class FoodCardView extends LinearLayout {
 
-    TextView tvFoodName, tvFoodSold, tvFoodLiked, tvFoodDiscountPrice, tvFoodDefaultPrice, tvFoodDescription, btnAddToCart;
+    TextView tvFoodName, tvFoodSold, tvFoodLiked, tvFoodDiscountPrice, tvFoodDefaultPrice, tvFoodDescription, btnAddToCart, btnPlus, btnMinus, tvQuantity;
+
     int foodId;
+
+    int quantity;
 
     private Food food;
     ImageView ivFoodAvatar;
@@ -77,25 +81,21 @@ public class FoodCardView extends LinearLayout {
         tvFoodDescription = view.findViewById(R.id.tvFoodDescription);
         btnAddToCart = view.findViewById(R.id.btnAddToCart);
         ivFoodAvatar = view.findViewById(R.id.ivFoodAvatar);
+        btnPlus = view.findViewById(R.id.btnPlus);
+        btnMinus = view.findViewById(R.id.btnMinus);
+        tvQuantity = view.findViewById(R.id.tvQuantity);
 
-        btnAddToCart.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatabaseHelper dbHelper = new DatabaseHelper(context);
-                cartDao = new CartDao(dbHelper, userDao, restaurantDao);
-                SharedPreferences sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE); 
-                String username = sharedPreferences.getString("username", "Guest");
-                userDao = new UserDao(dbHelper, new RoleDao(dbHelper));
 
-                if (username != "Guest") { 
-                    User currentUser = userDao.getUserByUsername(username);
-                    Cart cart = cartDao.addToCard(currentUser, food.getRestaurant(), food, 1);
-                    Toast.makeText(context, "" + cart.getId(), Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });
     }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
     public int getFoodId() {
         return foodId;
     }
@@ -140,13 +140,14 @@ public class FoodCardView extends LinearLayout {
         return (tvFoodDiscountPrice.getText().toString());
     }
 
+    @SuppressLint("SetTextI18n")
     public void setTvFoodDiscountPrice(double tvFoodDiscountPrice) {
         DecimalFormat decimalFormat = new DecimalFormat("#,###");
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
         symbols.setGroupingSeparator('.');
         decimalFormat.setDecimalFormatSymbols(symbols);
         String formattedNumber = decimalFormat.format(tvFoodDiscountPrice);
-        this.tvFoodDiscountPrice.setText(formattedNumber);
+        this.tvFoodDiscountPrice.setText(formattedNumber + "đ");
     }
 
     public String getTvFoodDefaultPrice() {

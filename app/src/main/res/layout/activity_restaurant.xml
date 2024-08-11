@@ -27,7 +27,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/ivRestaurantAvatar"
-        android:layout_marginTop="0dp">
+        android:layout_marginTop="0dp"
+        android:id="@+id/scrollView">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -104,6 +105,16 @@
         </LinearLayout>
 
 
+
     </ScrollView>
+
+    <com.example.food_order_final.custom_activity.CartCardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/cartCardView"
+        />
+
+
 
 </RelativeLayout>

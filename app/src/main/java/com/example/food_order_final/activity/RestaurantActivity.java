@@ -57,6 +57,8 @@ public class RestaurantActivity extends AppCompatActivity {
 
     DatabaseHelper dbhelper;
 
+    CartCardView cartCardView;
+
 
 
     @Override
@@ -95,18 +97,26 @@ public class RestaurantActivity extends AppCompatActivity {
             UserDao userDao = new UserDao(dbhelper, new RoleDao(dbhelper));
             User currentUser = userDao.getUserByUsername(username);
             CartDao cartDao = new CartDao(dbhelper);
-            Cart cart = cartDao.getCartByUserId(currentUser.getId(), restaurantId);
+            cartCardView.setTvRestaurantName(restaurant.getName());
+            if (!cartDao.isUserHasCart(currentUser.getId(), restaurantId)) {
+                cartCardView.setVisibility(View.GONE);
+            } else {
+                Cart cart = cartDao.getCartByUserId(currentUser.getId(), restaurantId);
+                cartCardView.setVisibility(View.VISIBLE);
+                int totalDishes = cartDao.getTotalDishes(cart.getId());
+                cartCardView.setTvTotalDishes(totalDishes);
 
-            CartCardView cartCardView = new CartCardView(RestaurantActivity.this);
-            cartCardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(RestaurantActivity.this, CartActivity.class);
-                    intent.putExtra("cartId", cart.getId());
-                    startActivity(intent);
-                }
-            });
-            mainLayout.addView(cartCardView);
+                cartCardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(RestaurantActivity.this, CartActivity.class);
+                        intent.putExtra("cartId", cart.getId());
+                        startActivity(intent);
+                    }
+                });
+            }
+
+
             tvRestaurantName.setText(restaurant.getName());
             tvRestaurantAddress.setText(restaurant.getAddress());
 
@@ -126,6 +136,28 @@ public class RestaurantActivity extends AppCompatActivity {
                 foodCardView.setFood(food);
                 foodCardView.setTvFoodName(food.getName());
                 foodCardView.setTvFoodDiscountPrice(food.getPrice());
+                TextView btnAddToCart = foodCardView.findViewById(R.id.btnAddToCart);
+
+                btnAddToCart.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!username.equals("Guest")) {
+                            Cart cart = cartDao.addToCard(currentUser, food.getRestaurant(), food, 1);
+                            cartCardView.setVisibility(View.VISIBLE);
+                            int totalDishes = cartDao.getTotalDishes(cart.getId());
+                            cartCardView.setTvTotalDishes(totalDishes);
+                            cartCardView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(RestaurantActivity.this, CartActivity.class);
+                                    intent.putExtra("cartId", cart.getId());
+                                    startActivity(intent);
+                                }
+                            });
+                        }
+
+                    }
+                });
                 foodsContainer.addView(foodCardView);
             }
         }
@@ -140,6 +172,7 @@ public class RestaurantActivity extends AppCompatActivity {
         tvRestaurantAddress = findViewById(R.id.tvRestaurantAddress);
         btnBackToMain = findViewById(R.id.btnBackToMain);
         mainLayout = findViewById(R.id.main);
+        cartCardView = findViewById(R.id.cartCardView);
 
 
     }

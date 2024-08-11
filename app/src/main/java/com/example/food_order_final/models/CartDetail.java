@@ -13,7 +13,7 @@ public class CartDetail extends Base{
         this.id = id;
         this.food = food;
         this.quantity = quantity;
-        this.price = food.getPrice() * quantity;
+        this.price = food.getPrice();
         this.setCreatedDate(createdDate);
         this.setUpdatedDate(updatedDate);
         this.cart = cart;
@@ -22,7 +22,7 @@ public class CartDetail extends Base{
     public CartDetail(Food food, int quantity, Cart cart) {
         this.food = food;
         this.quantity = quantity;
-        this.price = food.getPrice() * quantity;
+        this.price = food.getPrice();
         this.setCreatedDate(new Date());
         this.setUpdatedDate(new Date());
         this.cart = cart;

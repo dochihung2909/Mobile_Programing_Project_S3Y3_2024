@@ -62,7 +62,19 @@ public class FoodDao extends BaseDao{
 
     public Food getFoodById(int foodId) {
         Food food = null;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_NAME
+                    + " WHERE " + DatabaseHelper.ID_FIELD + " = ?", new String[]{String.valueOf(foodId)});
 
+            if (cursor != null && cursor.moveToFirst()) {
+                food = getFoodInfo(cursor);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return food;
     }

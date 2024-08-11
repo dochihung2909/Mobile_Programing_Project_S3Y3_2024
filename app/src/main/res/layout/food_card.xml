@@ -112,15 +112,7 @@
                         android:textSize="16dp"
                         android:textStyle="bold"
                         android:id="@+id/tvFoodDiscountPrice"
-                        android:text="75.000"
-                        />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/primaryColor"
-                        android:textSize="16dp"
-                        android:textStyle="bold"
-                        android:text="đ"
+                        android:text="75.000đ"
                         />
                 </LinearLayout>
 
@@ -158,6 +150,7 @@
                         android:layout_height="wrap_content"
                         android:padding="10dp"
                         android:gravity="center"
+                        android:id="@+id/tvQuantity"
                         android:text="1"/>
 
 
@@ -168,7 +161,7 @@
                         android:layout_height="wrap_content"
                         android:background="@color/primaryColor"
                         android:textColor="@color/white"
-                        android:id="@+id/btnplus"
+                        android:id="@+id/btnPlus"
                         android:text="+"
                         android:textSize="20dp"
                         />
