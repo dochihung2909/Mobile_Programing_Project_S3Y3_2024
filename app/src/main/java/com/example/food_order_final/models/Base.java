@@ -3,17 +3,12 @@ package com.example.food_order_final.models;
 import java.util.Date;
 
 public abstract class Base {
-    protected int id;
     private Date createdDate;
     private Date updatedDate;
 
 
     public Date update(){
         return this.updatedDate = new Date();
-    }
-
-    public int getId() {
-        return id;
     }
 
     public Date getCreatedDate() {

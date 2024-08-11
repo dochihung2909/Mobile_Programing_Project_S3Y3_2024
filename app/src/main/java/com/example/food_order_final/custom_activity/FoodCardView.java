@@ -3,21 +3,25 @@ package com.example.food_order_final.custom_activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import com.example.food_order_final.R;
 import com.example.food_order_final.dao.CartDao;
 import com.example.food_order_final.dao.RestaurantDao;
+import com.example.food_order_final.dao.RoleDao;
 import com.example.food_order_final.dao.UserDao;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Cart;
 import com.example.food_order_final.models.Food;
+import com.example.food_order_final.models.Role;
 import com.example.food_order_final.models.User;
 
 import java.text.DecimalFormat;
@@ -85,14 +89,18 @@ public class FoodCardView extends LinearLayout {
             public void onClick(View v) {
                 DatabaseHelper dbHelper = new DatabaseHelper(context);
                 cartDao = new CartDao(dbHelper, userDao, restaurantDao);
-                SharedPreferences sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-                String username = sharedPreferences.getString("username", "");
-                if (username != "") {
+                SharedPreferences sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE); 
+                String username = sharedPreferences.getString("username", "Guest");
+                userDao = new UserDao(dbHelper, new RoleDao(dbHelper));
+
+                if (username != "Guest") { 
                     User currentUser = userDao.getUserByUsername(username);
                     Cart cart = cartDao.addToCard(currentUser, food.getRestaurant(), food, 1);
-                    if (onActionListener != null) {
-                        onActionListener.onActionCompleted(cart);
-                    }
+
+                    Toast.makeText(context, "" + cart.getId(), Toast.LENGTH_SHORT).show();
+//                    if (onActionListener != null) {
+//                        onActionListener.onActionCompleted(cart);
+//                    }
                 }
 
             }

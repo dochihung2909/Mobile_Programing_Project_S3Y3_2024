@@ -12,11 +12,17 @@ public class Cart extends Base{
     public Cart(User user, Restaurant restaurant) {
         this.user = user;
         this.restaurant = restaurant;
+        this.setCreatedDate(new Date());
+        this.setUpdatedDate(new Date());
     }
     public Cart(int id, User user, Restaurant restaurant) {
         this.id = id;
         this.user = user;
         this.restaurant = restaurant;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public User getUser() {

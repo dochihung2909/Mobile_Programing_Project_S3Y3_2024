@@ -31,6 +31,10 @@ public class Food extends Base{
         this.setUpdatedDate(new Date());
     }
 
+    public int getId() {
+        return id;
+    }
+
     // Getter và Setter cho name
     public String getName() {
         return name;

@@ -46,6 +46,11 @@ public class User extends Base{
         this.avatar = avatar;
     }
 
+
+    public int getId() {
+        return id;
+    }
+
     public String getUsername() {
         return username;
     }

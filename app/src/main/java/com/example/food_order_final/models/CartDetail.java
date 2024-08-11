@@ -28,6 +28,10 @@ public class CartDetail extends Base{
         this.cart = cart;
     }
 
+    public int getId() {
+        return id;
+    }
+
 
     public Food getFood() {
         return food;

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -12,8 +13,10 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.food_order_final.R;
 import com.example.food_order_final.dao.RoleDao;
+import com.example.food_order_final.dao.UserDao;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Role;
+import com.example.food_order_final.models.User;
 
 public class LoadScreenActivity extends AppCompatActivity {
     DatabaseHelper dbHelper = new DatabaseHelper(LoadScreenActivity.this);

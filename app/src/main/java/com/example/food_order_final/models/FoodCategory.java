@@ -19,6 +19,10 @@ public class FoodCategory extends Base{
         this.setUpdatedDate(new Date());
     }
 
+    public int getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }

@@ -3,7 +3,9 @@ package com.example.food_order_final.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteOpenHelper; 
+import android.text.format.DateUtils;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -27,7 +29,7 @@ import com.example.food_order_final.util.DateUtil;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     // Database setup
-    public static final String DATABASE_NAME = "FoodOrderDB.db";
+    public static final String DATABASE_NAME = "FoodOrderDB";
     public static final int DATABASE_VERSION = 1;
 
     // Table setup
@@ -212,6 +214,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 CART_DETAIL_CART_FIELD + " INTEGER, " +
                 CART_DETAIL_FOOD_FIELD + " INTEGER, " +
                 CART_DETAIL_QUANTITY_FIELD + " INTEGER, " +
+                CART_DETAIL_PRICE_FIELD + " FLOAT, " +
                 CREATED_DATE_FIELD + " TIMESTAMP, " +
                 UPDATED_DATE_FIELD + " TIMESTAMP, " +
                 "FOREIGN KEY (" + CART_DETAIL_CART_FIELD + ") REFERENCES " + TABLE_CART_NAME + "(" + ID_FIELD + "), " +
@@ -318,6 +321,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public ContentValues getCartDetailContentValues(CartDetail cartDetail) {
         ContentValues contentValues = new ContentValues();
+        Log.d("CartDetail", String.valueOf(cartDetail.getCart().getId()));
         contentValues.put(DatabaseHelper.CART_DETAIL_FOOD_FIELD, cartDetail.getFood().getId());
         contentValues.put(DatabaseHelper.CART_DETAIL_QUANTITY_FIELD, cartDetail.getQuantity());
         contentValues.put(DatabaseHelper.CART_DETAIL_CART_FIELD, cartDetail.getCart().getId());
@@ -368,6 +372,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         User user8 = userDao.getUserByUsername("daohoang");
         User user9 = userDao.getUserByUsername("ngoanguyen");
         User user10 = userDao.getUserByUsername("phamquang");
+        Log.d("User1", user1.getFullName());
 
 
         //Restaurant Category data
