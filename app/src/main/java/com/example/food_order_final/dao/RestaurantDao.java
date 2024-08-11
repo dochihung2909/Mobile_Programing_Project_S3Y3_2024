@@ -3,6 +3,7 @@ package com.example.food_order_final.dao;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Food;
@@ -91,8 +92,10 @@ public class RestaurantDao extends BaseDao{
                     Date createdDate = DateUtil.timestampToDate(createdDateString);
                     Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
-                    restaurants.add(new Restaurant(id, name, address, phone, resCate, avatar, isPartner,
-                            rating, createdDate, updatedDate));
+                    Restaurant restaurant = new Restaurant(id, name, address, phone, resCate, avatar, isPartner,
+                            rating, createdDate, updatedDate);
+                    restaurants.add(restaurant);
+
                 } while(cursor.moveToNext());
             }
         } finally {

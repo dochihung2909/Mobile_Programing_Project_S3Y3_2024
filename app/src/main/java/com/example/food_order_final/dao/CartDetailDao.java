@@ -11,13 +11,14 @@ public class CartDetailDao extends BaseDao {
     CartDao cartDao;
     public CartDetailDao(DatabaseHelper dbHelper) {
         super(dbHelper);
+        this.dbHelper = dbHelper;
     }
 
 
     public void insertCartDetail(CartDetail cartDetail) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues contentValues = dbHelper.getCartDetailContentValues(cartDetail);
-        db.insert(DatabaseHelper.TABLE_CART_NAME, null, contentValues);
+        db.insert(DatabaseHelper.TABLE_CART_DETAIL_NAME, null, contentValues);
         db.close();
     }
 

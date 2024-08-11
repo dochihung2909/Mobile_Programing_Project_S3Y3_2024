@@ -20,6 +20,11 @@ public class RestaurantCategory extends Base{
     }
 
 
+    public int getId() {
+        return id;
+    }
+
+
     public String getName() {
         return name;
     }

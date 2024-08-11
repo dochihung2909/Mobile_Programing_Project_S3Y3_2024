@@ -190,7 +190,6 @@ public class UserDao extends BaseDao{
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = null;
         User user = null;
-
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_USER_NAME
                     + " WHERE " + DatabaseHelper.USER_USERNAME_FIELD + " LIKE ?",

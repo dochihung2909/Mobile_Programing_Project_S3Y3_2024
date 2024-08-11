@@ -14,6 +14,11 @@ public class Payment extends Base {
         this.paymentMethod = paymentMethod;
     }
 
+
+    public int getId() {
+        return id;
+    }
+
     public PaymentPending getPaymentPending() {
         return paymentPending;
     }

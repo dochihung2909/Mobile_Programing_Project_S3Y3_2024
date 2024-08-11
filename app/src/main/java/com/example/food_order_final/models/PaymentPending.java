@@ -16,6 +16,11 @@ public class PaymentPending extends Base {
         this.total = total;
     }
 
+
+    public int getId() {
+        return id;
+    }
+
     public boolean isStatus() {
         return status;
     }
