@@ -29,6 +29,7 @@ public class CartDao extends BaseDao {
 
     public CartDao(DatabaseHelper dbHelper) {
         super(dbHelper);
+        this.dbHelper = dbHelper;
     }
 
     public void insertCart(Cart cart) {
@@ -46,9 +47,17 @@ public class CartDao extends BaseDao {
         }
         cart = this.getCartByUserId(user.getId(), restaurant.getId());
 
-        CartDetail cartDetail = new CartDetail(food, quantity, cart);
+        CartDetail cartDetail = null;
         CartDetailDao cartDetailDao = new CartDetailDao(dbHelper);
-        cartDetailDao.insertCartDetail(cartDetail);
+        if (!cartDetailDao.isFoodInCart(cart.getId(), food.getId())) {
+            cartDetail = new CartDetail(food, quantity, cart);
+            cartDetailDao.insertCartDetail(cartDetail);
+        } else {
+            cartDetail = cartDetailDao.getCartDetailByCartIdAndFoodId(cart.getId(), food.getId());
+            cartDetail.setQuantity(cartDetail.getQuantity() + quantity);
+            cartDetailDao.updateFoodQuantity(cartDetail.getQuantity(), cartDetail.getId());
+        }
+
 
         return cart;
     }
@@ -178,6 +187,28 @@ public class CartDao extends BaseDao {
                 cursor.close();
             db.close();
         }
+        return totalAmount;
+    }
+
+    public double getTotalAmountByCartId(int cartId) {
+        double totalAmount = 0;
+        Cursor cursor = null;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        try {
+            cursor = db.rawQuery("SELECT SUM(" + DatabaseHelper.CART_DETAIL_PRICE_FIELD + "*" + DatabaseHelper.CART_DETAIL_QUANTITY_FIELD +" ) FROM " + DatabaseHelper.TABLE_CART_DETAIL_NAME
+            + " WHERE " + DatabaseHelper.CART_DETAIL_CART_FIELD + " = ?", new String[]{String.valueOf(cartId)});
+            if (cursor.moveToFirst() && cursor != null) {
+                totalAmount = cursor.getInt(0);
+            }
+        } catch (Exception e)  {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
         return totalAmount;
     }
 }
