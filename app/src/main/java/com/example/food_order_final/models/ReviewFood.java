@@ -2,29 +2,28 @@ package com.example.food_order_final.models;
 
 import java.util.Date;
 
-public class Review extends Base{
+public class ReviewFood extends Base{
     private String comment;
-
     private int id;
     private User user;
-    private Restaurant restaurant;
+    private Food food;
     double rating;
 
-    public Review(int id, String comment, double rating, User user, Restaurant restaurant, Date createdDate, Date updatedDate) {
+    public ReviewFood(int id, String comment, double rating, User user, Food food, Date createdDate, Date updatedDate) {
         this.id = id;
         this.comment = comment;
         this.rating = rating;
         this.user = user;
-        this.restaurant = restaurant;
+        this.food = food;
         this.setCreatedDate(createdDate);
         this.setUpdatedDate(updatedDate);
     }
 
-    public Review(String comment, double rating, User user, Restaurant restaurant) {
+    public ReviewFood(String comment, double rating, User user, Food food) {
         this.comment = comment;
         this.rating = rating;
         this.user = user;
-        this.restaurant = restaurant;
+        this.food = food;
         this.setCreatedDate(new Date());
         this.setUpdatedDate(new Date());
     }
@@ -57,11 +56,11 @@ public class Review extends Base{
         this.user = user;
     }
 
-    public Restaurant getRestaurant() {
-        return restaurant;
+    public Food getFood() {
+        return food;
     }
 
-    public void setRestaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
+    public void setFood(Food food) {
+        this.food = food;
     }
 }

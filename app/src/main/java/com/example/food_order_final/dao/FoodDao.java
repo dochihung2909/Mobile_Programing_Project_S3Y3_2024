@@ -61,8 +61,35 @@ public class FoodDao extends BaseDao{
     }
 
     public Food getFoodById(int foodId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
         Food food = null;
 
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_NAME
+                            + " WHERE " + DatabaseHelper.ID_FIELD + " = ?",
+                    new String[]{String.valueOf(foodId)});
+            if(cursor.moveToFirst()) {
+                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
+                String name = getString(cursor, DatabaseHelper.FOOD_NAME_FIELD);
+                double price = getDouble(cursor, DatabaseHelper.FOOD_PRICE_FIELD);
+                int category_id = getInt(cursor, DatabaseHelper.FOOD_CATEGORY_FIELD);
+                double discount = getDouble(cursor, DatabaseHelper.FOOD_DISCOUNT_FIELD);
+                FoodCategory foodCate = foodCategoryDao.getFoodCategoryById(category_id);
+                int restaurant_id = getInt(cursor, DatabaseHelper.FOOD_RESTAURANT_FIELD);
+                Restaurant restaurant = restaurantDao.getRestaurantById(restaurant_id);
+                String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
+                String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
+                Date createdDate = DateUtil.timestampToDate(createdDateString);
+                Date updatedDate = DateUtil.timestampToDate(updatedDateString);
+
+                food = new Food(id, name, price, discount, foodCate, restaurant, createdDate, updatedDate);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
 
         return food;
     }
