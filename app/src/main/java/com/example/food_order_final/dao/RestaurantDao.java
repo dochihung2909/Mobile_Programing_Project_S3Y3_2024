@@ -75,7 +75,7 @@ public class RestaurantDao extends BaseDao{
 
         try {
             cursor = db.rawQuery("SELECT AVG(" + DatabaseHelper.REVIEW_RATING_FIELD
-                            + ") AS averageRating FROM " + DatabaseHelper.TABLE_REVIEW_NAME
+                            + ") AS averageRating FROM " + DatabaseHelper.TABLE_REVIEW_RESTAURANT_NAME
                             + " WHERE " + DatabaseHelper.REVIEW_RESTAURANT_FIELD + " = ?",
                     new String[]{String.valueOf(restaurantId)});
             if (cursor.moveToFirst()) {

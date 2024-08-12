@@ -3,8 +3,7 @@ package com.example.food_order_final.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper; 
-import android.text.format.DateUtils;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -13,7 +12,8 @@ import com.example.food_order_final.dao.FoodCategoryDao;
 import com.example.food_order_final.dao.FoodDao;
 import com.example.food_order_final.dao.RestaurantCategoryDao;
 import com.example.food_order_final.dao.RestaurantDao;
-import com.example.food_order_final.dao.ReviewDao;
+import com.example.food_order_final.dao.ReviewFoodDao;
+import com.example.food_order_final.dao.ReviewRestaurantDao;
 import com.example.food_order_final.dao.RoleDao;
 import com.example.food_order_final.dao.UserDao;
 import com.example.food_order_final.models.Cart;
@@ -22,7 +22,8 @@ import com.example.food_order_final.models.Food;
 import com.example.food_order_final.models.FoodCategory;
 import com.example.food_order_final.models.Restaurant;
 import com.example.food_order_final.models.RestaurantCategory;
-import com.example.food_order_final.models.Review;
+import com.example.food_order_final.models.ReviewFood;
+import com.example.food_order_final.models.ReviewRestaurant;
 import com.example.food_order_final.models.Role;
 import com.example.food_order_final.models.User;
 import com.example.food_order_final.util.DateUtil;
@@ -40,7 +41,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_FOOD_CATEGORY_NAME = "FoodCategory";
     public static final String TABLE_FOOD_NAME = "Food";
     public static final String TABLE_CART_NAME = "Cart";
-    public static final String TABLE_REVIEW_NAME = "Review";
+    public static final String TABLE_REVIEW_RESTAURANT_NAME = "ReviewRestaurant";
+    public static final String TABLE_REVIEW_FOOD_NAME = "ReviewFood";
 
     public static final String TABLE_CART_DETAIL_NAME = "CartDetail";
 
@@ -102,6 +104,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String REVIEW_RESTAURANT_FIELD = "restaurant_id";
     public static final String REVIEW_COMMENT_FIELD = "comment";
     public static final String REVIEW_RATING_FIELD = "rating";
+    public static final String REVIEW_FOOD_FIELD = "food_id";
 
     public RoleDao roleDao;
     public UserDao userDao;
@@ -109,7 +112,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public RestaurantDao resDao;
     public FoodCategoryDao foodCateDao;
     public FoodDao foodDao;
-    public ReviewDao reviewDao;
+    public ReviewRestaurantDao reviewRestaurantDao;
+    public ReviewFoodDao reviewFoodDao;
 
     public DatabaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -119,7 +123,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         this.resDao = new RestaurantDao(this, this.resCateDao);
         this.foodCateDao = new FoodCategoryDao(this);
         this.foodDao = new FoodDao(this, this.foodCateDao, this.resDao);
-        this.reviewDao = new ReviewDao(this, this.userDao, this.resDao);
+        this.reviewRestaurantDao = new ReviewRestaurantDao(this, this.userDao, this.resDao);
+        this.reviewFoodDao = new ReviewFoodDao(this, this.userDao, this.foodDao);
     }
 
     @Override
@@ -221,7 +226,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY (" + CART_DETAIL_FOOD_FIELD + ") REFERENCES " + TABLE_FOOD_NAME + "(" + ID_FIELD + "))";
         db.execSQL(sqlCartDetail);
 
-        String sqlReview = "CREATE TABLE " + TABLE_REVIEW_NAME + " (" +
+        String sqlReviewRes = "CREATE TABLE " + TABLE_REVIEW_RESTAURANT_NAME + " (" +
                 ID_FIELD + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 REVIEW_USER_FIELD + " INTEGER, " +
                 REVIEW_RESTAURANT_FIELD + " INTEGER, " +
@@ -231,7 +236,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 UPDATED_DATE_FIELD + " TIMESTAMP, " +
                 "FOREIGN KEY (" + REVIEW_USER_FIELD + ") REFERENCES " + TABLE_USER_NAME + "(" + ID_FIELD + "), "+
                 "FOREIGN KEY (" + REVIEW_RESTAURANT_FIELD + ") REFERENCES " + TABLE_RESTAURANT_NAME + "(" + ID_FIELD + "))";
-        db.execSQL(sqlReview);
+        db.execSQL(sqlReviewRes);
+
+        String sqlReviewFood = "CREATE TABLE " + TABLE_REVIEW_FOOD_NAME + " (" +
+                ID_FIELD + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                REVIEW_USER_FIELD + " INTEGER, " +
+                REVIEW_FOOD_FIELD + " INTEGER, " +
+                REVIEW_COMMENT_FIELD + " TEXT, " +
+                REVIEW_RATING_FIELD + " FLOAT, " +
+                CREATED_DATE_FIELD + " TIMESTAMP, " +
+                UPDATED_DATE_FIELD + " TIMESTAMP, " +
+                "FOREIGN KEY (" + REVIEW_USER_FIELD + ") REFERENCES " + TABLE_USER_NAME + "(" + ID_FIELD + "), "+
+                "FOREIGN KEY (" + REVIEW_FOOD_FIELD + ") REFERENCES " + TABLE_FOOD_NAME + "(" + ID_FIELD + "))";
+        db.execSQL(sqlReviewFood);
     }
 
     @Override
@@ -458,27 +475,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         foodDao.insertFood(new Food("Cá Hồi Nướng", 70000, fc9, res9));
         foodDao.insertFood(new Food("Súp Tom Yum", 33000, fc10, res10));
 
-        Food f1 = new Food("Mì Ý Bò Băm", 45000, fc1, res1);
-        Food f2 = new Food("Pizza Pepperoni", 55000, fc2, res2);
-        Food f3 = new Food("Sushi California", 60000, fc3, res4);
-        Food f4 = new Food("Bánh Hamburger Phô Mai", 40000, fc4, res3);
-        Food f5 = new Food("Tacos Bò", 35000, fc5, res5);
-        Food f6 = new Food("Salad Caesar", 30000, fc6, res6);
-        Food f7 = new Food("Bánh Mì Club", 32000, fc7, res7);
-        Food f8 = new Food("Bánh Chocolate", 28000, fc8, res8);
-        Food f9 = new Food("Cá Hồi Nướng", 70000, fc9, res9);
-        Food f10 = new Food("Súp Tom Yum", 33000, fc10, res10);
+        Food f1 = foodDao.getFoodById(1);
+        Food f2 = foodDao.getFoodById(2);
+        Food f3 = foodDao.getFoodById(3);
+        Food f4 = foodDao.getFoodById(4);
+        Food f5 = foodDao.getFoodById(5);
+        Food f6 = foodDao.getFoodById(6);
+        Food f7 = foodDao.getFoodById(7);
+        Food f8 = foodDao.getFoodById(8);
+        Food f9 = foodDao.getFoodById(9);
+        Food f10 = foodDao.getFoodById(10);
 
-        reviewDao.insertReview(new Review("Rất ngon, dịch vụ tuyệt vời!", 5.0, user1, res1));
-        reviewDao.insertReview(new Review("Pizza rất thơm, nhưng giá hơi cao.", 4.0, user2, res2));
-        reviewDao.insertReview(new Review("Sushi rất tươi ngon, không gian đẹp.", 4.5, user3, res4));
-        reviewDao.insertReview(new Review("Hamburger hơi bị nhạt, cần thêm gia vị.", 3.5, user4, res3));
-        reviewDao.insertReview(new Review("Tacos rất tuyệt, nhưng món tráng miệng không ngon lắm.", 4.0, user5, res5));
-        reviewDao.insertReview(new Review("Salad rất tươi, dịch vụ rất nhanh.", 4.5, user6, res6));
-        reviewDao.insertReview(new Review("Bánh mì rất ngon, giá cả hợp lý.", 4.0, user7, res7));
-        reviewDao.insertReview(new Review("Bánh chocolate không được như kỳ vọng.", 2.5, user8, res8));
-        reviewDao.insertReview(new Review("Cá hồi nướng rất ngon, không gian thoải mái.", 5.0, user9, res9));
-        reviewDao.insertReview(new Review("Súp Tom Yum có vị hơi chua, cần điều chỉnh.", 3.5, user10, res10));
+
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ tại đây rất chuyên nghiệp và không gian rất ấm cúng và thoải mái.", 5.0, user1, res1));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Không gian quán đẹp mắt nhưng giá cả hơi cao so với chất lượng dịch vụ.", 4.0, user2, res2));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng có không gian sang trọng và dịch vụ tận tình, tạo cảm giác dễ chịu.", 4.5, user3, res3));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Mặc dù không gian và trang trí khá đẹp, nhưng dịch vụ cần được cải thiện thêm.", 3.5, user4, res4));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Tôi thích không gian và trang trí của quán, nhưng có vẻ hơi ồn ào và cần thêm sự riêng tư.", 4.0, user5, res5));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Quán có dịch vụ nhanh chóng và không khí dễ chịu, trang trí phù hợp với chủ đề của quán.", 4.5, user6, res6));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Không gian quán rộng rãi và thoải mái, tuy nhiên, cách trang trí có thể cần thêm sự tinh tế.", 4.0, user7, res7));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ tại đây không tốt lắm và không gian cũng khá đơn điệu.", 2.5, user8, res8));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Không gian thoải mái và ấm cúng, nhưng dịch vụ hơi chậm và cần cải thiện.", 5.0, user9, res9));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Quán có không gian dễ chịu và dịch vụ ổn, tuy nhiên trang trí cần phải được nâng cấp.", 3.5, user10, res10));
+
+
+        reviewFoodDao.insertReview(new ReviewFood("Rất ngon, dịch vụ tuyệt vời!", 5.0, user1, f1));
+        reviewFoodDao.insertReview(new ReviewFood("Pizza rất thơm, nhưng giá hơi cao.", 4.0, user2, f2));
+        reviewFoodDao.insertReview(new ReviewFood("Sushi rất tươi ngon, không gian đẹp.", 4.5, user3, f3));
+        reviewFoodDao.insertReview(new ReviewFood("Hamburger hơi bị nhạt, cần thêm gia vị.", 3.5, user4, f4));
+        reviewFoodDao.insertReview(new ReviewFood("Tacos rất tuyệt, nhưng món tráng miệng không ngon lắm.", 4.0, user5, f5));
+        reviewFoodDao.insertReview(new ReviewFood("Salad rất tươi, dịch vụ rất nhanh.", 4.5, user6, f6));
+        reviewFoodDao.insertReview(new ReviewFood("Bánh mì rất ngon, giá cả hợp lý.", 4.0, user7, f7));
+        reviewFoodDao.insertReview(new ReviewFood("Bánh chocolate không được như kỳ vọng.", 2.5, user8, f8));
+        reviewFoodDao.insertReview(new ReviewFood("Cá hồi nướng rất ngon, không gian thoải mái.", 5.0, user9, f9));
+        reviewFoodDao.insertReview(new ReviewFood("Súp Tom Yum có vị hơi chua, cần điều chỉnh.", 3.5, user10, f10));
+
+
+
 
     }
 
