@@ -50,6 +50,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String CREATED_DATE_FIELD = "created_date";
     public static final String UPDATED_DATE_FIELD = "updated_date";
     public static final String ID_FIELD = "id";
+    public static final String RATING_FIELD = "rating";
 
     // Table Cart Detail columns
     public static final String CART_DETAIL_FOOD_FIELD = "food_id";
@@ -86,7 +87,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String RESTAURANT_CATEGORY_FIELD = "category";
     public static final String RESTAURANT_AVATAR_FIELD = "avatar";
     public static final String RESTAURANT_IS_PARTNER_FIELD = "is_partner";
-    public static final String RESTAURANT_RATING_FIELD = "rating";
+//    public static final String RATING_FIELD = "rating";
     public static final String RESTAURANT_USER_FIELD = "user_id";
 
     // Table Food Category columns
@@ -96,15 +97,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String FOOD_NAME_FIELD = "name";
     public static final String FOOD_PRICE_FIELD = "price";
     public static final String FOOD_DISCOUNT_FIELD = "discount";
+    public static final String FOOD_AVATAR_FIELD = "avatar";
     public static final String FOOD_CATEGORY_FIELD = "category";
     public static final String FOOD_RESTAURANT_FIELD = "restaurant";
-    public static final String FOOD_AVATAR_FIELD = "avatar";
 
     // Table Review columns
     public static final String REVIEW_USER_FIELD = "user_id";
     public static final String REVIEW_RESTAURANT_FIELD = "restaurant_id";
     public static final String REVIEW_COMMENT_FIELD = "comment";
-    public static final String REVIEW_RATING_FIELD = "rating";
+    public static final String REVIEW_IMAGE_FIELD = "image";
+//    public static final String RATING_FIELD = "rating";
     public static final String REVIEW_FOOD_FIELD = "food_id";
 
     public RoleDao roleDao;
@@ -171,7 +173,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 RESTAURANT_PHONE_FIELD + " TEXT, " +
                 RESTAURANT_CATEGORY_FIELD + " INTEGER, " +
                 RESTAURANT_IS_PARTNER_FIELD + " BOOLEAN, " +
-                RESTAURANT_RATING_FIELD + " FLOAT, " +
+                RATING_FIELD + " FLOAT, " +
                 RESTAURANT_AVATAR_FIELD + " VARCHAR, " +
                 CREATED_DATE_FIELD + " TIMESTAMP, " +
                 UPDATED_DATE_FIELD + " TIMESTAMP, " +
@@ -196,6 +198,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 FOOD_NAME_FIELD + " TEXT, " +
                 FOOD_PRICE_FIELD + " FLOAT, " +
                 FOOD_DISCOUNT_FIELD + " FLOAT, " +
+                RATING_FIELD + " FLOAT, " +
+                FOOD_AVATAR_FIELD + " FLOAT, " +
                 FOOD_CATEGORY_FIELD + " INTEGER, " +
                 FOOD_RESTAURANT_FIELD + " INTEGER, " +
                 FOOD_AVATAR_FIELD + " BLOB, " +
@@ -233,7 +237,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 REVIEW_USER_FIELD + " INTEGER, " +
                 REVIEW_RESTAURANT_FIELD + " INTEGER, " +
                 REVIEW_COMMENT_FIELD + " TEXT, " +
-                REVIEW_RATING_FIELD + " FLOAT, " +
+                RATING_FIELD + " FLOAT, " +
+                REVIEW_IMAGE_FIELD + " TEXT, " +
                 CREATED_DATE_FIELD + " TIMESTAMP, " +
                 UPDATED_DATE_FIELD + " TIMESTAMP, " +
                 "FOREIGN KEY (" + REVIEW_USER_FIELD + ") REFERENCES " + TABLE_USER_NAME + "(" + ID_FIELD + "), "+
@@ -245,7 +250,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 REVIEW_USER_FIELD + " INTEGER, " +
                 REVIEW_FOOD_FIELD + " INTEGER, " +
                 REVIEW_COMMENT_FIELD + " TEXT, " +
-                REVIEW_RATING_FIELD + " FLOAT, " +
+                RATING_FIELD + " FLOAT, " +
+                REVIEW_IMAGE_FIELD + " TEXT, " +
                 CREATED_DATE_FIELD + " TIMESTAMP, " +
                 UPDATED_DATE_FIELD + " TIMESTAMP, " +
                 "FOREIGN KEY (" + REVIEW_USER_FIELD + ") REFERENCES " + TABLE_USER_NAME + "(" + ID_FIELD + "), "+
@@ -261,9 +267,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public ContentValues getRoleContentValues(Role role) {
         ContentValues contentValues = new ContentValues();
-//        contentValues.put(ROLE_ID_FIELD, role.getId());
         contentValues.put(ROLE_NAME_FIELD, role.getName());
-//        contentValues.put(ROLE_CREATED_DATE_FIELD, role.getCreatedDate().toString());
         contentValues.put(CREATED_DATE_FIELD, DateUtil.dateToTimestamp(role.getCreatedDate()));
         contentValues.put(UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(role.getUpdatedDate()));
 
@@ -298,6 +302,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(RESTAURANT_ADDRESS_FIELD, restaurant.getAddress());
         contentValues.put(RESTAURANT_PHONE_FIELD, restaurant.getPhoneNumber());
         contentValues.put(RESTAURANT_AVATAR_FIELD, restaurant.getAvatar());
+        contentValues.put(RATING_FIELD, restaurant.getRating());
         contentValues.put(RESTAURANT_CATEGORY_FIELD, restaurant.getCategory().getId());
         contentValues.put(RESTAURANT_IS_PARTNER_FIELD, restaurant.isPartner());
         contentValues.put(CREATED_DATE_FIELD, DateUtil.dateToTimestamp(restaurant.getCreatedDate()));
@@ -319,15 +324,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DatabaseHelper.FOOD_NAME_FIELD, food.getName());
         contentValues.put(DatabaseHelper.FOOD_PRICE_FIELD, food.getPrice());
+        contentValues.put(DatabaseHelper.FOOD_DISCOUNT_FIELD, food.getDiscount());
+        contentValues.put(DatabaseHelper.FOOD_AVATAR_FIELD, food.getAvatar());
         contentValues.put(DatabaseHelper.FOOD_CATEGORY_FIELD, food.getCategory().getId());
+        contentValues.put(DatabaseHelper.RATING_FIELD, food.getRating());
         contentValues.put(DatabaseHelper.FOOD_RESTAURANT_FIELD, food.getRestaurant().getId());
         contentValues.put(CREATED_DATE_FIELD, DateUtil.dateToTimestamp(food.getCreatedDate()));
         contentValues.put(UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(food.getUpdatedDate()));
 
         return contentValues;
     }
-
-
 
     public ContentValues getCartContentValues(Cart cart) {
         ContentValues contentValues = new ContentValues();
@@ -338,8 +344,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return contentValues;
     }
-
-
 
     public ContentValues getCartDetailContentValues(CartDetail cartDetail) {
         ContentValues contentValues = new ContentValues();
@@ -394,8 +398,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         User user8 = userDao.getUserByUsername("daohoang");
         User user9 = userDao.getUserByUsername("ngoanguyen");
         User user10 = userDao.getUserByUsername("phamquang");
-        Log.d("User1", user1.getFullName());
-
 
         //Restaurant Category data
         resCateDao.insertRestaurantCategory(new RestaurantCategory("Mỳ"));
@@ -417,7 +419,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         RestaurantCategory rc7 = resCateDao.getRestaurantCategoryByName("Món Trung Quốc");
         RestaurantCategory rc8 = resCateDao.getRestaurantCategoryByName("Món Ý");
         RestaurantCategory rc9 = resCateDao.getRestaurantCategoryByName("Tráng miệng");
-
 
         // Restaurant data
         resDao.insertRestaurant(new Restaurant("Gà Rán KFC", "123 Nguyễn Thị Minh Khai, Phường Bến Nghé, Quận 1, Thành phố Hồ Chí Minh", "057265484", rc1));
@@ -488,7 +489,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Food f9 = foodDao.getFoodById(9);
         Food f10 = foodDao.getFoodById(10);
 
-
         reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ tại đây rất chuyên nghiệp và không gian rất ấm cúng và thoải mái.", 5.0, user1, res1));
         reviewRestaurantDao.insertReview(new ReviewRestaurant("Không gian quán đẹp mắt nhưng giá cả hơi cao so với chất lượng dịch vụ.", 4.0, user2, res2));
         reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng có không gian sang trọng và dịch vụ tận tình, tạo cảm giác dễ chịu.", 4.5, user3, res3));
@@ -499,7 +499,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ tại đây không tốt lắm và không gian cũng khá đơn điệu.", 2.5, user8, res8));
         reviewRestaurantDao.insertReview(new ReviewRestaurant("Không gian thoải mái và ấm cúng, nhưng dịch vụ hơi chậm và cần cải thiện.", 5.0, user9, res9));
         reviewRestaurantDao.insertReview(new ReviewRestaurant("Quán có không gian dễ chịu và dịch vụ ổn, tuy nhiên trang trí cần phải được nâng cấp.", 3.5, user10, res10));
-
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Quán có không gian dễ chịu và dịch vụ ổn", 4.5, user6, res10));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Quán có không gian dễ chịu và dịch vụ tốt", 5.0, user5, res10));
 
         reviewFoodDao.insertReview(new ReviewFood("Rất ngon, dịch vụ tuyệt vời!", 5.0, user1, f1));
         reviewFoodDao.insertReview(new ReviewFood("Pizza rất thơm, nhưng giá hơi cao.", 4.0, user2, f2));
@@ -511,10 +512,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         reviewFoodDao.insertReview(new ReviewFood("Bánh chocolate không được như kỳ vọng.", 2.5, user8, f8));
         reviewFoodDao.insertReview(new ReviewFood("Cá hồi nướng rất ngon, không gian thoải mái.", 5.0, user9, f9));
         reviewFoodDao.insertReview(new ReviewFood("Súp Tom Yum có vị hơi chua, cần điều chỉnh.", 3.5, user10, f10));
-
-
-
-
+        reviewFoodDao.insertReview(new ReviewFood("Súp Tom Yum có vị cay ngon", 5, user1, f10));
+        reviewFoodDao.insertReview(new ReviewFood("Súp Tom Yum có vị thum thủm, cần coi lại.", 2.5, user3, f10));
+        reviewFoodDao.insertReview(new ReviewFood("Súp Tom Yum có vị hơi chua, cần điều chỉnh.", 4, user5, f10));
     }
 
 

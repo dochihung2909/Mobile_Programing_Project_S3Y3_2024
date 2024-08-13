@@ -6,4 +6,5 @@
     <color name="textSecondaryColor">#95a5a6</color>
     <color name="error">#e74c3c</color>
     <color name="separateColor">#DEE1E1</color>
+    <color name="red">#FF0000</color>
 </resources>

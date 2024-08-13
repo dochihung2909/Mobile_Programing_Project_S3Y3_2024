@@ -155,6 +155,27 @@ public class UserDao extends BaseDao{
         return isValid;
     }
 
+    public boolean isAdmin(String username) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        boolean result = false;
+
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_USER_NAME
+                            + " WHERE " + DatabaseHelper.ID_FIELD + " = ?",
+                    new String[]{username});
+            if (cursor.moveToNext()) {
+
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+
+        return result;
+    }
+
     public List<User> getAllUsers() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = null;

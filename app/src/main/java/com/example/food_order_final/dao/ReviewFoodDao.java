@@ -34,7 +34,8 @@ public class ReviewFoodDao extends BaseDao{
         contentValues.put(DatabaseHelper.REVIEW_COMMENT_FIELD, reviewFood.getComment());
         contentValues.put(DatabaseHelper.REVIEW_USER_FIELD, reviewFood.getUser().getId());
         contentValues.put(DatabaseHelper.REVIEW_FOOD_FIELD, reviewFood.getFood().getId());
-        contentValues.put(DatabaseHelper.REVIEW_RATING_FIELD, reviewFood.getRating());
+        contentValues.put(DatabaseHelper.RATING_FIELD, reviewFood.getRating());
+        contentValues.put(DatabaseHelper.REVIEW_IMAGE_FIELD, reviewFood.getImage());
         contentValues.put(DatabaseHelper.CREATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
         contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
 
@@ -51,6 +52,8 @@ public class ReviewFoodDao extends BaseDao{
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(DatabaseHelper.REVIEW_COMMENT_FIELD, reviewFood.getComment());
+        contentValues.put(DatabaseHelper.RATING_FIELD, reviewFood.getRating());
+        contentValues.put(DatabaseHelper.REVIEW_IMAGE_FIELD, reviewFood.getImage());
         contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
 
         String whereClause = DatabaseHelper.ID_FIELD + " = ? ";
@@ -78,20 +81,8 @@ public class ReviewFoodDao extends BaseDao{
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_REVIEW_FOOD_NAME, null);
             do {
-                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
-                int user_id = getInt(cursor, DatabaseHelper.REVIEW_USER_FIELD);
-                String comment = getString(cursor, DatabaseHelper.REVIEW_COMMENT_FIELD);
-                double rating = getDouble(cursor, DatabaseHelper.REVIEW_RATING_FIELD);
-                User user = userDao.getUserById(user_id);
-                int food_id = getInt(cursor, DatabaseHelper.REVIEW_FOOD_FIELD);
-                Food food = foodDao.getFoodById(food_id);
-                String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
-                Date createdDate = DateUtil.timestampToDate(createdDateString);
-                String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
-                Date updatedDate = DateUtil.timestampToDate(updatedDateString);
-
-                reviewFoods.add(new ReviewFood(id, comment, rating, user, food, createdDate, updatedDate));
-
+                ReviewFood reviewFood = getReviewFoodInfo(cursor);
+                reviewFoods.add(reviewFood);
             } while (cursor.moveToNext());
         } finally {
             if (cursor != null)
@@ -112,20 +103,8 @@ public class ReviewFoodDao extends BaseDao{
                             + " WHERE " + DatabaseHelper.REVIEW_USER_FIELD + " = ?",
                     new String[]{String.valueOf(userId)});
             do {
-                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
-                int user_id = getInt(cursor, DatabaseHelper.REVIEW_USER_FIELD);
-                String comment = getString(cursor, DatabaseHelper.REVIEW_COMMENT_FIELD);
-                double rating = getDouble(cursor, DatabaseHelper.REVIEW_RATING_FIELD);
-                User user = userDao.getUserById(user_id);
-                int food_id = getInt(cursor, DatabaseHelper.REVIEW_FOOD_FIELD);
-                Food food = foodDao.getFoodById(food_id);
-                String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
-                Date createdDate = DateUtil.timestampToDate(createdDateString);
-                String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
-                Date updatedDate = DateUtil.timestampToDate(updatedDateString);
-
-                reviewFoods.add(new ReviewFood(id, comment, rating, user, food, createdDate, updatedDate));
-
+                ReviewFood reviewFood = getReviewFoodInfo(cursor);
+                reviewFoods.add(reviewFood);
             } while (cursor.moveToNext());
         } finally {
             if (cursor != null)
@@ -146,20 +125,8 @@ public class ReviewFoodDao extends BaseDao{
                             + " WHERE " + DatabaseHelper.REVIEW_FOOD_FIELD + " = ?",
                     new String[]{String.valueOf(foodId)});
             do {
-                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
-                int user_id = getInt(cursor, DatabaseHelper.REVIEW_USER_FIELD);
-                String comment = getString(cursor, DatabaseHelper.REVIEW_COMMENT_FIELD);
-                double rating = getDouble(cursor, DatabaseHelper.REVIEW_RATING_FIELD);
-                User user = userDao.getUserById(user_id);
-                int food_id = getInt(cursor, DatabaseHelper.REVIEW_FOOD_FIELD);
-                Food food = foodDao.getFoodById(food_id);
-                String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
-                Date createdDate = DateUtil.timestampToDate(createdDateString);
-                String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
-                Date updatedDate = DateUtil.timestampToDate(updatedDateString);
-
-                reviewFoods.add(new ReviewFood(id, comment, rating, user, food, createdDate, updatedDate));
-
+                ReviewFood reviewFood = getReviewFoodInfo(cursor);
+                reviewFoods.add(reviewFood);
             } while (cursor.moveToNext());
         } finally {
             if (cursor != null)
@@ -168,5 +135,22 @@ public class ReviewFoodDao extends BaseDao{
         }
 
         return reviewFoods;
+    }
+
+    public ReviewFood getReviewFoodInfo(Cursor cursor) {
+        int id = getInt(cursor, DatabaseHelper.ID_FIELD);
+        int user_id = getInt(cursor, DatabaseHelper.REVIEW_USER_FIELD);
+        String comment = getString(cursor, DatabaseHelper.REVIEW_COMMENT_FIELD);
+        double rating = getDouble(cursor, DatabaseHelper.RATING_FIELD);
+        String image = getString(cursor, DatabaseHelper.REVIEW_IMAGE_FIELD);
+        User user = userDao.getUserById(user_id);
+        int food_id = getInt(cursor, DatabaseHelper.REVIEW_FOOD_FIELD);
+        Food food = foodDao.getFoodById(food_id);
+        String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
+        Date createdDate = DateUtil.timestampToDate(createdDateString);
+        String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
+        Date updatedDate = DateUtil.timestampToDate(updatedDateString);
+
+        return (new ReviewFood(id, comment, rating, image, user, food, createdDate, updatedDate));
     }
 }

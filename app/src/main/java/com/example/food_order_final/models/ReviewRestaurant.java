@@ -8,21 +8,35 @@ public class ReviewRestaurant extends Base{
     private int id;
     private User user;
     private Restaurant restaurant;
-    double rating;
+    private double rating;
+    private String image;
 
-    public ReviewRestaurant(int id, String comment, double rating, User user, Restaurant restaurant, Date createdDate, Date updatedDate) {
+    public ReviewRestaurant(int id, String comment, double rating, String image, User user, Restaurant restaurant, Date createdDate, Date updatedDate) {
         this.id = id;
         this.comment = comment;
         this.rating = rating;
+        this.image = image;
         this.user = user;
         this.restaurant = restaurant;
         this.setCreatedDate(createdDate);
         this.setUpdatedDate(updatedDate);
     }
 
+    public ReviewRestaurant(String comment, double rating, String image, User user, Restaurant restaurant) {
+        this.comment = comment;
+        this.rating = rating;
+        this.image = image;
+        this.user = user;
+        this.restaurant = restaurant;
+        this.setCreatedDate(new Date());
+        this.setUpdatedDate(new Date());
+    }
+
+
     public ReviewRestaurant(String comment, double rating, User user, Restaurant restaurant) {
         this.comment = comment;
         this.rating = rating;
+        this.image = null;
         this.user = user;
         this.restaurant = restaurant;
         this.setCreatedDate(new Date());
@@ -63,5 +77,13 @@ public class ReviewRestaurant extends Base{
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

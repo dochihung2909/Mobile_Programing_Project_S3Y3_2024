@@ -1,37 +1,35 @@
 package com.example.food_order_final.models;
 
 public class Payment extends Base {
-
     private int id;
 
-    private PaymentPending paymentPending;
+    private PaymentStatus status;
 
-    private String paymentMethod;
+    private PaymentMethod method;
 
-    public Payment(int id, PaymentPending paymentPending, String paymentMethod) {
+    public Payment(int id, PaymentStatus status, PaymentMethod method) {
         this.id = id;
-        this.paymentPending = paymentPending;
-        this.paymentMethod = paymentMethod;
+        this.status = status;
+        this.method = method;
     }
 
+    public PaymentStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PaymentStatus status) {
+        this.status = status;
+    }
 
     public int getId() {
         return id;
     }
 
-    public PaymentPending getPaymentPending() {
-        return paymentPending;
+    public PaymentMethod getPaymentMethod() {
+        return method;
     }
 
-    public void setPaymentPending(PaymentPending paymentPending) {
-        this.paymentPending = paymentPending;
-    }
-
-    public String getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.method = paymentMethod;
     }
 }

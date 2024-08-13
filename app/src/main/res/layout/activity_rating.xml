@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:id="@+id/main">
+
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Đánh giá"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/textViewSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bạn có hài lòng với món ăn không?"
+        android:textSize="16sp"
+        android:layout_below="@id/textViewTitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"/>
+
+    <LinearLayout
+        android:id="@+id/ratingLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/textViewSubtitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp">
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:rating="5"
+        android:layout_marginEnd="8dp"
+        android:scaleX="0.8"
+        android:scaleY="0.8"
+        android:progressTint="@android:color/holo_orange_light" />
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/etComment"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_below="@id/ratingLayout"
+        android:layout_marginTop="16dp"
+        android:hint="Ý kiến của bạn về món ăn ..."
+        android:background="@android:drawable/edit_text"
+        android:padding="8dp"/>
+
+    <!-- Image Upload Section -->
+    <ImageView
+        android:id="@+id/imageViewUploaded"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/etComment"
+        android:layout_marginTop="16dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="Uploaded Image"
+        android:background="@android:color/darker_gray"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/btnUploadImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imageViewUploaded"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Đăng ảnh"/>
+
+
+    <!-- Submit Button -->
+    <Button
+        android:id="@+id/btnSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="16dp"
+        android:text="Xác nhận"
+        android:textColor="@android:color/white"/>
+</RelativeLayout>
