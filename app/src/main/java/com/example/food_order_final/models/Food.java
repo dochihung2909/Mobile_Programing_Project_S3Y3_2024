@@ -9,23 +9,40 @@ public class Food extends Base{
     private FoodCategory category;
     private Restaurant restaurant;
     private double discount;
+    private double rating;
+    private String avatar;
 
-    public Food(int id, String name, double price,  double discount, FoodCategory category, Restaurant restaurant, Date createdDate, Date updatedDate) {
+    public Food(int id, String name, double price, double discount, double rating, String avatar, FoodCategory category, Restaurant restaurant, Date createdDate, Date updatedDate) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.discount = discount;
+        this.rating = rating;
         this.category = category;
         this.restaurant = restaurant;
         this.setCreatedDate(createdDate);
         this.setUpdatedDate(updatedDate);
     }
 
+    public Food(String name, double price, String avatar, FoodCategory category, Restaurant restaurant) {
+        this.name = name;
+        this.price = price;
+        this.category = category;
+        this.avatar = avatar;
+        this.discount = 0.0;
+        this.rating = 0.0;
+        this.restaurant = restaurant;
+        this.setCreatedDate(new Date());
+        this.setUpdatedDate(new Date());
+    }
+
     public Food(String name, double price, FoodCategory category, Restaurant restaurant) {
         this.name = name;
         this.price = price;
         this.category = category;
+        this.avatar = null;
         this.discount = 0.0;
+        this.rating = 0.0;
         this.restaurant = restaurant;
         this.setCreatedDate(new Date());
         this.setUpdatedDate(new Date());
@@ -77,5 +94,21 @@ public class Food extends Base{
 
     public void setDiscount(double discount) {
         this.discount = discount;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

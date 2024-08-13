@@ -1,5 +1,6 @@
 package com.example.food_order_final.dao;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -60,6 +61,72 @@ public class FoodDao extends BaseDao{
         db.close();
     }
 
+    public boolean updateAllFoodRatings() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cursor = null;
+        boolean result = false;
+        Cursor foodCursor = db.rawQuery("SELECT " + DatabaseHelper.ID_FIELD + " FROM " + DatabaseHelper.TABLE_FOOD_NAME, null);
+
+        if (foodCursor.moveToFirst()) {
+            do {
+                int foodId = getInt(foodCursor, DatabaseHelper.ID_FIELD);
+
+                Cursor ratingCursor = db.rawQuery("SELECT AVG(" + DatabaseHelper.RATING_FIELD
+                                + ") AS averageRating FROM " + DatabaseHelper.TABLE_REVIEW_FOOD_NAME
+                                + " WHERE " + DatabaseHelper.REVIEW_FOOD_FIELD + " = ?",
+                        new String[]{String.valueOf(foodId)});
+
+                if (ratingCursor.moveToFirst()) {
+                    double averageRating = getDouble(ratingCursor, "averageRating");
+
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(DatabaseHelper.RATING_FIELD, averageRating);
+                    String whereClause = DatabaseHelper.ID_FIELD + " = ?";
+                    String[] whereArgs = new String[]{String.valueOf(foodId)};
+                    db.update(DatabaseHelper.TABLE_FOOD_NAME, contentValues, whereClause, whereArgs);
+                }
+                ratingCursor.close();
+            } while (foodCursor.moveToNext());
+            result = true;
+        }
+        foodCursor.close();
+
+        if (result == false)
+            throw new IllegalArgumentException("Update all rating food failed.");
+
+        return result;
+    }
+
+    public int updateFoodRatingByFoodId(int foodId) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cursor = null;
+        int result = -1;
+
+        try {
+            cursor = db.rawQuery("SELECT AVG(" + DatabaseHelper.RATING_FIELD
+                            + ") AS averageRating FROM " + DatabaseHelper.TABLE_REVIEW_FOOD_NAME
+                            + " WHERE " + DatabaseHelper.REVIEW_FOOD_FIELD + " = ?",
+                    new String[]{String.valueOf(foodId)});
+            if (cursor.moveToFirst()) {
+                ContentValues contentValues = new ContentValues();
+                double averageRating = getDouble(cursor, "averageRating");
+                contentValues.put(DatabaseHelper.RATING_FIELD, averageRating);
+                String whereClause = DatabaseHelper.ID_FIELD + " = ?";
+                String[] whereArgs = new String[]{String.valueOf(foodId)};
+                result = db.update(DatabaseHelper.TABLE_FOOD_NAME, contentValues, whereClause, whereArgs);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+
+        if (result == -1)
+            throw new IllegalArgumentException("Failed to update rating.");
+
+        return result;
+    }
+
     public Food getFoodById(int foodId) {
         Food food = null;
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -74,6 +141,10 @@ public class FoodDao extends BaseDao{
 
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
         }
 
         return food;
@@ -91,20 +162,8 @@ public class FoodDao extends BaseDao{
 
             if (cursor != null && cursor.moveToFirst()) {
                 do {
-                    int id = getInt(cursor, DatabaseHelper.ID_FIELD);
-                    String name = getString(cursor, DatabaseHelper.FOOD_NAME_FIELD);
-                    double price = getDouble(cursor, DatabaseHelper.FOOD_PRICE_FIELD);
-                    int category_id = getInt(cursor, DatabaseHelper.FOOD_CATEGORY_FIELD);
-                    double discount = getDouble(cursor, DatabaseHelper.FOOD_DISCOUNT_FIELD);
-                    FoodCategory foodCate = foodCategoryDao.getFoodCategoryById(category_id);
-                    int restaurant_id = getInt(cursor, DatabaseHelper.FOOD_RESTAURANT_FIELD);
-                    Restaurant restaurant = restaurantDao.getRestaurantById(restaurant_id);
-                    String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
-                    String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
-                    Date createdDate = DateUtil.timestampToDate(createdDateString);
-                    Date updatedDate = DateUtil.timestampToDate(updatedDateString);
-
-                    foods.add(new Food(id, name, price, discount, foodCate, restaurant, createdDate, updatedDate));
+                    Food food = getFoodInfo(cursor);
+                    foods.add(food);
                 } while (cursor.moveToNext());
             }
         } finally {
@@ -128,20 +187,8 @@ public class FoodDao extends BaseDao{
 
             if (cursor != null && cursor.moveToFirst()) {
                 do {
-                    int id = getInt(cursor, DatabaseHelper.ID_FIELD);
-                    String name = getString(cursor, DatabaseHelper.FOOD_NAME_FIELD);
-                    double price  = getDouble(cursor, DatabaseHelper.FOOD_PRICE_FIELD);
-                    double discount  = getDouble(cursor, DatabaseHelper.FOOD_DISCOUNT_FIELD);
-                    int categoryId = getInt(cursor, DatabaseHelper.FOOD_CATEGORY_FIELD);
-                    FoodCategory category = foodCategoryDao.getFoodCategoryById(categoryId);
-                    int restaurantId = getInt(cursor, DatabaseHelper.FOOD_RESTAURANT_FIELD);
-                    Restaurant restaurant = restaurantDao.getRestaurantById(restaurantId);
-                    String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
-                    Date createdDate = DateUtil.timestampToDate(createdDateString);
-                    String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
-                    Date updatedDate = DateUtil.timestampToDate(updatedDateString);
-
-                    foods.add(new Food(id, name, price, discount, category, restaurant, createdDate, updatedDate));
+                    Food food = getFoodInfo(cursor);
+                    foods.add(food);
                 } while (cursor.moveToNext());
             }
         } finally {
@@ -185,6 +232,8 @@ public class FoodDao extends BaseDao{
         String name = getString(cursor, DatabaseHelper.FOOD_NAME_FIELD);
         double price  = getDouble(cursor, DatabaseHelper.FOOD_PRICE_FIELD);
         double discount  = getDouble(cursor, DatabaseHelper.FOOD_DISCOUNT_FIELD);
+        double rating  = getDouble(cursor, DatabaseHelper.RATING_FIELD);
+        String avatar = getString(cursor, DatabaseHelper.FOOD_AVATAR_FIELD);
         int categoryId = getInt(cursor, DatabaseHelper.FOOD_CATEGORY_FIELD);
         FoodCategory category = foodCategoryDao.getFoodCategoryById(categoryId);
         int restaurantId = getInt(cursor, DatabaseHelper.FOOD_RESTAURANT_FIELD);
@@ -194,6 +243,6 @@ public class FoodDao extends BaseDao{
         String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
         Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
-        return (new Food(id, name, price, discount, category, restaurant, createdDate, updatedDate));
+        return (new Food(id, name, price, discount, rating, avatar, category, restaurant, createdDate, updatedDate));
     }
 }

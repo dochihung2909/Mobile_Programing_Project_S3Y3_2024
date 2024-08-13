@@ -2,6 +2,8 @@ package com.example.food_order_final.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -15,6 +17,7 @@ import com.example.food_order_final.R;
 import com.example.food_order_final.dao.RoleDao;
 import com.example.food_order_final.dao.UserDao;
 import com.example.food_order_final.database.DatabaseHelper;
+import com.example.food_order_final.models.Food;
 import com.example.food_order_final.models.Role;
 import com.example.food_order_final.models.User;
 
