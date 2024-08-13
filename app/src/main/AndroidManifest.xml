@@ -17,10 +17,22 @@
         android:theme="@style/Theme.Food_Order_Final"
         tools:targetApi="31">
         <activity
-            android:name=".activity.LoadScreenActivity"
+            android:name=".activity.AdminMainActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.AdminMainActivity"
+            android:name=".activity.RatingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.FoodDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.SearchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.UserSettingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.PickLocationActivity"
             android:exported="false" />
         <activity
             android:name=".activity.OrderActivity"
@@ -43,7 +55,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activity.RatingActivity"
+            android:name=".activity.LoadScreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

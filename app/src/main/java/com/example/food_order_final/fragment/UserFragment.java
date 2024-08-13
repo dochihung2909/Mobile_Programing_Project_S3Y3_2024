@@ -1,14 +1,30 @@
 package com.example.food_order_final.fragment;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.example.food_order_final.R;
+import com.example.food_order_final.activity.CartActivity;
+import com.example.food_order_final.activity.RestaurantActivity;
+import com.example.food_order_final.activity.UserSettingActivity;
+import com.example.food_order_final.dao.RoleDao;
+import com.example.food_order_final.dao.UserDao;
+import com.example.food_order_final.database.DatabaseHelper;
+import com.example.food_order_final.models.User;
+
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +41,9 @@ public class UserFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private ImageButton btnSetting, btnCart;
+    private TextView tvUserFullName, tvUsername;
 
     public UserFragment() {
         // Required empty public constructor
@@ -61,6 +80,59 @@ public class UserFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_favourite, container, false);
+        return inflater.inflate(R.layout.fragment_user, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        init();
+
+        SharedPreferences pref = getActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        String username = pref.getString("username", "Guest");
+
+        if (!username.equals("Guest")) {
+            DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
+            UserDao userDao = new UserDao(dbHelper, new RoleDao(dbHelper));
+            User currentUser = userDao.getUserByUsername(username);
+            tvUsername.setText(currentUser.getUsername());
+            tvUserFullName.setText(currentUser.getFullName());
+
+
+        }
+
+        btnSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), UserSettingActivity.class);
+
+                startActivity(intent);
+            }
+        });
+
+        pref = getActivity().getSharedPreferences("UserCart", Context.MODE_PRIVATE);
+        int currentCartId = pref.getInt("cartId", -1);
+
+        if (currentCartId == -1 ){
+            btnCart.setVisibility(View.GONE);
+        } else {
+            btnCart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), CartActivity.class);
+                    startActivity(intent);
+
+                }
+            });
+        }
+
+
+    }
+
+    private void init() {
+        btnSetting = getView().findViewById(R.id.btnSetting);
+        btnCart = getView().findViewById(R.id.btnCart);
+        tvUserFullName = getView().findViewById(R.id.tvUserFullName);
+        tvUsername = getView().findViewById(R.id.tvUsername);
     }
 }

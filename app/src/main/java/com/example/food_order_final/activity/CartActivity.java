@@ -99,9 +99,16 @@ public class CartActivity extends AppCompatActivity {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             cartDetailDao.deleteCartDetail(cartDetail.getId());
-                                            foodsContainer.removeView(foodCardView);
-                                            double totalAmount = cartDao.getTotalAmount(cartId);
-                                            tvFoodDiscountPrice.setText(formatNumber(totalAmount) + "đ");
+                                            if (cartDao.isCartEmpty(cartId)) {
+                                                cartDao.deleteCart(cartId);
+                                                Intent returnIntent = new Intent();
+                                                setResult(RESULT_OK, returnIntent);
+                                                finish();
+                                            } else {
+                                                foodsContainer.removeView(foodCardView);
+                                                double totalAmount = cartDao.getTotalAmount(cartId);
+                                                tvFoodDiscountPrice.setText(formatNumber(totalAmount) + "đ");
+                                            }
                                         }
                                     })
                                     .setNegativeButton("Huỷ", null)

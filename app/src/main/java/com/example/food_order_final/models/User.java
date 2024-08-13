@@ -1,5 +1,9 @@
 package com.example.food_order_final.models;
 
+import android.graphics.Bitmap;
+
+import com.example.food_order_final.database.DbBitmapUtility;
+
 import java.util.Date;
 
 public class User extends Base{
@@ -10,9 +14,9 @@ public class User extends Base{
     private String fullName;
     private String password;
     private Role role;
-    private String avatar;
+    private byte[] avatar;
 
-    public User(int id, String username, String phoneNumber, String email, String fullName, String password, Role role, String avatar, Date createdDate, Date updatedDate) {
+    public User(int id, String username, String phoneNumber, String email, String fullName, String password, Role role, byte[] avatar, Date createdDate, Date updatedDate) {
         this.id = id;
         this.username = username;
         this.phoneNumber = phoneNumber;
@@ -36,7 +40,7 @@ public class User extends Base{
         this.setUpdatedDate(new Date());
     }
 
-    public User(int id, String username, String phoneNumber, String email, String fullName, Role role, String avatar) {
+    public User(int id, String username, String phoneNumber, String email, String fullName, Role role, byte[] avatar) {
         this.id = id;
         this.username = username;
         this.phoneNumber = phoneNumber;
@@ -99,11 +103,11 @@ public class User extends Base{
         this.role = role;
     }
 
-    public String getAvatar() {
-        return avatar;
+    public byte[] getAvatar() {
+        return (avatar);
     }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
+    public void setAvatar(Bitmap avatar) {
+        this.avatar = DbBitmapUtility.getBytes(avatar);
     }
 }

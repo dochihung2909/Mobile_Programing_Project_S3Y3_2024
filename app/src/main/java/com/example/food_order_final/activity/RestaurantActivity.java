@@ -59,6 +59,14 @@ public class RestaurantActivity extends AppCompatActivity {
 
     CartCardView cartCardView;
 
+    int REQUEST_CODE_CART = 1;
+
+    CartDao cartDao;
+
+    User currentUser;
+    
+    int restaurantId;
+
 
 
     @Override
@@ -80,7 +88,7 @@ public class RestaurantActivity extends AppCompatActivity {
             }
         });
 
-        int restaurantId = getIntent().getIntExtra("restaurant", 0);
+        restaurantId = getIntent().getIntExtra("restaurant", 0);
 
         Toast.makeText(this, "" + restaurantId, Toast.LENGTH_SHORT).show();
 //
@@ -95,8 +103,8 @@ public class RestaurantActivity extends AppCompatActivity {
             SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
             String username = sharedPreferences.getString("username", "Guest");
             UserDao userDao = new UserDao(dbhelper, new RoleDao(dbhelper));
-            User currentUser = userDao.getUserByUsername(username);
-            CartDao cartDao = new CartDao(dbhelper);
+            currentUser = userDao.getUserByUsername(username);
+            cartDao = new CartDao(dbhelper);
             cartCardView.setTvRestaurantName(restaurant.getName());
             if (!cartDao.isUserHasCart(currentUser.getId(), restaurantId)) {
                 cartCardView.setVisibility(View.GONE);
@@ -138,6 +146,15 @@ public class RestaurantActivity extends AppCompatActivity {
                 foodCardView.setTvFoodDiscountPrice(food.getPrice());
                 TextView btnAddToCart = foodCardView.findViewById(R.id.btnAddToCart);
 
+                foodCardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(RestaurantActivity.this, FoodDetailActivity.class);
+                        intent.putExtra("foodId", food.getId());
+                        startActivity(intent);
+                    }
+                });
+
                 btnAddToCart.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -151,7 +168,11 @@ public class RestaurantActivity extends AppCompatActivity {
                                 public void onClick(View v) {
                                     Intent intent = new Intent(RestaurantActivity.this, CartActivity.class);
                                     intent.putExtra("cartId", cart.getId());
-                                    startActivity(intent);
+                                    SharedPreferences pref = getSharedPreferences("UserCart", MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = pref.edit();
+                                    editor.apply();
+                                    editor.putInt("currentCartId", cart.getId());
+                                    startActivityForResult(intent, REQUEST_CODE_CART);
                                 }
                             });
                         }
@@ -173,7 +194,18 @@ public class RestaurantActivity extends AppCompatActivity {
         btnBackToMain = findViewById(R.id.btnBackToMain);
         mainLayout = findViewById(R.id.main);
         cartCardView = findViewById(R.id.cartCardView);
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        if (requestCode == REQUEST_CODE_CART) {
+            if (resultCode == RESULT_OK) {
+                if (!cartDao.isUserHasCart(currentUser.getId(), restaurantId)) {
+                    cartCardView.setVisibility(View.GONE);
+                }
+            }
+        }
     }
 }

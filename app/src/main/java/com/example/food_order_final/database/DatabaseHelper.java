@@ -150,7 +150,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 USER_FULL_NAME_FIELD + " TEXT, " +
                 USER_PASSWORD_FIELD + " TEXT, " +
                 USER_ROLE_FIELD + " INTEGER, " +
-                USER_AVATAR_FIELD + " VARCHAR, " +
+                USER_AVATAR_FIELD + " BLOB, " +
                 CREATED_DATE_FIELD + " TIMESTAMP, " +
                 UPDATED_DATE_FIELD + " TIMESTAMP," +
                 "FOREIGN KEY (" + USER_ROLE_FIELD + ") REFERENCES " + TABLE_ROLE_NAME + " (" + ID_FIELD + ")) ";
@@ -202,6 +202,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 FOOD_AVATAR_FIELD + " FLOAT, " +
                 FOOD_CATEGORY_FIELD + " INTEGER, " +
                 FOOD_RESTAURANT_FIELD + " INTEGER, " +
+                FOOD_AVATAR_FIELD + " BLOB, " +
                 CREATED_DATE_FIELD + " TIMESTAMP, " +
                 UPDATED_DATE_FIELD + " TIMESTAMP, " +
                 "FOREIGN KEY (" + FOOD_CATEGORY_FIELD + ") REFERENCES " + TABLE_FOOD_CATEGORY_NAME + " (" + ID_FIELD + "), " +

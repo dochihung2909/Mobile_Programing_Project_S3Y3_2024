@@ -14,7 +14,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/baseline_shopping_cart_24"
+            android:src="@drawable/baseline_shopping_cart_34"
             android:paddingRight="10dp"
 
             />
