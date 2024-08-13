@@ -211,4 +211,30 @@ public class CartDao extends BaseDao {
 
         return totalAmount;
     }
+
+    public void deleteCart(int cartId) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.delete(DatabaseHelper.TABLE_CART_NAME, DatabaseHelper.ID_FIELD + " = ?", new String[]{String.valueOf(cartId)});
+    }
+
+    public boolean isCartEmpty(int cartId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_CART_DETAIL_NAME
+                    + " WHERE " + DatabaseHelper.CART_DETAIL_CART_FIELD + " = ?", new String[]{String.valueOf(cartId)});
+            if (cursor.getCount() <= 0) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return false;
+    }
 }

@@ -10,7 +10,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.food_order_final.R;
 
-public class OrderActivity extends AppCompatActivity {
+public class OrderActivity extends AppCompatActivity  {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

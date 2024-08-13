@@ -19,6 +19,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,11 +31,16 @@ import android.widget.Toast;
 import com.example.food_order_final.R;
 import com.example.food_order_final.activity.MainActivity;
 import com.example.food_order_final.activity.RestaurantActivity;
+import com.example.food_order_final.activity.SearchActivity;
 import com.example.food_order_final.custom_activity.RestaurantCardView;
+import com.example.food_order_final.dao.FoodCategoryDao;
+import com.example.food_order_final.dao.FoodDao;
 import com.example.food_order_final.dao.RestaurantCategoryDao;
 import com.example.food_order_final.dao.RestaurantDao;
 import com.example.food_order_final.database.DatabaseHelper;
+import com.example.food_order_final.models.Food;
 import com.example.food_order_final.models.Restaurant;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.sql.Array;
 import java.util.ArrayList;
@@ -63,6 +69,7 @@ public class HomeFragment extends Fragment {
 
     private TextView tvCurrentLocation;
     private LocationManager locationManager;
+    private TextInputEditText etSearch;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -111,6 +118,7 @@ public class HomeFragment extends Fragment {
     public void initVariable() {
 
         tvCurrentLocation = getView().findViewById(R.id.tvCurrentLocation);
+        etSearch = getView().findViewById(R.id.etSearch);
 
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{
@@ -146,6 +154,19 @@ public class HomeFragment extends Fragment {
         btnGetLocation.setOnClickListener(view -> {
             getLocation();
         });
+
+        btnGetLocation.callOnClick();
+
+//        Search function
+        etSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), SearchActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
     }
 
     @SuppressLint("MissingPermission")

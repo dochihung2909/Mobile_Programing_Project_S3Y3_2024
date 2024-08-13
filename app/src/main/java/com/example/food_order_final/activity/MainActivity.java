@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        Toast.makeText(MainActivity.this, "" + location.getLatitude()+", "+location.getLongitude(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(MainActivity.this, "" + location.getLatitude()+", "+location.getLongitude(), Toast.LENGTH_SHORT).show();
         try {
             Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
             List<Address> addressess = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);

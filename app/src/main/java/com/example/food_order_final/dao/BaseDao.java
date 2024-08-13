@@ -19,6 +19,13 @@ public abstract class BaseDao {
         throw new SQLException("Column " + columnName + " not found !");
     }
 
+    protected byte[] getBlob(Cursor cursor, String columnName) {
+        int index = cursor.getColumnIndex(columnName);
+        if (index != -1)
+            return cursor.getBlob(index);
+        throw new SQLException("Column " + columnName + " not found !");
+    }
+
     protected int getInt(Cursor cursor, String columnName) {
         int index = cursor.getColumnIndex(columnName);
         if (index != -1)
