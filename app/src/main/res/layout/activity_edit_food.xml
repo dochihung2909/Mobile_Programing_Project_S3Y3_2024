@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.EditFoodActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:id="@+id/avatarContainer"
+                >
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:src="@drawable/ic_launcher_background"
+                    android:id="@+id/ivFoodAvatar"/>
+
+
+            </LinearLayout>
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/circle_button"
+                android:src="@drawable/quantum_ic_arrow_back_grey600_24"
+                android:padding="10dp"
+                android:id="@+id/btnBack"/>
+
+        </RelativeLayout>
+
+        <android.widget.Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/no_style_btn"
+            android:backgroundTint="@android:color/holo_blue_light"
+            android:textColor="@color/white"
+            android:layout_marginVertical="10dp"
+            android:text="Sửa ảnh"
+            android:id="@+id/btnEditFoodImage"
+            android:layout_gravity="center"
+            />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Tên món ăn"
+                android:id="@+id/etFoodName"
+                />
+
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Giá món ăn"
+                android:id="@+id/etFoodPrice"
+                />
+
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Giảm giá"
+                android:id="@+id/etFoodDiscount"
+                />
+
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dropdown"
+                android:id="@+id/snFoodCategory"
+                android:paddingVertical="10dp"
+                />
+
+        </LinearLayout>
+
+        <android.widget.Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/no_style_btn"
+            android:backgroundTint="@android:color/holo_green_light"
+            android:textColor="@color/white"
+            android:layout_marginVertical="10dp"
+            android:text="Xác nhận"
+            android:id="@+id/btnEditFoodSubmit"
+            android:layout_gravity="center"
+            />
+
+
+    </LinearLayout>
+
+</ScrollView>

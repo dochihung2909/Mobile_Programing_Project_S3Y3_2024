@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.example.food_order_final.R;
 import com.example.food_order_final.activity.CartActivity;
 import com.example.food_order_final.activity.RestaurantActivity;
+import com.example.food_order_final.activity.RestaurantManagerActivity;
 import com.example.food_order_final.activity.UserSettingActivity;
 import com.example.food_order_final.dao.RoleDao;
 import com.example.food_order_final.dao.UserDao;
@@ -43,7 +44,7 @@ public class UserFragment extends Fragment {
     private String mParam2;
 
     private ImageButton btnSetting, btnCart;
-    private TextView tvUserFullName, tvUsername;
+    private TextView tvUserFullName, tvUsername, btnShopOwner;
 
     public UserFragment() {
         // Required empty public constructor
@@ -98,7 +99,14 @@ public class UserFragment extends Fragment {
             tvUsername.setText(currentUser.getUsername());
             tvUserFullName.setText(currentUser.getFullName());
 
-
+            btnShopOwner.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), RestaurantManagerActivity.class);
+                    intent.putExtra("restaurantOwnerId", currentUser.getId());
+                    startActivity(intent);
+                }
+            });
         }
 
         btnSetting.setOnClickListener(new View.OnClickListener() {
@@ -127,6 +135,7 @@ public class UserFragment extends Fragment {
         }
 
 
+
     }
 
     private void init() {
@@ -134,5 +143,6 @@ public class UserFragment extends Fragment {
         btnCart = getView().findViewById(R.id.btnCart);
         tvUserFullName = getView().findViewById(R.id.tvUserFullName);
         tvUsername = getView().findViewById(R.id.tvUsername);
+        btnShopOwner = getView().findViewById(R.id.btnShopOwner);
     }
 }

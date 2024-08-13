@@ -142,7 +142,8 @@ public class CartActivity extends AppCompatActivity {
                 btnOrderSubmit.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(CartActivity.this, RestaurantActivity.class);
+                        Intent intent = new Intent(CartActivity.this, OrderActivity.class);
+                        intent.putExtra("cartId", cartId);
                         startActivity(intent);
                     }
                 });
