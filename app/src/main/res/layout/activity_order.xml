@@ -144,10 +144,16 @@
                     android:orientation="vertical"
                     android:id="@+id/foodsLayout">
 
-                    <com.example.food_order_final.custom_activity.FoodCardView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
                 </LinearLayout>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hiển thị thêm"
+                    android:layout_gravity="center"
+                    android:id="@+id/btnShowAllFood"
+                    android:visibility="gone"
+                    android:backgroundTint="@color/primaryColor"/>
             </LinearLayout>
 
             <LinearLayout
@@ -167,6 +173,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Tổng cộng (1 món)"
+                        android:id="@+id/tvNumberOfDishes"
                         android:textColor="@color/textSecondaryColor"
                         />
 
@@ -246,7 +253,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Total Price"
-                        android:id="@+id/tvTotalPrice"
+                        android:id="@+id/tvFinalTotalPrice"
                         android:textColor="@color/primaryColor"
                         android:textSize="16dp"
                         android:textStyle="bold"

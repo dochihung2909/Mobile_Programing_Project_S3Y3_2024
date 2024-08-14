@@ -40,6 +40,7 @@ import com.example.food_order_final.dao.RestaurantDao;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Food;
 import com.example.food_order_final.models.Restaurant;
+import com.example.food_order_final.util.LocationUtil;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.sql.Array;
@@ -152,7 +153,7 @@ public class HomeFragment extends Fragment {
         Button btnGetLocation = getView().findViewById(R.id.btnGetLocation);
 
         btnGetLocation.setOnClickListener(view -> {
-            getLocation();
+            LocationUtil.getLocation(getActivity());
         });
 
         btnGetLocation.callOnClick();
@@ -169,15 +170,15 @@ public class HomeFragment extends Fragment {
 
     }
 
-    @SuppressLint("MissingPermission")
-    private void getLocation() {
-        try {
-            locationManager = (LocationManager) getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000L, 5F, (LocationListener) getActivity());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    @SuppressLint("MissingPermission")
+//    private void getLocation() {
+//        try {
+//            locationManager = (LocationManager) getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000L, 5F, (LocationListener) getActivity());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 
 }

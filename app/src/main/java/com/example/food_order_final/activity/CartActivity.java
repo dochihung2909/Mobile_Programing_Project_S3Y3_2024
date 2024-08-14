@@ -63,14 +63,13 @@ public class CartActivity extends AppCompatActivity {
 
         if (cartId != 0) {
             Toast.makeText(CartActivity.this, "" + cartId, Toast.LENGTH_LONG).show();
-            FoodDao foodDao = new FoodDao(dbHelper, new FoodCategoryDao(dbHelper), new RestaurantDao(dbHelper, new RestaurantCategoryDao(dbHelper)));
             CartDetailDao cartDetailDao = new CartDetailDao(dbHelper);
             List<CartDetail> cartDetails = cartDetailDao.getAllCartDetailInCart(cartId);
             CartDao cartDao = new CartDao(dbHelper);
 
             for (CartDetail cartDetail: cartDetails) {
                 FoodCardView foodCardView = new FoodCardView(CartActivity.this);
-                Food food = foodDao.getFoodById(cartDetail.getFood().getId());
+                Food food = cartDetail.getFood();
                 foodCardView.setTvFoodName(food.getName());
                 foodCardView.findViewById(R.id.layoutInCart).setVisibility(FoodCardView.VISIBLE);
                 foodCardView.findViewById(R.id.btnAddToCart).setVisibility(FoodCardView.GONE);
@@ -106,7 +105,7 @@ public class CartActivity extends AppCompatActivity {
                                                 finish();
                                             } else {
                                                 foodsContainer.removeView(foodCardView);
-                                                double totalAmount = cartDao.getTotalAmount(cartId);
+                                                double totalAmount = cartDao.getTotalAmountByCartId(cartId);
                                                 tvFoodDiscountPrice.setText(formatNumber(totalAmount) + "đ");
                                             }
                                         }

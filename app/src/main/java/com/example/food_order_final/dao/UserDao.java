@@ -307,7 +307,7 @@ public class UserDao extends BaseDao{
         Date createdDate = DateUtil.timestampToDate(createdDateString);
         Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
-        return (new User(id, username, email, phone, fullName, password, role, avatar, createdDate, updatedDate));
+        return (new User(id, username, phone, email, fullName, password, role, avatar, createdDate, updatedDate));
     }
 
 }

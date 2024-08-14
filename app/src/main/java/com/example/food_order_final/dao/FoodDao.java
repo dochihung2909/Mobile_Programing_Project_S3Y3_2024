@@ -242,7 +242,8 @@ public class FoodDao extends BaseDao{
         Date createdDate = DateUtil.timestampToDate(createdDateString);
         String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
         Date updatedDate = DateUtil.timestampToDate(updatedDateString);
+        String description = getString(cursor, DatabaseHelper.FOOD_DESCRIPTION_FIELD);
 
-        return (new Food(id, name, price, discount, rating, avatar, category, restaurant, createdDate, updatedDate));
+        return (new Food(id, name, price, discount, rating, avatar, description, category, restaurant, createdDate, updatedDate));
     }
 }
