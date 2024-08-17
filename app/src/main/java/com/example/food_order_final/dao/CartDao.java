@@ -39,10 +39,18 @@ public class CartDao extends BaseDao {
         db.close();
     }
 
+    public void updateCartStatus(int cartId) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseHelper.CART_STATUS, 1);
+        db.update(DatabaseHelper.TABLE_CART_NAME, contentValues, DatabaseHelper.ID_FIELD+" = ?", new String[]{String.valueOf(cartId)});
+        db.close();
+    }
+
     public Cart addToCard(User user, Restaurant restaurant, Food food, int quantity) {
         Cart cart = null;
         if (!isUserHasCart(user.getId(), restaurant.getId())) {
-            cart = new Cart(user, restaurant);
+            cart = new Cart(user, restaurant, 0);
             this.insertCart(cart);
         }
         cart = this.getCartByUserId(user.getId(), restaurant.getId());
@@ -72,14 +80,16 @@ public class CartDao extends BaseDao {
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_CART_NAME +
                             " WHERE " + DatabaseHelper.CART_USER_FIELD + " = ?"
-                    +" AND " + DatabaseHelper.CART_RESTAURANT_FIELD + " = ?",
-                    new String[]{String.valueOf(userId), String.valueOf(restaurantId)});
+                    +" AND " + DatabaseHelper.CART_RESTAURANT_FIELD + " = ?"
+                    +" AND " + DatabaseHelper.CART_STATUS + " = 0"
+                    , new String[]{String.valueOf(userId), String.valueOf(restaurantId)});
             if (cursor != null && cursor.moveToFirst()) {
                 int id = getInt(cursor, DatabaseHelper.ID_FIELD);
                 User user = userDao.getUserById(userId);
                 int restaurant_id = getInt(cursor, DatabaseHelper.CART_RESTAURANT_FIELD);
                 Restaurant restaurant = restaurantDao.getRestaurantById(restaurant_id);
-                cart = new Cart(id, user, restaurant);
+                int status = getInt(cursor, DatabaseHelper.CART_STATUS);
+                cart = new Cart(id, user, restaurant, status);
             }
 
         } catch (Exception e) {
@@ -110,7 +120,9 @@ public class CartDao extends BaseDao {
                 User user = userDao.getUserById(userId);
                 int restaurant_id = getInt(cursor, DatabaseHelper.CART_RESTAURANT_FIELD);
                 Restaurant restaurant = restaurantDao.getRestaurantById(restaurant_id);
-                cart = new Cart(id, user, restaurant);
+
+                int status = getInt(cursor, DatabaseHelper.CART_STATUS);
+                cart = new Cart(id, user, restaurant, status);
             }
 
         } catch (Exception e) {
@@ -132,6 +144,7 @@ public class CartDao extends BaseDao {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_CART_NAME
                             + " WHERE " + DatabaseHelper.CART_USER_FIELD + " = ?"
                             + " AND " + DatabaseHelper.CART_RESTAURANT_FIELD + " = ?"
+                            + " AND " + DatabaseHelper.CART_STATUS + " = 0"
                     , new String[]{String.valueOf(userId), String.valueOf(restaurantId)});
             if(cursor.getCount() > 0){
                 return true;

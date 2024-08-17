@@ -45,6 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_REVIEW_FOOD_NAME = "ReviewFood";
 
     public static final String TABLE_CART_DETAIL_NAME = "CartDetail";
+    public static final String TABLE_PAYMENT_PENDING_NAME = "PaymentPending";
 
     // Commons columns
     public static final String CREATED_DATE_FIELD = "created_date";
@@ -58,10 +59,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String CART_DETAIL_QUANTITY_FIELD = "quantity";
     public static final String CART_DETAIL_PRICE_FIELD = "price";
 
+    // Table PaymentPending Columns
+    public static final String PAYMENT_PENDING_STATUS = "status";
+    public static final String PAYMENT_PENDING_CART = "cart_id";
+    public static final String PAYMENT_PENDING_TOTAL = "total";
+    public static final String PAYMENT_PENDING_METHOD = "method";
+    public static final String PAYMENT_PENDING_NOTE = "note";
+
     // Table Cart columns
     public static final String CART_USER_FIELD = "user_id";
     public static final String CART_ORDER_DATE = "order_date";
     public static final String CART_RESTAURANT_FIELD = "restaurant_id";
+    public static final String CART_STATUS = "status";
 
 
     // Table Role columns
@@ -215,6 +224,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 CART_ORDER_DATE + " TIMESTAMP, " +
                 CART_USER_FIELD + " INTEGER, " +
                 CART_RESTAURANT_FIELD + " INTEGER, " +
+                CART_STATUS + " INTEGER, " +
                 CREATED_DATE_FIELD + " TIMESTAMP, " +
                 UPDATED_DATE_FIELD + " TIMESTAMP, " +
                 "FOREIGN KEY (" + CART_USER_FIELD + ") REFERENCES " + TABLE_USER_NAME + "(" + ID_FIELD + "), " +
@@ -258,6 +268,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY (" + REVIEW_USER_FIELD + ") REFERENCES " + TABLE_USER_NAME + "(" + ID_FIELD + "), "+
                 "FOREIGN KEY (" + REVIEW_FOOD_FIELD + ") REFERENCES " + TABLE_FOOD_NAME + "(" + ID_FIELD + "))";
         db.execSQL(sqlReviewFood);
+
+        String sqlPaymentPending = "CREATE TABLE " + TABLE_PAYMENT_PENDING_NAME + " (" +
+                ID_FIELD + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                PAYMENT_PENDING_METHOD + " INTEGER, " +
+                PAYMENT_PENDING_CART + " INTEGER, " +
+                PAYMENT_PENDING_STATUS + " INTEGER, " +
+                PAYMENT_PENDING_TOTAL + " FLOAT, " +
+                PAYMENT_PENDING_NOTE + " TEXT, " +
+                CREATED_DATE_FIELD + " TIMESTAMP, " +
+                UPDATED_DATE_FIELD + " TIMESTAMP, " +
+                "FOREIGN KEY (" + PAYMENT_PENDING_CART + ") REFERENCES " + TABLE_CART_NAME + "(" + ID_FIELD + "))";
+        db.execSQL(sqlPaymentPending);
     }
 
     @Override
@@ -341,6 +363,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DatabaseHelper.CART_USER_FIELD, cart.getUser().getId());
         contentValues.put(DatabaseHelper.CART_RESTAURANT_FIELD, cart.getRestaurant().getId());
+        contentValues.put(DatabaseHelper.CART_STATUS, cart.getStatus());
         contentValues.put(CREATED_DATE_FIELD, DateUtil.dateToTimestamp(cart.getCreatedDate()));
         contentValues.put(UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(cart.getUpdatedDate()));
 

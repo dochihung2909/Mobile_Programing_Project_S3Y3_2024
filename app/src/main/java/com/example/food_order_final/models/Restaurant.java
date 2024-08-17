@@ -33,7 +33,6 @@ public class Restaurant extends Base{
         this.category = category;
         this.isPartner = false;
         this.rating = 0.0;
-        this.setCreatedDate(new Date());
         this.avatar = null;
         this.setCreatedDate(new Date());
         this.setUpdatedDate(new Date());

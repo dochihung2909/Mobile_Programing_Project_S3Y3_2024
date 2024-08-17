@@ -2,6 +2,7 @@ package com.example.food_order_final.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
@@ -32,6 +33,7 @@ import com.example.food_order_final.dao.CartDao;
 import com.example.food_order_final.dao.CartDetailDao;
 import com.example.food_order_final.dao.FoodCategoryDao;
 import com.example.food_order_final.dao.FoodDao;
+import com.example.food_order_final.dao.PaymentPendingDao;
 import com.example.food_order_final.dao.RestaurantCategoryDao;
 import com.example.food_order_final.dao.RestaurantDao;
 import com.example.food_order_final.dao.RoleDao;
@@ -40,6 +42,9 @@ import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Cart;
 import com.example.food_order_final.models.CartDetail;
 import com.example.food_order_final.models.Food;
+import com.example.food_order_final.models.PaymentMethod;
+import com.example.food_order_final.models.PaymentPending;
+import com.example.food_order_final.models.PaymentStatus;
 import com.example.food_order_final.models.Restaurant;
 import com.example.food_order_final.models.User;
 import com.example.food_order_final.util.LocationUtil;
@@ -57,6 +62,13 @@ public class OrderActivity extends AppCompatActivity implements LocationListener
     private Button btnOrderSubmit, btnShowAllFood;
     private ImageButton btnBack;
     private int cartId = -1;
+    private RadioButton  cashPaymentMethod, momoPaymentMethod;
+
+    private PaymentMethod paymentMethod = PaymentMethod.CASH;
+
+    private Cart cart;
+
+    private double finalTotalPrice = 0;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -77,8 +89,7 @@ public class OrderActivity extends AppCompatActivity implements LocationListener
             DatabaseHelper dbHelper = new DatabaseHelper(OrderActivity.this);
             CartDao cartDao = new CartDao(dbHelper);
             RestaurantDao restaurantDao = new RestaurantDao(dbHelper, new RestaurantCategoryDao(dbHelper));
-            Cart cart = cartDao.getCartById(cartId);
-            Toast.makeText(OrderActivity.this, "Cart ID = " + cartId, Toast.LENGTH_SHORT).show();
+            cart = cartDao.getCartById(cartId);
             Restaurant restaurant = cart.getRestaurant();
             CartDetailDao cartDetailDao = new CartDetailDao(dbHelper);
             List<CartDetail> cartDetails = cartDetailDao.getAllCartDetailInCart(cartId);
@@ -91,15 +102,13 @@ public class OrderActivity extends AppCompatActivity implements LocationListener
             User currentUser = cart.getUser();
             tvUserFullName.setText(currentUser.getFullName());
 
-            Toast.makeText(OrderActivity.this, "Cart ID = " + currentUser.getEmail(), Toast.LENGTH_SHORT).show();
-
             LocationUtil.getLocation(OrderActivity.this);
             tvUserPhoneNumber.setText(currentUser.getPhoneNumber());
             tvNumberOfDishes.setText(String.format("Tổng số món ăn (%s món)", totalDishes));
             tvTotalDishPrice.setText(PriceUtil.formatNumber(totalDishAmount) + "đ");
             tvShipPrice.setText(PriceUtil.formatNumber(shipPrice) + "đ");
             tvRestaurantName.setText(restaurant.getName());
-            double finalTotalPrice = totalDishAmount + shipPrice;
+            finalTotalPrice = totalDishAmount + shipPrice;
             tvFinalTotalPrice.setText(PriceUtil.formatNumber(finalTotalPrice) + "đ");
 
             if (cartDetails.size() > 1) {
@@ -117,6 +126,19 @@ public class OrderActivity extends AppCompatActivity implements LocationListener
                 }
             });
 
+
+            btnOrderSubmit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String note = String.valueOf(etOrderNote.getText());
+                    PaymentPending paymentPending = new PaymentPending(PaymentStatus.PENDING, cart, finalTotalPrice, paymentMethod, note);
+                    PaymentPendingDao paymentPendingDao = new PaymentPendingDao(dbHelper);
+                    paymentPendingDao.insertPaymentPending(paymentPending);
+                    cartDao.updateCartStatus(cartId);
+                    Intent intent = new Intent(OrderActivity.this, PaymentSuccess.class);
+                    startActivity(intent);
+                }
+            });
         }
 
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -129,16 +151,11 @@ public class OrderActivity extends AppCompatActivity implements LocationListener
         radioGroupPaymentMethod.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                RadioButton radioButton = (RadioButton) radioGroupPaymentMethod.findViewById(checkedId);
-            }
-        });
-
-        btnOrderSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int selectedPaymentMethodId = radioGroupPaymentMethod.getCheckedRadioButtonId();
-                Toast.makeText(OrderActivity.this, "" + selectedPaymentMethodId, Toast.LENGTH_LONG).show();
-
+                if (cashPaymentMethod.isChecked()) {
+                    paymentMethod = PaymentMethod.CASH;
+                } else if (momoPaymentMethod.isChecked()) {
+                    paymentMethod = PaymentMethod.E_WALLET;
+                }
             }
         });
     }
@@ -158,6 +175,8 @@ public class OrderActivity extends AppCompatActivity implements LocationListener
         tvNumberOfDishes = findViewById(R.id.tvNumberOfDishes);
         btnShowAllFood = findViewById(R.id.btnShowAllFood);
         tvTotalDishPrice = findViewById(R.id.tvTotalDishPrice);
+        cashPaymentMethod = findViewById(R.id.cashPaymentMethod);
+        momoPaymentMethod = findViewById(R.id.momoPaymentMethod);
     }
 
     private void addFoodToContainer(CartDetail cartDetail) {
