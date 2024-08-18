@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.food_order_final.R;
+import com.example.food_order_final.fragment.AdminHomeFragment;
+import com.example.food_order_final.fragment.AdminStatisticFragment;
 import com.example.food_order_final.fragment.HomeFragment;
 import com.example.food_order_final.fragment.OrderFragment;
 import com.example.food_order_final.fragment.UserFragment;
@@ -26,13 +28,14 @@ public class AdminMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_admin_main);
+        initWidgets();
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.adminMain), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new HomeFragment())
+        getSupportFragmentManager().beginTransaction().replace(R.id.adminFrameLayout, new AdminHomeFragment())
                 .addToBackStack(null)
                 .commit();
 
@@ -43,17 +46,14 @@ public class AdminMainActivity extends AppCompatActivity {
                 Fragment fragment = null;
                 switch (tab.getPosition()) {
                     case 0:
-                        fragment = new HomeFragment();
+                        fragment = new AdminHomeFragment();
                         break;
                     case 1:
-                        fragment = new OrderFragment();
-                        break;
-                    case 2:
-                        fragment = new UserFragment();
+                        fragment = new AdminStatisticFragment();
                         break;
                 }
 
-                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, fragment)
+                getSupportFragmentManager().beginTransaction().replace(R.id.adminFrameLayout, fragment)
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .commit();
             }

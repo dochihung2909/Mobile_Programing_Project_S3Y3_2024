@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.AdminReviewResManagement"
+    android:orientation="vertical">
+
+
+    <Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?actionBarSize"
+        android:theme="?actionBarTheme"
+        android:background="@color/primaryColor">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_arrow_back_24"
+            android:background="@android:color/transparent"
+            android:layout_margin="20dp"
+            android:id="@+id/btnBackToMain"/>
+
+        <TextView
+            android:id="@+id/tvAdminReviewResTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="REVIEW"
+            android:textSize="28dp"
+            android:textColor="@color/black"
+            android:layout_gravity="center"/>
+
+        <Button
+            android:id="@+id/btnAdminAddReviewRes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+"
+            android:textSize="32dp"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/primaryColor"
+            android:layout_gravity="end"/>
+    </Toolbar>
+
+    <ListView
+        android:id="@+id/lvAdminReviewRes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@color/quantum_grey300"
+        android:dividerHeight="2dp" />
+
+</LinearLayout>

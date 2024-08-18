@@ -39,10 +39,19 @@ public class ReviewRestaurantDao extends BaseDao{
         contentValues.put(DatabaseHelper.CREATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
         contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
 
-        result = db.insert(DatabaseHelper.TABLE_REVIEW_RESTAURANT_NAME, null, contentValues);
+        try {
+            result = db.insert(DatabaseHelper.TABLE_REVIEW_RESTAURANT_NAME, null, contentValues);
 
-        if (result == -1)
-            throw new IllegalArgumentException("Failed to insert review into the database.");
+            if (result == -1)
+                throw new IllegalArgumentException("Failed to insert review into the database.");
+
+            int restaurantId = reviewRestaurant.getRestaurant().getId();
+            dbHelper.resDao.updateResRatingById(restaurantId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.close();
+        }
 
         return result;
     }
@@ -80,17 +89,46 @@ public class ReviewRestaurantDao extends BaseDao{
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_REVIEW_RESTAURANT_NAME, null);
-            do {
-                ReviewRestaurant reviewRestaurant = getReviewResInfo(cursor);
-                reviewRestaurants.add(reviewRestaurant);
-            } while (cursor.moveToNext());
+
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    ReviewRestaurant reviewRestaurant = getReviewResInfo(cursor);
+                    reviewRestaurants.add(reviewRestaurant);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
-            if (cursor != null)
+            if (cursor != null) {
                 cursor.close();
+            }
             db.close();
         }
 
         return reviewRestaurants;
+    }
+
+    public ReviewRestaurant getReviewById(int reviewId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        ReviewRestaurant reviewRestaurant = null;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_REVIEW_RESTAURANT_NAME
+                            + " WHERE " + DatabaseHelper.ID_FIELD + " = ?",
+                    new String[]{String.valueOf(reviewId)});
+
+            if (cursor != null && cursor.moveToFirst()) {
+                reviewRestaurant = getReviewResInfo(cursor);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+        return reviewRestaurant;
     }
 
     public List<ReviewRestaurant> getReviewsByUserId(int userId) {

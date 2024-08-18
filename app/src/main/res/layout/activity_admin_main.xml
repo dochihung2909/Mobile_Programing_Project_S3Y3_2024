@@ -32,11 +32,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Thống kê" />
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cá nhân"/>
     </com.google.android.material.tabs.TabLayout>
 
 

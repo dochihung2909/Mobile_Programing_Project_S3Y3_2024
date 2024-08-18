@@ -133,6 +133,25 @@ public class RestaurantDao extends BaseDao{
 
         return result;
     }
+
+    public boolean isRestaurantExists(String resName, String resAddress) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        boolean result = false;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_NAME
+                    + " WHERE " + DatabaseHelper.RESTAURANT_NAME_FIELD + " = ? "
+                    + " AND " + DatabaseHelper.RESTAURANT_ADDRESS_FIELD + " = ?",
+                    new String[]{resName, resAddress});
+            if (cursor.moveToFirst())
+                result = true;
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+        return result;
+    }
  
     public List<Restaurant> getAllRestaurants() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -144,8 +163,7 @@ public class RestaurantDao extends BaseDao{
                     null);
             if (cursor != null && cursor.moveToFirst()) {
                 do {
-                    Restaurant restaurant = getRestaurantInfo(cursor);
-                    restaurants.add(restaurant);
+                    restaurants.add(getRestaurantInfo(cursor));
                 } while(cursor.moveToNext());
             }
         } finally {
@@ -214,9 +232,9 @@ public class RestaurantDao extends BaseDao{
                             + " WHERE " + DatabaseHelper.ID_FIELD + " LIKE ?",
                     new String[]{"%" + resName + "%"});
             if (cursor != null && cursor.moveToFirst()) {
-
-
-                restaurants.add(getRestaurantInfo(cursor));
+                do {
+                    restaurants.add(getRestaurantInfo(cursor));
+                } while (cursor.moveToNext());
             }
         } finally {
             if(cursor != null) {
@@ -239,8 +257,6 @@ public class RestaurantDao extends BaseDao{
                     new String[]{restaurantName});
 
             if (cursor != null && cursor.moveToFirst()) {
-
-
                 restaurant = getRestaurantInfo(cursor);
             }
         } finally {

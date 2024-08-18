@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="?attr/selectableItemBackground"
+    android:layout_marginBottom="8dp">
+
+    <!-- Review ID -->
+    <TextView
+        android:id="@+id/tvAdminReviewFoodId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Review ID: 12345"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <!-- User ID -->
+    <TextView
+        android:id="@+id/tvAdminReviewFoodUserId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User ID: 67890"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        android:layout_marginTop="4dp"/>
+
+    <!-- Food ID -->
+    <TextView
+        android:id="@+id/tvAdminReviewFoodFoodId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Food ID: 54321"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        android:layout_marginTop="4dp"/>
+
+    <!-- Comment -->
+    <TextView
+        android:id="@+id/tvAdminReviewFoodComment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="This is a sample comment. It should be descriptive and provide feedback about the food."
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp"/>
+
+</LinearLayout>

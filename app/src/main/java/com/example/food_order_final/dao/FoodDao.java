@@ -61,6 +61,45 @@ public class FoodDao extends BaseDao{
         db.close();
     }
 
+    public boolean isFoodExists(String foodName, Restaurant res) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        boolean result = false;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_NAME
+                            + " WHERE " + DatabaseHelper.FOOD_NAME_FIELD + " = ? "
+                            + " AND " + DatabaseHelper.FOOD_RESTAURANT_FIELD + " = ? ",
+                    new String[]{foodName, String.valueOf(res.getId())});
+            if (cursor.moveToFirst()) {
+                result = true;
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+        return result;
+    }
+
+    public List<Food> getAllFoods() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        List<Food> foods = new ArrayList<>();
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_NAME, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    foods.add(getFoodInfo(cursor));
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+        return foods;
+    }
+
     public boolean updateAllFoodRatings() {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursor = null;
@@ -173,6 +212,28 @@ public class FoodDao extends BaseDao{
         }
 
         return foods;
+    }
+
+    public Food getFoodByName(String foodName) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        Food food = null;
+
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_NAME
+                            + " WHERE " + DatabaseHelper.FOOD_NAME_FIELD + " = ?",
+                    new String[]{foodName});
+
+            if (cursor != null && cursor.moveToFirst()) {
+                food = getFoodInfo(cursor);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+
+        return food;
     }
 
     public List<Food> getFoodsByRestaurantId(int resId) {

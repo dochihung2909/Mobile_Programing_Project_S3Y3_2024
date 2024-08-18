@@ -39,10 +39,19 @@ public class ReviewFoodDao extends BaseDao{
         contentValues.put(DatabaseHelper.CREATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
         contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
 
-        result = db.insert(DatabaseHelper.TABLE_REVIEW_FOOD_NAME, null, contentValues);
+        try {
+            result = db.insert(DatabaseHelper.TABLE_REVIEW_FOOD_NAME, null, contentValues);
 
-        if (result == -1)
-            throw new IllegalArgumentException("Failed to insert review into the database.");
+            if (result == -1)
+                throw new IllegalArgumentException("Failed to insert review into the database.");
+
+            int foodId = reviewFood.getFood().getId();
+            dbHelper.foodDao.updateFoodRatingByFoodId(foodId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.close();
+        }
 
         return result;
     }
@@ -80,17 +89,42 @@ public class ReviewFoodDao extends BaseDao{
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_REVIEW_FOOD_NAME, null);
-            do {
-                ReviewFood reviewFood = getReviewFoodInfo(cursor);
-                reviewFoods.add(reviewFood);
-            } while (cursor.moveToNext());
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    reviewFoods.add(getReviewFoodInfo(cursor));
+                } while (cursor.moveToNext());
+            }
         } finally {
-            if (cursor != null)
+            if (cursor != null) {
                 cursor.close();
+            }
             db.close();
         }
 
         return reviewFoods;
+    }
+
+    public ReviewFood getReviewById(int reviewId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        ReviewFood reviewFood = null;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_REVIEW_FOOD_NAME
+                            + " WHERE " + DatabaseHelper.ID_FIELD + " = ?",
+                    new String[]{String.valueOf(reviewId)});
+
+            if (cursor != null && cursor.moveToFirst()) {
+                reviewFood = getReviewFoodInfo(cursor);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+        return reviewFood;
     }
 
     public List<ReviewFood> getReviewsByUserId(int userId) {

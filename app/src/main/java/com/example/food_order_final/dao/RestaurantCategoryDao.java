@@ -52,6 +52,24 @@ public class RestaurantCategoryDao extends BaseDao{
         db.close();
     }
 
+    public boolean isCategoryNameExists(String resCateName) {
+        Cursor cursor = null;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        boolean result = false;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_CATEGORY_NAME
+                            + " WHERE " + DatabaseHelper.RESTAURANT_CATEGORY_NAME_FIELD + " = ?",
+                    new String[]{resCateName});
+            if (cursor.moveToFirst())
+                result = true;
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+        return result;
+    }
+
     public List<RestaurantCategory> getAllRestaurantCategories() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = null;
@@ -61,21 +79,16 @@ public class RestaurantCategoryDao extends BaseDao{
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_CATEGORY_NAME,
                     null);
             if (cursor != null && cursor.moveToFirst()) {
-                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
-                String name = getString(cursor, DatabaseHelper.RESTAURANT_CATEGORY_NAME_FIELD);
-                String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
-                String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
-                Date createdDate = DateUtil.timestampToDate(createdDateString);
-                Date updatedDate = DateUtil.timestampToDate(updatedDateString);
-
-                resCategories.add(new RestaurantCategory(id, name, createdDate, updatedDate));
+                do {
+                    RestaurantCategory resCate = getResCateInfo(cursor);
+                    resCategories.add(resCate);
+                } while (cursor.moveToNext());
             }
         } finally {
             if (cursor != null)
                 cursor.close();
             db.close();
         }
-
         return resCategories;
     }
 
@@ -88,14 +101,7 @@ public class RestaurantCategoryDao extends BaseDao{
                             + " WHERE " + DatabaseHelper.ID_FIELD + " = ?",
                     new String[]{String.valueOf(resCateId)});
             if (cursor != null && cursor.moveToFirst()) {
-                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
-                String name = getString(cursor, DatabaseHelper.RESTAURANT_CATEGORY_NAME_FIELD);
-                String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
-                String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
-                Date createdDate = DateUtil.timestampToDate(createdDateString);
-                Date updatedDate = DateUtil.timestampToDate(updatedDateString);
-
-                resCate = new RestaurantCategory(id, name, createdDate, updatedDate);
+                resCate = getResCateInfo(cursor);
             }
         } finally {
             if(cursor != null) {
@@ -109,28 +115,32 @@ public class RestaurantCategoryDao extends BaseDao{
 
     public RestaurantCategory getRestaurantCategoryByName(String resCateName) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        RestaurantCategory restaurantCategory = null;
+        RestaurantCategory resCate = null;
         Cursor cursor = null;
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_CATEGORY_NAME
                             + " WHERE " + DatabaseHelper.RESTAURANT_CATEGORY_NAME_FIELD + " = ?",
                     new String[]{resCateName});
             if (cursor != null && cursor.moveToFirst()) {
-                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
-                String name = getString(cursor, DatabaseHelper.RESTAURANT_CATEGORY_NAME_FIELD);
-                String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
-                String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
-                Date createdDate = DateUtil.timestampToDate(createdDateString);
-                Date updatedDate = DateUtil.timestampToDate(updatedDateString);
-
-                restaurantCategory = new RestaurantCategory(id, name, createdDate, updatedDate);
+                resCate = getResCateInfo(cursor);
             }
         } finally {
             if(cursor != null)
                 cursor.close();
             db.close();
         }
-        return restaurantCategory;
+        return resCate;
+    }
+
+    public RestaurantCategory getResCateInfo(Cursor cursor) {
+        int id = getInt(cursor, DatabaseHelper.ID_FIELD);
+        String name = getString(cursor, DatabaseHelper.RESTAURANT_CATEGORY_NAME_FIELD);
+        String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
+        String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
+        Date createdDate = DateUtil.timestampToDate(createdDateString);
+        Date updatedDate = DateUtil.timestampToDate(updatedDateString);
+
+        return new RestaurantCategory(id, name, createdDate, updatedDate);
     }
 
 }
