@@ -1,5 +1,6 @@
 package com.example.food_order_final.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,10 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.food_order_final.R;
 import com.example.food_order_final.activity.CartActivity;
+import com.example.food_order_final.activity.LoadScreenActivity;
+import com.example.food_order_final.activity.LoginActivity;
 import com.example.food_order_final.activity.RestaurantActivity;
 import com.example.food_order_final.activity.RestaurantManagerActivity;
 import com.example.food_order_final.activity.UserSettingActivity;
@@ -24,6 +28,7 @@ import com.example.food_order_final.dao.RoleDao;
 import com.example.food_order_final.dao.UserDao;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.User;
+import com.example.food_order_final.util.LoadImageUtil;
 
 import java.util.Objects;
 
@@ -45,6 +50,11 @@ public class UserFragment extends Fragment {
 
     private ImageButton btnSetting, btnCart;
     private TextView tvUserFullName, tvUsername, btnShopOwner;
+    private int REQUEST_CODE_USER_SETTING = 400;
+    private ImageView ivUserAvatar;
+    private Button btnLogout;
+    private User currentUser;
+    private UserDao userDao;
 
     public UserFragment() {
         // Required empty public constructor
@@ -94,10 +104,9 @@ public class UserFragment extends Fragment {
 
         if (!username.equals("Guest")) {
             DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
-            UserDao userDao = new UserDao(dbHelper, new RoleDao(dbHelper));
-            User currentUser = userDao.getUserByUsername(username);
-            tvUsername.setText(currentUser.getUsername());
-            tvUserFullName.setText(currentUser.getFullName());
+            userDao = new UserDao(dbHelper, new RoleDao(dbHelper));
+            currentUser = userDao.getUserByUsername(username);
+            updateUI(currentUser);
 
             btnShopOwner.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -107,6 +116,20 @@ public class UserFragment extends Fragment {
                     startActivity(intent);
                 }
             });
+
+            btnLogout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    SharedPreferences pref = getActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit().clear();
+                    editor.apply();
+
+                    Intent intent = new Intent(getActivity().getApplicationContext(), LoginActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    getActivity().finish();
+                }
+            });
         }
 
         btnSetting.setOnClickListener(new View.OnClickListener() {
@@ -114,7 +137,7 @@ public class UserFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), UserSettingActivity.class);
 
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE_USER_SETTING);
             }
         });
 
@@ -133,9 +156,6 @@ public class UserFragment extends Fragment {
                 }
             });
         }
-
-
-
     }
 
     private void init() {
@@ -144,5 +164,25 @@ public class UserFragment extends Fragment {
         tvUserFullName = getView().findViewById(R.id.tvUserFullName);
         tvUsername = getView().findViewById(R.id.tvUsername);
         btnShopOwner = getView().findViewById(R.id.btnShopOwner);
+        ivUserAvatar = getView().findViewById(R.id.ivUserAvatar);
+        btnLogout = getView().findViewById(R.id.btnLogout);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_USER_SETTING) {
+            if (resultCode == Activity.RESULT_OK) {
+                currentUser = userDao.getUserById(currentUser.getId());
+                updateUI(currentUser);
+            }
+        }
+    }
+
+    private void updateUI(User currentUser) {
+        tvUsername.setText(currentUser.getUsername());
+        tvUserFullName.setText(currentUser.getFullName());
+        LoadImageUtil.loadImage(ivUserAvatar, currentUser.getAvatar());
     }
 }

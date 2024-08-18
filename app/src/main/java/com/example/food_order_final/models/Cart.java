@@ -8,17 +8,21 @@ public class Cart extends Base{
     private User user;
     private Restaurant restaurant;
 
+    private int status;
 
-    public Cart(User user, Restaurant restaurant) {
+
+    public Cart(User user, Restaurant restaurant,int status) {
         this.user = user;
         this.restaurant = restaurant;
+        this.status = status;
         this.setCreatedDate(new Date());
         this.setUpdatedDate(new Date());
     }
-    public Cart(int id, User user, Restaurant restaurant) {
+    public Cart(int id, User user, Restaurant restaurant, int status) {
         this.id = id;
         this.user = user;
         this.restaurant = restaurant;
+        this.status = status;
     }
 
     public int getId() {
@@ -39,5 +43,13 @@ public class Cart extends Base{
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

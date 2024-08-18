@@ -1,40 +1,47 @@
 package com.example.food_order_final.models;
 
+import java.util.Date;
+
 public class PaymentPending extends Base {
 
     private int id;
-    private boolean status;
-    private User user;
+    private PaymentStatus paymentStatus;
     private Cart cart;
     private double total;
+    private PaymentMethod paymentMethod;
+    private String note;
 
-    public PaymentPending(int id, boolean status, User user, Cart cart, double total) {
+    public PaymentPending(int id, PaymentStatus paymentStatus, Cart cart, double total, PaymentMethod paymentMethod, String note) {
         this.id = id;
-        this.status = status;
-        this.user = user;
+        this.paymentStatus = paymentStatus;
         this.cart = cart;
         this.total = total;
+        this.paymentMethod = paymentMethod;
+        this.note = note;
+        this.setCreatedDate(new Date());
+        this.setUpdatedDate(new Date());
     }
 
+    public PaymentPending(PaymentStatus paymentStatus, Cart cart, double total, PaymentMethod paymentMethod, String note) {
+        this.paymentStatus = paymentStatus;
+        this.cart = cart;
+        this.total = total;
+        this.paymentMethod = paymentMethod;
+        this.note = note;
+        this.setCreatedDate(new Date());
+        this.setUpdatedDate(new Date());
+    }
 
     public int getId() {
         return id;
     }
 
-    public boolean isStatus() {
-        return status;
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 
     public Cart getCart() {
@@ -51,5 +58,21 @@ public class PaymentPending extends Base {
 
     public void setTotal(double total) {
         this.total = total;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }

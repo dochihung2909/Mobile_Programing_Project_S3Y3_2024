@@ -45,6 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_REVIEW_FOOD_NAME = "ReviewFood";
 
     public static final String TABLE_CART_DETAIL_NAME = "CartDetail";
+    public static final String TABLE_PAYMENT_PENDING_NAME = "PaymentPending";
 
     // Commons columns
     public static final String CREATED_DATE_FIELD = "created_date";
@@ -58,10 +59,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String CART_DETAIL_QUANTITY_FIELD = "quantity";
     public static final String CART_DETAIL_PRICE_FIELD = "price";
 
+    // Table PaymentPending Columns
+    public static final String PAYMENT_PENDING_STATUS = "status";
+    public static final String PAYMENT_PENDING_CART = "cart_id";
+    public static final String PAYMENT_PENDING_TOTAL = "total";
+    public static final String PAYMENT_PENDING_METHOD = "method";
+    public static final String PAYMENT_PENDING_NOTE = "note";
+
     // Table Cart columns
     public static final String CART_USER_FIELD = "user_id";
     public static final String CART_ORDER_DATE = "order_date";
     public static final String CART_RESTAURANT_FIELD = "restaurant_id";
+    public static final String CART_STATUS = "status";
 
 
     // Table Role columns
@@ -100,6 +109,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String FOOD_AVATAR_FIELD = "avatar";
     public static final String FOOD_CATEGORY_FIELD = "category";
     public static final String FOOD_RESTAURANT_FIELD = "restaurant";
+    public static final String FOOD_DESCRIPTION_FIELD = "description";
 
     // Table Review columns
     public static final String REVIEW_USER_FIELD = "user_id";
@@ -150,7 +160,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 USER_FULL_NAME_FIELD + " TEXT, " +
                 USER_PASSWORD_FIELD + " TEXT, " +
                 USER_ROLE_FIELD + " INTEGER, " +
-                USER_AVATAR_FIELD + " BLOB, " +
+                USER_AVATAR_FIELD + " TEXT, " +
                 CREATED_DATE_FIELD + " TIMESTAMP, " +
                 UPDATED_DATE_FIELD + " TIMESTAMP," +
                 "FOREIGN KEY (" + USER_ROLE_FIELD + ") REFERENCES " + TABLE_ROLE_NAME + " (" + ID_FIELD + ")) ";
@@ -199,10 +209,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 FOOD_PRICE_FIELD + " FLOAT, " +
                 FOOD_DISCOUNT_FIELD + " FLOAT, " +
                 RATING_FIELD + " FLOAT, " +
-                FOOD_AVATAR_FIELD + " FLOAT, " +
                 FOOD_CATEGORY_FIELD + " INTEGER, " +
                 FOOD_RESTAURANT_FIELD + " INTEGER, " +
                 FOOD_AVATAR_FIELD + " BLOB, " +
+                FOOD_DESCRIPTION_FIELD + " TEXT, " +
                 CREATED_DATE_FIELD + " TIMESTAMP, " +
                 UPDATED_DATE_FIELD + " TIMESTAMP, " +
                 "FOREIGN KEY (" + FOOD_CATEGORY_FIELD + ") REFERENCES " + TABLE_FOOD_CATEGORY_NAME + " (" + ID_FIELD + "), " +
@@ -214,6 +224,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 CART_ORDER_DATE + " TIMESTAMP, " +
                 CART_USER_FIELD + " INTEGER, " +
                 CART_RESTAURANT_FIELD + " INTEGER, " +
+                CART_STATUS + " INTEGER, " +
                 CREATED_DATE_FIELD + " TIMESTAMP, " +
                 UPDATED_DATE_FIELD + " TIMESTAMP, " +
                 "FOREIGN KEY (" + CART_USER_FIELD + ") REFERENCES " + TABLE_USER_NAME + "(" + ID_FIELD + "), " +
@@ -257,6 +268,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY (" + REVIEW_USER_FIELD + ") REFERENCES " + TABLE_USER_NAME + "(" + ID_FIELD + "), "+
                 "FOREIGN KEY (" + REVIEW_FOOD_FIELD + ") REFERENCES " + TABLE_FOOD_NAME + "(" + ID_FIELD + "))";
         db.execSQL(sqlReviewFood);
+
+        String sqlPaymentPending = "CREATE TABLE " + TABLE_PAYMENT_PENDING_NAME + " (" +
+                ID_FIELD + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                PAYMENT_PENDING_METHOD + " INTEGER, " +
+                PAYMENT_PENDING_CART + " INTEGER, " +
+                PAYMENT_PENDING_STATUS + " INTEGER, " +
+                PAYMENT_PENDING_TOTAL + " FLOAT, " +
+                PAYMENT_PENDING_NOTE + " TEXT, " +
+                CREATED_DATE_FIELD + " TIMESTAMP, " +
+                UPDATED_DATE_FIELD + " TIMESTAMP, " +
+                "FOREIGN KEY (" + PAYMENT_PENDING_CART + ") REFERENCES " + TABLE_CART_NAME + "(" + ID_FIELD + "))";
+        db.execSQL(sqlPaymentPending);
     }
 
     @Override
@@ -328,6 +351,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(DatabaseHelper.FOOD_AVATAR_FIELD, food.getAvatar());
         contentValues.put(DatabaseHelper.FOOD_CATEGORY_FIELD, food.getCategory().getId());
         contentValues.put(DatabaseHelper.RATING_FIELD, food.getRating());
+        contentValues.put(DatabaseHelper.FOOD_DESCRIPTION_FIELD, food.getDescription());
         contentValues.put(DatabaseHelper.FOOD_RESTAURANT_FIELD, food.getRestaurant().getId());
         contentValues.put(CREATED_DATE_FIELD, DateUtil.dateToTimestamp(food.getCreatedDate()));
         contentValues.put(UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(food.getUpdatedDate()));
@@ -339,6 +363,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DatabaseHelper.CART_USER_FIELD, cart.getUser().getId());
         contentValues.put(DatabaseHelper.CART_RESTAURANT_FIELD, cart.getRestaurant().getId());
+        contentValues.put(DatabaseHelper.CART_STATUS, cart.getStatus());
         contentValues.put(CREATED_DATE_FIELD, DateUtil.dateToTimestamp(cart.getCreatedDate()));
         contentValues.put(UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(cart.getUpdatedDate()));
 
@@ -467,16 +492,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         FoodCategory fc10 = foodCateDao.getFoodCategoryByName("Súp");
 
         // Food data
-        foodDao.insertFood(new Food("Mì Ý Bò Băm", 45000, fc1, res1));
-        foodDao.insertFood(new Food("Pizza Pepperoni", 55000, fc2, res2));
-        foodDao.insertFood(new Food("Sushi California", 60000, fc3, res4));
-        foodDao.insertFood(new Food("Bánh Hamburger Phô Mai", 40000, fc4, res3));
-        foodDao.insertFood(new Food("Tacos Bò", 35000, fc5, res5));
-        foodDao.insertFood(new Food("Salad Caesar", 30000, fc6, res6));
-        foodDao.insertFood(new Food("Bánh Mì Club", 32000, fc7, res7));
-        foodDao.insertFood(new Food("Bánh Chocolate", 28000, fc8, res8));
-        foodDao.insertFood(new Food("Cá Hồi Nướng", 70000, fc9, res9));
-        foodDao.insertFood(new Food("Súp Tom Yum", 33000, fc10, res10));
+        foodDao.insertFood(new Food("Mì Ý Bò Băm", 45000, "Mì bò 2 trứng", fc1, res1));
+        foodDao.insertFood(new Food("Pizza Pepperoni", 55000, "Mì bò 2 trứng", fc2, res2));
+        foodDao.insertFood(new Food("Sushi California", 60000, "Mì bò 2 trứng", fc3, res4));
+        foodDao.insertFood(new Food("Bánh Hamburger Phô Mai", 40000, "Mì bò 2 trứng", fc4, res3));
+        foodDao.insertFood(new Food("Tacos Bò", 35000, "Mì bò 2 trứng", fc5, res5));
+        foodDao.insertFood(new Food("Salad Caesar", 30000, "Mì bò 2 trứng", fc6, res6));
+        foodDao.insertFood(new Food("Bánh Mì Club", 32000, "Mì bò 2 trứng", fc7, res7));
+        foodDao.insertFood(new Food("Bánh Chocolate", 28000, "Mì bò 2 trứng", fc8, res8));
+        foodDao.insertFood(new Food("Cá Hồi Nướng", 70000, "Mì bò 2 trứng", fc9, res9));
+        foodDao.insertFood(new Food("Súp Tom Yum", 33000, "Mì bò 2 trứng", fc10, res10));
 
         Food f1 = foodDao.getFoodById(1);
         Food f2 = foodDao.getFoodById(2);

@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.UserSettingActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="10dp">
 
 
     <LinearLayout
@@ -14,7 +15,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical">
-        <ImageView
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/quantum_ic_arrow_back_grey600_24"

@@ -28,6 +28,7 @@ import com.example.food_order_final.custom_activity.CartCardView;
 import com.example.food_order_final.custom_activity.FoodCardView;
 import com.example.food_order_final.custom_activity.RestaurantCardView;
 import com.example.food_order_final.dao.CartDao;
+import com.example.food_order_final.dao.CartDetailDao;
 import com.example.food_order_final.dao.FoodCategoryDao;
 import com.example.food_order_final.dao.FoodDao;
 import com.example.food_order_final.dao.RestaurantCategoryDao;
@@ -36,9 +37,11 @@ import com.example.food_order_final.dao.RoleDao;
 import com.example.food_order_final.dao.UserDao;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Cart;
+import com.example.food_order_final.models.CartDetail;
 import com.example.food_order_final.models.Food;
 import com.example.food_order_final.models.Restaurant;
 import com.example.food_order_final.models.User;
+import com.example.food_order_final.util.PriceUtil;
 
 import java.util.List;
 
@@ -113,6 +116,8 @@ public class RestaurantActivity extends AppCompatActivity {
                 cartCardView.setVisibility(View.VISIBLE);
                 int totalDishes = cartDao.getTotalDishes(cart.getId());
                 cartCardView.setTvTotalDishes(totalDishes);
+                double totalAmount = cartDao.getTotalAmountByCartId(cart.getId());
+                cartCardView.setTvTotalPrice(PriceUtil.formatNumber(totalAmount) + "đ");
 
                 cartCardView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -163,6 +168,8 @@ public class RestaurantActivity extends AppCompatActivity {
                             cartCardView.setVisibility(View.VISIBLE);
                             int totalDishes = cartDao.getTotalDishes(cart.getId());
                             cartCardView.setTvTotalDishes(totalDishes);
+                            double totalAmount = cartDao.getTotalAmountByCartId(cart.getId());
+                            cartCardView.setTvTotalPrice(PriceUtil.formatNumber(totalAmount) + "đ");
                             cartCardView.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {

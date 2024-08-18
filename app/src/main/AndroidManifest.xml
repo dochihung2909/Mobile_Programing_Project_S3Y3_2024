@@ -5,6 +5,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
 
     <application
         android:allowBackup="true"
@@ -16,6 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Food_Order_Final"
         tools:targetApi="31">
+        <activity
+            android:name=".activity.PaymentSuccess"
+            android:exported="false" />
         <activity
             android:name=".activity.AdminReviewFoodDetail"
             android:exported="false" />
@@ -120,6 +125,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="CLOUDINARY_URL"
+            android:value="cloudinary://271295249232522:E5p9fqKGnvRRg-gtU8HxUpynWvI@dpacbtjva"/>
     </application>
 
 </manifest>

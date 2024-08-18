@@ -39,10 +39,18 @@ public class CartDao extends BaseDao {
         db.close();
     }
 
+    public void updateCartStatus(int cartId) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseHelper.CART_STATUS, 1);
+        db.update(DatabaseHelper.TABLE_CART_NAME, contentValues, DatabaseHelper.ID_FIELD+" = ?", new String[]{String.valueOf(cartId)});
+        db.close();
+    }
+
     public Cart addToCard(User user, Restaurant restaurant, Food food, int quantity) {
         Cart cart = null;
         if (!isUserHasCart(user.getId(), restaurant.getId())) {
-            cart = new Cart(user, restaurant);
+            cart = new Cart(user, restaurant, 0);
             this.insertCart(cart);
         }
         cart = this.getCartByUserId(user.getId(), restaurant.getId());
@@ -72,14 +80,16 @@ public class CartDao extends BaseDao {
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_CART_NAME +
                             " WHERE " + DatabaseHelper.CART_USER_FIELD + " = ?"
-                    +" AND " + DatabaseHelper.CART_RESTAURANT_FIELD + " = ?",
-                    new String[]{String.valueOf(userId), String.valueOf(restaurantId)});
+                    +" AND " + DatabaseHelper.CART_RESTAURANT_FIELD + " = ?"
+                    +" AND " + DatabaseHelper.CART_STATUS + " = 0"
+                    , new String[]{String.valueOf(userId), String.valueOf(restaurantId)});
             if (cursor != null && cursor.moveToFirst()) {
                 int id = getInt(cursor, DatabaseHelper.ID_FIELD);
                 User user = userDao.getUserById(userId);
                 int restaurant_id = getInt(cursor, DatabaseHelper.CART_RESTAURANT_FIELD);
                 Restaurant restaurant = restaurantDao.getRestaurantById(restaurant_id);
-                cart = new Cart(id, user, restaurant);
+                int status = getInt(cursor, DatabaseHelper.CART_STATUS);
+                cart = new Cart(id, user, restaurant, status);
             }
 
         } catch (Exception e) {
@@ -110,7 +120,9 @@ public class CartDao extends BaseDao {
                 User user = userDao.getUserById(userId);
                 int restaurant_id = getInt(cursor, DatabaseHelper.CART_RESTAURANT_FIELD);
                 Restaurant restaurant = restaurantDao.getRestaurantById(restaurant_id);
-                cart = new Cart(id, user, restaurant);
+
+                int status = getInt(cursor, DatabaseHelper.CART_STATUS);
+                cart = new Cart(id, user, restaurant, status);
             }
 
         } catch (Exception e) {
@@ -132,6 +144,7 @@ public class CartDao extends BaseDao {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_CART_NAME
                             + " WHERE " + DatabaseHelper.CART_USER_FIELD + " = ?"
                             + " AND " + DatabaseHelper.CART_RESTAURANT_FIELD + " = ?"
+                            + " AND " + DatabaseHelper.CART_STATUS + " = 0"
                     , new String[]{String.valueOf(userId), String.valueOf(restaurantId)});
             if(cursor.getCount() > 0){
                 return true;
@@ -153,11 +166,14 @@ public class CartDao extends BaseDao {
         Cursor cursor = null;
         int totalDishes = 0;
         try {
-            cursor = db.rawQuery("SELECT * FROM "
+            cursor = db.rawQuery("SELECT SUM("+ DatabaseHelper.CART_DETAIL_QUANTITY_FIELD +") FROM "
                     + DatabaseHelper.TABLE_CART_DETAIL_NAME
                     + " WHERE " + DatabaseHelper.CART_DETAIL_CART_FIELD
                     + " = ?", new String[]{String.valueOf(cartId)});
-            totalDishes = cursor.getCount();
+            if (cursor.moveToFirst() && cursor != null) {
+                totalDishes = cursor.getInt(0);
+            }
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -169,36 +185,16 @@ public class CartDao extends BaseDao {
         return totalDishes;
     }
 
-    public double getTotalAmount(int cartId) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = null;
-        double totalAmount = 0;
-        try {
-            cursor = db.rawQuery("SELECT SUM("+ DatabaseHelper.CART_DETAIL_PRICE_FIELD +") FROM "
-                    + DatabaseHelper.TABLE_CART_DETAIL_NAME
-                    + " WHERE " + DatabaseHelper.CART_DETAIL_CART_FIELD
-                    + " = ?", new String[]{String.valueOf(cartId)});
-            totalAmount = cursor.getDouble(0);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (cursor != null)
-                cursor.close();
-            db.close();
-        }
-        return totalAmount;
-    }
-
     public double getTotalAmountByCartId(int cartId) {
         double totalAmount = 0;
         Cursor cursor = null;
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         try {
-            cursor = db.rawQuery("SELECT SUM(" + DatabaseHelper.CART_DETAIL_PRICE_FIELD + "*" + DatabaseHelper.CART_DETAIL_QUANTITY_FIELD +" ) FROM " + DatabaseHelper.TABLE_CART_DETAIL_NAME
-            + " WHERE " + DatabaseHelper.CART_DETAIL_CART_FIELD + " = ?", new String[]{String.valueOf(cartId)});
+            cursor = db.rawQuery("SELECT SUM(" + DatabaseHelper.CART_DETAIL_PRICE_FIELD + "*" + DatabaseHelper.CART_DETAIL_QUANTITY_FIELD
+                    +" ) FROM " + DatabaseHelper.TABLE_CART_DETAIL_NAME
+                    + " WHERE " + DatabaseHelper.CART_DETAIL_CART_FIELD + " = ?", new String[]{String.valueOf(cartId)});
             if (cursor.moveToFirst() && cursor != null) {
-                totalAmount = cursor.getInt(0);
+                totalAmount = cursor.getDouble(0);
             }
         } catch (Exception e)  {
             e.printStackTrace();
