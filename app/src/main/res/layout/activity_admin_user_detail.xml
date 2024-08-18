@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.AdminUserDetail"
+    android:id="@+id/main">
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?actionBarSize"
+        android:theme="?actionBarTheme">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_arrow_back_24"
+            android:background="@android:color/transparent"
+            android:layout_margin="20dp"
+            android:id="@+id/btnBackToMain"/>
+
+        <TextView
+            android:id="@+id/tvEditUserTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chỉnh sửa thông tin"
+            android:textSize="24sp"
+            android:textColor="@color/black"
+            android:layout_gravity="center"/>
+
+        <ImageButton
+            android:id="@+id/btnEditUserSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_check"
+            android:background="@android:color/transparent"
+            android:layout_gravity="end"
+            android:padding="8dp" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:background="@color/primaryColor"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imgEditUserAvatar"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/undraw_on_the_way_re_swjt"
+                    android:background="@drawable/circle_button"
+                    android:clipToOutline="true"/>
+
+
+
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Username"
+                app:startIconDrawable="@drawable/baseline_person_24">
+
+                <EditText
+                    android:id="@+id/edtEditUserUsername"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Phone number"
+                android:layout_marginTop="16dp"
+                app:startIconDrawable="@drawable/baseline_phone_24">
+
+                <EditText
+                    android:id="@+id/edtEditUserPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                android:layout_marginTop="16dp"
+                app:startIconDrawable="@drawable/baseline_email_24">
+
+                <EditText
+                    android:id="@+id/edtEditUserEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Full name"
+                android:layout_marginTop="16dp"
+                app:startIconDrawable="@drawable/baseline_person_24">
+
+                <EditText
+                    android:id="@+id/edtEditUseFullName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:layout_marginTop="16dp"
+                app:startIconDrawable="@drawable/baseline_password_24">
+
+                <EditText
+                    android:id="@+id/edtEditUserPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Spinner
+                android:id="@+id/spnEditUserRole"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"/>
+
+            <!-- Delete button -->
+            <Button
+                android:id="@+id/btnEditUserDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Xóa người dùng"
+                android:backgroundTint="@color/red"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

@@ -110,6 +110,23 @@ public class UserDao extends BaseDao{
         db.close();
     }
 
+//    public boolean hasRestaurant(int userId) {
+//        SQLiteDatabase db = dbHelper.getReadableDatabase();
+//        Cursor cursor = null;
+//        boolean result = false;
+//        try {
+//            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_NAME
+//                    + " WHERE " + DatabaseHelper.RESTAURANT_OWNER_FIELD + " = ?",
+//                    new String[]{})
+//        } finally {
+//            if (cursor != null)
+//                cursor.close();
+//            db.close();
+//        }
+//
+//        return result;
+//    }
+
     public boolean checkUsername(String username) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursor = null;
@@ -290,6 +307,31 @@ public class UserDao extends BaseDao{
         }
 
         return user;
+    }
+
+    public List<User> getUsersByRole(String roleName) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        List<User> users = new ArrayList<>();
+
+        Role role = roleDao.getRoleByName(roleName);
+
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_USER_NAME +
+                    " INNER JOIN " + DatabaseHelper.TABLE_ROLE_NAME +
+                    " ON " + DatabaseHelper.TABLE_USER_NAME + ".role_id = " + DatabaseHelper.TABLE_ROLE_NAME + ".id" +
+                    " WHERE " + DatabaseHelper.TABLE_ROLE_NAME + ".name = ?", new String[]{roleName});
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    users.add(getUserInfo(cursor));
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+        return users;
     }
 
     private User getUserInfo(Cursor cursor) {

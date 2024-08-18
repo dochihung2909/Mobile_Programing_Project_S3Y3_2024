@@ -1,5 +1,6 @@
 package com.example.food_order_final.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,8 +8,24 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 import com.example.food_order_final.R;
+import com.example.food_order_final.activity.AdminFoodCateManagement;
+import com.example.food_order_final.activity.AdminFoodManagement;
+import com.example.food_order_final.activity.AdminResCateManagement;
+import com.example.food_order_final.activity.AdminRestaurantManagement;
+import com.example.food_order_final.activity.AdminReviewFoodManagement;
+import com.example.food_order_final.activity.AdminReviewResManagement;
+import com.example.food_order_final.activity.AdminRoleManagement;
+import com.example.food_order_final.activity.AdminUserManagement;
+import com.example.food_order_final.adapter.AdminHomeAdapter;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,6 +33,7 @@ import com.example.food_order_final.R;
  * create an instance of this fragment.
  */
 public class AdminHomeFragment extends Fragment {
+    private ListView lvAdminManagement;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -58,9 +76,57 @@ public class AdminHomeFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_admin_home, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_admin_home, container, false);
+
+        ListView listView = view.findViewById(R.id.lvAdminManagement);
+
+        List<String> items = new ArrayList<>();
+        items.add("Role");
+        items.add("User");
+        items.add("Restaurant Category");
+        items.add("Restaurant");
+        items.add("Review Restaurant");
+        items.add("Food Category");
+        items.add("Food");
+        items.add("Review Food");
+
+        AdminHomeAdapter adapter = new AdminHomeAdapter(getContext(), items);
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItem = (String) parent.getItemAtPosition(position);
+
+                if ("Role".equals(selectedItem)) {
+                    Intent intent = new Intent(getContext(), AdminRoleManagement.class);
+                    startActivity(intent);
+                } else if ("User".equals(selectedItem)) {
+                    Intent intent = new Intent(getContext(), AdminUserManagement.class);
+                    startActivity(intent);
+                } else if ("Restaurant Category".equals(selectedItem)) {
+                    Intent intent = new Intent(getContext(), AdminResCateManagement.class);
+                    startActivity(intent);
+                } else if ("Restaurant".equals(selectedItem)) {
+                    Intent intent = new Intent(getContext(), AdminRestaurantManagement.class);
+                    startActivity(intent);
+                } else if ("Review Restaurant".equals(selectedItem)) {
+                    Intent intent = new Intent(getContext(), AdminReviewResManagement.class);
+                    startActivity(intent);
+                } else if ("Food Category".equals(selectedItem)) {
+                    Intent intent = new Intent(getContext(), AdminFoodCateManagement.class);
+                    startActivity(intent);
+                } else if ("Food".equals(selectedItem)) {
+                    Intent intent = new Intent(getContext(), AdminFoodManagement.class);
+                    startActivity(intent);
+                } else if ("Review Food".equals(selectedItem)) {
+                    Intent intent = new Intent(getContext(), AdminReviewFoodManagement.class);
+                    startActivity(intent);
+                }
+            }
+        });
+
+        return view;
     }
 }

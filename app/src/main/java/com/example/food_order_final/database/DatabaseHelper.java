@@ -499,8 +499,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ tại đây không tốt lắm và không gian cũng khá đơn điệu.", 2.5, user8, res8));
         reviewRestaurantDao.insertReview(new ReviewRestaurant("Không gian thoải mái và ấm cúng, nhưng dịch vụ hơi chậm và cần cải thiện.", 5.0, user9, res9));
         reviewRestaurantDao.insertReview(new ReviewRestaurant("Quán có không gian dễ chịu và dịch vụ ổn, tuy nhiên trang trí cần phải được nâng cấp.", 3.5, user10, res10));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Quán có không gian dễ chịu và dịch vụ ổn", 4.5, user6, res10));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Quán có không gian dễ chịu và dịch vụ tốt", 5.0, user5, res10));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Thực đơn đa dạng và món ăn rất ngon, phục vụ nhiệt tình.", 4.5, user1, res1));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Không gian đẹp, nhưng món ăn hơi đắt so với chất lượng.", 3.5, user2, res2));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ không được như mong đợi, nhân viên chưa thân thiện.", 2.0, user3, res3));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng sạch sẽ và đồ ăn rất tươi ngon. Giá cả hợp lý.", 4.0, user4, res4));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng có không gian lãng mạn, rất phù hợp cho các cặp đôi.", 5.0, user5, res5));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Món ăn ngon nhưng phục vụ hơi chậm. Hy vọng sẽ cải thiện.", 3.0, user6, res6));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Chất lượng món ăn rất tốt, nhưng không khí có phần ồn ào.", 4.0, user7, res7));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng rất đẹp, tuy nhiên giá cả có phần cao hơn so với mặt bằng chung.", 3.5, user8, res8));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Thực sự không hài lòng với chất lượng món ăn và thái độ phục vụ.", 1.5, user9, res9));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ tận tâm và món ăn rất đặc sắc. Mình sẽ quay lại.", 4.5, user10, res10));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Không gian thoải mái và thực đơn phong phú. Món ăn hơi ngọt.", 4.0, user1, res1));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng có vẻ hơi cũ và cần nâng cấp. Đồ ăn cũng bình thường.", 2.5, user2, res2));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Chất lượng phục vụ rất tốt, nhưng món ăn chưa được đặc biệt lắm.", 3.5, user3, res3));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Món ăn ngon, nhưng không gian quá chật hẹp và không thoải mái.", 3.0, user4, res4));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Mình rất ấn tượng với sự sáng tạo trong món ăn và cách phục vụ chuyên nghiệp.", 5.0, user5, res5));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng có phong cách trang trí đẹp mắt nhưng món ăn chưa đạt yêu cầu.", 3.0, user6, res6));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ rất nhanh chóng và đồ ăn luôn tươi mới. Giá cả hợp lý.", 4.5, user7, res7));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Không gian nhà hàng khá đơn giản, nhưng món ăn thì tuyệt vời.", 4.0, user8, res8));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng không đáp ứng được mong đợi về chất lượng phục vụ và món ăn.", 2.0, user9, res9));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Một trải nghiệm ẩm thực đáng nhớ với món ăn đa dạng và dịch vụ chu đáo.", 5.0, user10, res10));
 
         reviewFoodDao.insertReview(new ReviewFood("Rất ngon, dịch vụ tuyệt vời!", 5.0, user1, f1));
         reviewFoodDao.insertReview(new ReviewFood("Pizza rất thơm, nhưng giá hơi cao.", 4.0, user2, f2));
@@ -512,9 +530,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         reviewFoodDao.insertReview(new ReviewFood("Bánh chocolate không được như kỳ vọng.", 2.5, user8, f8));
         reviewFoodDao.insertReview(new ReviewFood("Cá hồi nướng rất ngon, không gian thoải mái.", 5.0, user9, f9));
         reviewFoodDao.insertReview(new ReviewFood("Súp Tom Yum có vị hơi chua, cần điều chỉnh.", 3.5, user10, f10));
-        reviewFoodDao.insertReview(new ReviewFood("Súp Tom Yum có vị cay ngon", 5, user1, f10));
-        reviewFoodDao.insertReview(new ReviewFood("Súp Tom Yum có vị thum thủm, cần coi lại.", 2.5, user3, f10));
-        reviewFoodDao.insertReview(new ReviewFood("Súp Tom Yum có vị hơi chua, cần điều chỉnh.", 4, user5, f10));
+        reviewFoodDao.insertReview(new ReviewFood("Món ăn tuyệt vời, sẽ quay lại lần nữa!", 4.5, user1, f1));
+        reviewFoodDao.insertReview(new ReviewFood("Dịch vụ tốt, món ăn hơi nhạt.", 3.5, user2, f2));
+        reviewFoodDao.insertReview(new ReviewFood("Thực phẩm tươi ngon, nhưng thời gian chờ hơi lâu.", 4.0, user3, f3));
+        reviewFoodDao.insertReview(new ReviewFood("Không gian sạch sẽ, món ăn không như kỳ vọng.", 2.5, user4, f4));
+        reviewFoodDao.insertReview(new ReviewFood("Chất lượng món ăn rất tốt, giá hơi cao.", 4.0, user5, f5));
+        reviewFoodDao.insertReview(new ReviewFood("Dịch vụ không đạt yêu cầu, món ăn cũng bình thường.", 2.0, user6, f6));
+        reviewFoodDao.insertReview(new ReviewFood("Món ăn rất ngon và phục vụ nhanh chóng.", 5.0, user7, f7));
+        reviewFoodDao.insertReview(new ReviewFood("Nhà hàng có không gian đẹp, nhưng món ăn chỉ ở mức trung bình.", 3.0, user8, f8));
+        reviewFoodDao.insertReview(new ReviewFood("Dịch vụ xuất sắc và món ăn rất ngon.", 4.5, user9, f9));
+        reviewFoodDao.insertReview(new ReviewFood("Món ăn không đạt yêu cầu, nhưng không gian khá dễ chịu.", 2.5, user10, f10));
+        reviewFoodDao.insertReview(new ReviewFood("Món ăn ngon tuyệt vời, dịch vụ rất thân thiện.", 5.0, user1, f1));
+        reviewFoodDao.insertReview(new ReviewFood("Thực đơn đa dạng, nhưng món ăn hơi ngọt.", 3.5, user2, f2));
+        reviewFoodDao.insertReview(new ReviewFood("Dịch vụ hơi chậm, món ăn không đồng đều.", 2.5, user3, f3));
+        reviewFoodDao.insertReview(new ReviewFood("Chất lượng món ăn rất tốt, không gian hơi ồn ào.", 4.0, user4, f4));
+        reviewFoodDao.insertReview(new ReviewFood("Món ăn rất ngon nhưng giá cả hơi cao.", 4.5, user5, f5));
+        reviewFoodDao.insertReview(new ReviewFood("Nhà hàng sạch sẽ nhưng món ăn khá đơn giản.", 3.0, user6, f6));
+        reviewFoodDao.insertReview(new ReviewFood("Dịch vụ tận tâm và món ăn rất sáng tạo.", 5.0, user7, f7));
+        reviewFoodDao.insertReview(new ReviewFood("Món ăn được trình bày đẹp mắt, nhưng hương vị chưa thuyết phục.", 3.5, user8, f8));
+        reviewFoodDao.insertReview(new ReviewFood("Món ăn rất ngon và phong phú, phục vụ chuyên nghiệp.", 4.5, user9, f9));
+        reviewFoodDao.insertReview(new ReviewFood("Chất lượng món ăn và dịch vụ không như mong đợi.", 2.0, user10, f10));
+
     }
 
 

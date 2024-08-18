@@ -1,6 +1,5 @@
 package com.example.food_order_final.models;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 public class Restaurant extends Base{
@@ -12,6 +11,7 @@ public class Restaurant extends Base{
     private boolean isPartner;
     private double rating;
     private String avatar;
+    private User owner;
 
     public Restaurant(int id, String name, String address, String phoneNumber, RestaurantCategory category, String avatar, boolean isPartner, double rating, Date createdDate, Date updatedDate) {
         this.id = id;

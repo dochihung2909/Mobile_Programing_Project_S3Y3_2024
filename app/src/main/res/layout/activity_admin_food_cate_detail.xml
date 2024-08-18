@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.AdminFoodCateDetail"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?actionBarSize"
+        android:theme="?actionBarTheme">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_arrow_back_24"
+            android:background="@android:color/transparent"
+            android:layout_margin="20dp"
+            android:id="@+id/btnBackToMain"/>
+
+        <TextView
+            android:id="@+id/tvEditFoodCateTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chỉnh sửa danh mục"
+            android:textSize="24sp"
+            android:textColor="@color/black"
+            android:layout_gravity="center"/>
+
+        <ImageButton
+            android:id="@+id/btnEditFoodCateSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_check"
+            android:background="@android:color/transparent"
+            android:layout_gravity="end"
+            android:padding="8dp" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/inputLayoutEditFoodCateId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ID"
+        android:enabled="false"
+        android:focusable="false"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/edtEditFoodCateId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Category Name">
+
+        <EditText
+            android:id="@+id/edtEditFoodCateName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/btnEditFoodCateDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Xóa danh mục"
+        android:backgroundTint="@color/red"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"/>
+
+</LinearLayout>

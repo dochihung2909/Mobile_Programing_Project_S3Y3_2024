@@ -58,6 +58,24 @@ public class RoleDao extends BaseDao {
         db.close();
     }
 
+    public boolean isRoleNameExists(String roleName) {
+        Cursor cursor = null;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        boolean result = false;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_ROLE_NAME
+                            + " WHERE " + DatabaseHelper.ROLE_NAME_FIELD + " = ?",
+                    new String[]{roleName});
+            if (cursor.moveToFirst())
+                result = true;
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+        return result;
+    }
+
     public List<Role> getAllRoles() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         List<Role> roles = new ArrayList<>();
@@ -65,16 +83,11 @@ public class RoleDao extends BaseDao {
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_ROLE_NAME, null);
-            do {
-                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
-                String name = getString(cursor, DatabaseHelper.ROLE_NAME_FIELD);
-                String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
-                String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
-                Date createdDate = DateUtil.timestampToDate(createdDateString);
-                Date updatedDate = DateUtil.timestampToDate(updatedDateString);
-
-                roles.add(new Role(id, name, createdDate, updatedDate));
-            }while(cursor.moveToNext());
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    roles.add(getRoleInfo(cursor));
+                } while (cursor.moveToNext());
+            }
         } finally {
             if (cursor != null)
                 cursor.close();
@@ -93,14 +106,7 @@ public class RoleDao extends BaseDao {
                     + " WHERE " + DatabaseHelper.ID_FIELD + " = ?",
                     new String[]{String.valueOf(roleId)});
             if (cursor != null && cursor.moveToFirst()) {
-                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
-                String name = getString(cursor, DatabaseHelper.ROLE_NAME_FIELD);
-                String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
-                Date createdDate = DateUtil.timestampToDate(createdDateString);
-                String updatedDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
-                Date updatedDate = DateUtil.timestampToDate(updatedDateString);
-
-                role = new Role(id, name, createdDate, updatedDate);
+                role = getRoleInfo(cursor);
             }
         } finally {
             if(cursor != null)
@@ -119,14 +125,7 @@ public class RoleDao extends BaseDao {
                             + " WHERE " + DatabaseHelper.ROLE_NAME_FIELD + " = ?",
                     new String[]{roleName});
             if (cursor != null && cursor.moveToFirst()) {
-                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
-                String name = getString(cursor, DatabaseHelper.ROLE_NAME_FIELD);
-                String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
-                Date createdDate = DateUtil.timestampToDate(createdDateString);
-                String updatedDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
-                Date updatedDate = DateUtil.timestampToDate(updatedDateString);
-
-                role = new Role(id, name, createdDate, updatedDate);
+                role = getRoleInfo(cursor);
             }
         } finally {
             if(cursor != null)
@@ -145,22 +144,28 @@ public class RoleDao extends BaseDao {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_ROLE_NAME +
                     " WHERE " + DatabaseHelper.ROLE_NAME_FIELD + " LIKE ?",
                     new String[]{"%" + roleName + "%"});
-            do {
-                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
-                String name = getString(cursor, DatabaseHelper.ROLE_NAME_FIELD);
-                String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
-                String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
-                Date createdDate = DateUtil.timestampToDate(createdDateString);
-                Date updatedDate = DateUtil.timestampToDate(updatedDateString);
-
-                roles.add(new Role(id, name, createdDate, updatedDate));
-            }while(cursor.moveToNext());
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    roles.add(getRoleInfo(cursor));
+                } while (cursor.moveToNext());
+            }
         }finally {
             if (cursor != null)
                 cursor.close();
             db.close();
         }
         return roles;
+    }
+
+    public Role getRoleInfo(Cursor cursor) {
+        int id = getInt(cursor, DatabaseHelper.ID_FIELD);
+        String name = getString(cursor, DatabaseHelper.ROLE_NAME_FIELD);
+        String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
+        String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
+        Date createdDate = DateUtil.timestampToDate(createdDateString);
+        Date updatedDate = DateUtil.timestampToDate(updatedDateString);
+
+        return (new Role(id, name, createdDate, updatedDate));
     }
 
 }

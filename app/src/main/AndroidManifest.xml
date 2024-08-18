@@ -17,17 +17,64 @@
         android:theme="@style/Theme.Food_Order_Final"
         tools:targetApi="31">
         <activity
-        android:name=".activity.EditFoodActivity"
-        android:exported="false" />
+            android:name=".activity.AdminReviewFoodDetail"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdminReviewResDetail"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdminReviewFoodManagement"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdminReviewResManagement"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdminFoodCateDetail"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdminFoodCateManagement"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdminFoodDetail"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdminFoodManagement"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdminResCateDetail"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdminResCateManagement"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdminRestaurantDetail"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdminRestaurantManagement"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdminRoleDetail"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdminRoleManagement"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdminUserDetail"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdminUserManagement"
+            android:exported="false" />
+        <activity
+            android:name=".activity.EditFoodActivity"
+            android:exported="false" />
         <activity
             android:name=".activity.FoodManagerActivity"
             android:exported="false" />
         <activity
             android:name=".activity.RestaurantManagerActivity"
             android:exported="false" />
-
         <activity
-            android:name=".activity.AdminMainActivity"
+            android:name=".activity.LoadScreenActivity"
             android:exported="false" />
         <activity
             android:name=".activity.RatingActivity"
@@ -65,7 +112,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activity.LoadScreenActivity"
+            android:name=".activity.AdminMainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

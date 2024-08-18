@@ -51,6 +51,24 @@ public class FoodCategoryDao extends BaseDao{
         db.close();
     }
 
+    public boolean isCategoryNameExists(String foodCateName) {
+        Cursor cursor = null;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        boolean result = false;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_CATEGORY_NAME
+                            + " WHERE " + DatabaseHelper.FOOD_CATEGORY_NAME_FIELD + " = ?",
+                    new String[]{foodCateName});
+            if (cursor.moveToFirst())
+                result = true;
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+        return result;
+    }
+
     public List<FoodCategory> getAllFoodCategories() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = null;
@@ -60,14 +78,9 @@ public class FoodCategoryDao extends BaseDao{
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_CATEGORY_NAME,
                     null);
             if (cursor != null && cursor.moveToFirst()) {
-                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
-                String name = getString(cursor, DatabaseHelper.FOOD_CATEGORY_NAME_FIELD);
-                String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
-                String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
-                Date createdDate = DateUtil.timestampToDate(createdDateString);
-                Date updatedDate = DateUtil.timestampToDate(updatedDateString);
-
-                foodCategories.add(new FoodCategory(id, name, createdDate, updatedDate));
+                do {
+                    foodCategories.add(getFoodCateInfo(cursor));
+                } while (cursor.moveToNext());
             }
         } finally {
             if (cursor != null)
@@ -88,14 +101,7 @@ public class FoodCategoryDao extends BaseDao{
                             + " WHERE " + DatabaseHelper.ID_FIELD + " = ?",
                     new String[]{String.valueOf(resCateId)});
             if (cursor != null && cursor.moveToFirst()) {
-                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
-                String name = getString(cursor, DatabaseHelper.FOOD_CATEGORY_NAME_FIELD);
-                String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
-                String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
-                Date createdDate = DateUtil.timestampToDate(createdDateString);
-                Date updatedDate = DateUtil.timestampToDate(updatedDateString);
-
-                foodCate = new FoodCategory(id, name, createdDate, updatedDate);
+                foodCate = getFoodCateInfo(cursor);
             }
         } finally {
             if(cursor != null)
@@ -115,14 +121,7 @@ public class FoodCategoryDao extends BaseDao{
                             + " WHERE " + DatabaseHelper.FOOD_CATEGORY_NAME_FIELD + " = ?",
                     new String[]{foodCateName});
             if (cursor != null && cursor.moveToFirst()) {
-                int id = getInt(cursor, DatabaseHelper.ID_FIELD);
-                String name = getString(cursor, DatabaseHelper.FOOD_CATEGORY_NAME_FIELD);
-                String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
-                String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
-                Date createdDate = DateUtil.timestampToDate(createdDateString);
-                Date updatedDate = DateUtil.timestampToDate(updatedDateString);
-
-                foodCategory = new FoodCategory(id, name, createdDate, updatedDate);
+                foodCategory = getFoodCateInfo(cursor);
             }
         } finally {
             if(cursor != null)
@@ -130,6 +129,17 @@ public class FoodCategoryDao extends BaseDao{
             db.close();
         }
         return foodCategory;
+    }
+
+    public FoodCategory getFoodCateInfo(Cursor cursor) {
+        int id = getInt(cursor, DatabaseHelper.ID_FIELD);
+        String name = getString(cursor, DatabaseHelper.FOOD_CATEGORY_NAME_FIELD);
+        String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
+        String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
+        Date createdDate = DateUtil.timestampToDate(createdDateString);
+        Date updatedDate = DateUtil.timestampToDate(updatedDateString);
+
+        return new FoodCategory(id, name, createdDate, updatedDate);
     }
 
 }
