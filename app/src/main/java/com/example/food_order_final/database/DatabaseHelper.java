@@ -160,7 +160,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 USER_FULL_NAME_FIELD + " TEXT, " +
                 USER_PASSWORD_FIELD + " TEXT, " +
                 USER_ROLE_FIELD + " INTEGER, " +
-                USER_AVATAR_FIELD + " BLOB, " +
+                USER_AVATAR_FIELD + " TEXT, " +
                 CREATED_DATE_FIELD + " TIMESTAMP, " +
                 UPDATED_DATE_FIELD + " TIMESTAMP," +
                 "FOREIGN KEY (" + USER_ROLE_FIELD + ") REFERENCES " + TABLE_ROLE_NAME + " (" + ID_FIELD + ")) ";

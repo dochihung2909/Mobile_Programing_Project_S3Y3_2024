@@ -301,7 +301,7 @@ public class UserDao extends BaseDao{
         String password = getString(cursor, DatabaseHelper.USER_PASSWORD_FIELD);
         int role_id = getInt(cursor, DatabaseHelper.USER_ROLE_FIELD);
         Role role = roleDao.getRoleById(role_id);
-        byte[] avatar = cursor.getBlob(7);
+        String avatar = getString(cursor, DatabaseHelper.USER_AVATAR_FIELD);
         String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
         String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
         Date createdDate = DateUtil.timestampToDate(createdDateString);
