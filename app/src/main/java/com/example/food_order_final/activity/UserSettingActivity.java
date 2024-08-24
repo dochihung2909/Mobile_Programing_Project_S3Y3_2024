@@ -104,7 +104,6 @@ public class UserSettingActivity extends AppCompatActivity {
 //            Picasso.get().load(currentUser.getAvatar()).placeholder(R.drawable.ic_launcher_background).into(ivUserAvatar);
 
             LoadImageUtil.loadImage(ivUserAvatar, currentUser.getAvatar());
-            Toast.makeText(UserSettingActivity.this, currentUser.getAvatar(), Toast.LENGTH_SHORT).show();
             if (!Objects.equals(email, "")) {
                 etEmail.setText(email);
             } else {
@@ -188,7 +187,6 @@ public class UserSettingActivity extends AppCompatActivity {
                     Manifest.permission.READ_EXTERNAL_STORAGE
             }, SELECT_PICTURE);
         }
-
     }
 
     private void init() {

@@ -1,4 +1,4 @@
-package com.example.food_order_final.activity;
+package com.example.food_order_final.activity.admin;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -1,6 +1,8 @@
 package com.example.food_order_final.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,22 +11,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.example.food_order_final.R;
-import com.example.food_order_final.activity.AdminFoodCateManagement;
-import com.example.food_order_final.activity.AdminFoodManagement;
-import com.example.food_order_final.activity.AdminResCateManagement;
-import com.example.food_order_final.activity.AdminRestaurantManagement;
-import com.example.food_order_final.activity.AdminReviewFoodManagement;
-import com.example.food_order_final.activity.AdminReviewResManagement;
-import com.example.food_order_final.activity.AdminRoleManagement;
-import com.example.food_order_final.activity.AdminUserManagement;
+import com.example.food_order_final.activity.admin.AdminFoodCateManagement;
+import com.example.food_order_final.activity.admin.AdminFoodManagement;
+import com.example.food_order_final.activity.admin.AdminResCateManagement;
+import com.example.food_order_final.activity.admin.AdminRestaurantManagement;
+import com.example.food_order_final.activity.admin.AdminReviewFoodManagement;
+import com.example.food_order_final.activity.admin.AdminReviewResManagement;
+import com.example.food_order_final.activity.admin.AdminRoleManagement;
+import com.example.food_order_final.activity.admin.AdminUserManagement;
+import com.example.food_order_final.activity.LoginActivity;
 import com.example.food_order_final.adapter.AdminHomeAdapter;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -80,6 +82,21 @@ public class AdminHomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_admin_home, container, false);
 
         ListView listView = view.findViewById(R.id.lvAdminManagement);
+        Button logoutBtn = view.findViewById(R.id.logoutBtn);
+
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences pref = getActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit().clear();
+                editor.apply();
+
+                Intent intent = new Intent(getActivity().getApplicationContext(), LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
 
         List<String> items = new ArrayList<>();
         items.add("Role");

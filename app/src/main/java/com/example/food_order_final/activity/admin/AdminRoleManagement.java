@@ -1,7 +1,6 @@
-package com.example.food_order_final.activity;
+package com.example.food_order_final.activity.admin;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,9 +18,7 @@ import com.example.food_order_final.R;
 import com.example.food_order_final.adapter.AdminRoleAdapter;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Role;
-import com.example.food_order_final.models.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AdminRoleManagement extends AppCompatActivity {

@@ -1,10 +1,9 @@
-package com.example.food_order_final.activity;
+package com.example.food_order_final.activity.admin;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -17,24 +16,24 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.food_order_final.R;
-import com.example.food_order_final.adapter.AdminReviewResAdapter;
+import com.example.food_order_final.adapter.AdminReviewFoodAdapter;
 import com.example.food_order_final.database.DatabaseHelper;
-import com.example.food_order_final.models.ReviewRestaurant;
+import com.example.food_order_final.models.ReviewFood;
 
 import java.util.List;
 
-public class AdminReviewResManagement extends AppCompatActivity {
+public class AdminReviewFoodManagement extends AppCompatActivity {
     private DatabaseHelper dbHelper;
     ImageButton btnBackToMain;
-    TextView tvAdminReviewResTitle;
-    Button btnAdminAddReviewRes;
-    ListView lvAdminReviewRes;
+    TextView tvAdminReviewFoodTitle;
+    Button btnAdminAddReviewFood;
+    ListView lvAdminReviewFood;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_admin_review_res_management);
+        setContentView(R.layout.activity_admin_review_food_management);
         dbHelper = new DatabaseHelper(this);
         initWidgets();
         loadAllReviews();
@@ -55,36 +54,36 @@ public class AdminReviewResManagement extends AppCompatActivity {
     private void initWidgets() {
         btnBackToMain = findViewById(R.id.btnBackToMain);
 
-        tvAdminReviewResTitle = findViewById(R.id.tvAdminReviewResTitle);
+        tvAdminReviewFoodTitle = findViewById(R.id.tvAdminReviewFoodTitle);
 
-        btnAdminAddReviewRes = findViewById(R.id.btnAdminAddReviewRes);
+        btnAdminAddReviewFood = findViewById(R.id.btnAdminAddReviewFood);
 
-        lvAdminReviewRes = findViewById(R.id.lvAdminReviewRes);
+        lvAdminReviewFood = findViewById(R.id.lvAdminReviewFood);
     }
 
     private void loadAllReviews() {
-        List<ReviewRestaurant> reviewRestaurantList = dbHelper.reviewRestaurantDao.getAllReviews();
-        AdminReviewResAdapter adapter = new AdminReviewResAdapter(this, reviewRestaurantList);
-        lvAdminReviewRes.setAdapter(adapter);
+        List<ReviewFood> reviewFoodList = dbHelper.reviewFoodDao.getAllReviews();
+        AdminReviewFoodAdapter adapter = new AdminReviewFoodAdapter(this, reviewFoodList);
+        lvAdminReviewFood.setAdapter(adapter);
     }
 
     private void setOnClickListener() {
         btnBackToMain.setOnClickListener(v -> finish());
 
-        btnAdminAddReviewRes.setOnClickListener(new View.OnClickListener() {
+        btnAdminAddReviewFood.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AdminReviewResManagement.this, AdminReviewResDetail.class);
+                Intent intent = new Intent(AdminReviewFoodManagement.this, AdminReviewFoodDetail.class);
                 startActivity(intent);
             }
         });
 
-        lvAdminReviewRes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lvAdminReviewFood.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ReviewRestaurant reviewRestaurant = (ReviewRestaurant) parent.getItemAtPosition(position);
-                Intent intent = new Intent(AdminReviewResManagement.this, AdminReviewResDetail.class);
-                intent.putExtra("review_res_id", reviewRestaurant.getId());
+                ReviewFood reviewFood = (ReviewFood) parent.getItemAtPosition(position);
+                Intent intent = new Intent(AdminReviewFoodManagement.this, AdminReviewFoodDetail.class);
+                intent.putExtra("review_Food_id", reviewFood.getId());
                 startActivity(intent);
             }
         });

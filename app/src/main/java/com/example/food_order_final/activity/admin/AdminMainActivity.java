@@ -1,4 +1,4 @@
-package com.example.food_order_final.activity;
+package com.example.food_order_final.activity.admin;
 
 import android.os.Bundle;
 import android.widget.FrameLayout;

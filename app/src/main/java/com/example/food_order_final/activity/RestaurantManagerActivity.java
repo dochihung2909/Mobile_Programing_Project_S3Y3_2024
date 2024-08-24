@@ -20,6 +20,7 @@ import com.example.food_order_final.dao.RestaurantCategoryDao;
 import com.example.food_order_final.dao.RestaurantDao;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Restaurant;
+import com.example.food_order_final.util.LoadImageUtil;
 
 public class RestaurantManagerActivity extends AppCompatActivity {
 
@@ -74,6 +75,17 @@ public class RestaurantManagerActivity extends AppCompatActivity {
             });
 
             btnEditRestaurantInfo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+
+            // Render Restaurant Avatar
+            LoadImageUtil.loadImage(ivRestaurantAvatar, restaurant.getAvatar());
+
+            // Statis of restaurant
+            btnRestaurantStatistical.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 

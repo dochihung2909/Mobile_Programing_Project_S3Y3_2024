@@ -1,4 +1,4 @@
-package com.example.food_order_final.activity;
+package com.example.food_order_final.activity.admin;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -21,11 +20,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.food_order_final.R;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Role;
-import com.example.food_order_final.models.User;
 import com.google.android.material.textfield.TextInputLayout;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AdminRoleDetail extends AppCompatActivity {
     EditText edtEditRoleId, edtEditRoleName;

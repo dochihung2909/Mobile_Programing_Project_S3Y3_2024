@@ -11,7 +11,7 @@
         android:id="@+id/ivRestaurantAvatar"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:src="@drawable/undraw_breakfast_psiw"/>
+        android:src="@drawable/ic_launcher_background"/>
 
     <ImageButton
         android:layout_width="wrap_content"

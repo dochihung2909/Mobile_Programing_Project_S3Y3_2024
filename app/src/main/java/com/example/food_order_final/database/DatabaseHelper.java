@@ -187,7 +187,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 RESTAURANT_AVATAR_FIELD + " VARCHAR, " +
                 CREATED_DATE_FIELD + " TIMESTAMP, " +
                 UPDATED_DATE_FIELD + " TIMESTAMP, " +
-                RESTAURANT_USER_FIELD + " TIMESTAMP, " +
+                RESTAURANT_USER_FIELD + " INTEGER, " +
                 "FOREIGN KEY (" + RESTAURANT_USER_FIELD + ") REFERENCES " + TABLE_USER_NAME + " (" + ID_FIELD + "), " +
                 "FOREIGN KEY (" + RESTAURANT_CATEGORY_FIELD + ") REFERENCES " + TABLE_RESTAURANT_CATEGORY_NAME + " (" + ID_FIELD + "))";
 
@@ -328,6 +328,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(RATING_FIELD, restaurant.getRating());
         contentValues.put(RESTAURANT_CATEGORY_FIELD, restaurant.getCategory().getId());
         contentValues.put(RESTAURANT_IS_PARTNER_FIELD, restaurant.isPartner());
+
+        User owner = restaurant.getOwner();
+        if (owner != null) {
+            contentValues.put(RESTAURANT_USER_FIELD, owner.getId());
+        }
         contentValues.put(CREATED_DATE_FIELD, DateUtil.dateToTimestamp(restaurant.getCreatedDate()));
         contentValues.put(UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(restaurant.getUpdatedDate()));
 
@@ -388,8 +393,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //Role data
         roleDao.insertRole(new Role("Admin"));
         roleDao.insertRole(new Role("User"));
+        roleDao.insertRole(new Role("Owner"));
+        roleDao.insertRole(new Role("Employee"));
         Role adminRole = roleDao.getRoleByName("Admin");
         Role userRole = roleDao.getRoleByName("User");
+        Role ownerRole = roleDao.getRoleByName("Owner");
+        Role employeeRole = roleDao.getRoleByName("Employee");
 
         // User data
         userDao.insertUser(new User("ngynhg", "0364452867", "hung@gmail.com",
@@ -399,15 +408,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         userDao.insertUser(new User("lethanhh", "0912345679", "lethanhh@gmail.com",
                 "Lê Thanh Hà", "123", userRole));
         userDao.insertUser(new User("nguyenducm", "0901234568", "nguyenducm@gmail.com",
-                "Nguyễn Đức Minh", "123", userRole));
+                "Nguyễn Đức Minh", "123", ownerRole));
         userDao.insertUser(new User("hoangthi", "0987123457", "hoangthi@gmail.com",
-                "Hoàng Thị Lan", "123", userRole));
+                "Hoàng Thị Lan", "123", ownerRole));
         userDao.insertUser(new User("phanvanq", "0898765433", "phanvanq@gmail.com",
                 "Phan Văn Quân", "123", userRole));
         userDao.insertUser(new User("vuongthanh", "0876543211", "vuongthanh@gmail.com",
-                "Vương Thành", "123", userRole));
+                "Vương Thành", "123", employeeRole));
         userDao.insertUser(new User("daohoang", "0865432110", "daohoang@gmail.com",
-                "Đào Hoàng Nam", "123", userRole));
+                "Đào Hoàng Nam", "123", employeeRole));
         userDao.insertUser(new User("ngoanguyen", "0854321099", "ngoanguyen@gmail.com",
                 "Ngô Anh Nguyễn", "123", userRole));
         userDao.insertUser(new User("phamquang", "0843210988", "phamquang@gmail.com",
@@ -446,16 +455,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         RestaurantCategory rc9 = resCateDao.getRestaurantCategoryByName("Tráng miệng");
 
         // Restaurant data
-        resDao.insertRestaurant(new Restaurant("Gà Rán KFC", "123 Nguyễn Thị Minh Khai, Phường Bến Nghé, Quận 1, Thành phố Hồ Chí Minh", "057265484", rc1));
-        resDao.insertRestaurant(new Restaurant("Pizza Domino's", "456 Lê Lai, Phường Bến Thành, Quận 1, Thành phố Hồ Chí Minh", "0123456789", rc2));
-        resDao.insertRestaurant(new Restaurant("Burgers King", "789 Phạm Văn Đồng, Phường 11, Quận Bình Thạnh, Thành phố Hồ Chí Minh", "0987654321", rc3));
-        resDao.insertRestaurant(new Restaurant("Sakura Sushi", "321 Đinh Tiên Hoàng, Phường 1, Quận 1, Thành phố Hồ Chí Minh", "0234567890", rc4));
-        resDao.insertRestaurant(new Restaurant("Taco Bell", "654 Nguyễn Huệ, Phường Bến Nghé, Quận 1, Thành phố Hồ Chí Minh", "0345678901", rc5));
-        resDao.insertRestaurant(new Restaurant("Nhà Hàng Cà Ri", "987 Bùi Viện, Phường Phạm Ngũ Lão, Quận 1, Thành phố Hồ Chí Minh", "0456789012", rc6));
-        resDao.insertRestaurant(new Restaurant("Nhà Hàng Đại Trường Thành", "135 Nguyễn Thị Thập, Phường Tân Phú, Quận 7, Thành phố Hồ Chí Minh", "0567890123", rc7));
-        resDao.insertRestaurant(new Restaurant("La Dolce Vita", "246 Trường Sơn, Phường 15, Quận Tân Bình, Thành phố Hồ Chí Minh", "0678901234", rc8));
-        resDao.insertRestaurant(new Restaurant("Quán Ngọt Ngào", "357 Nguyễn Đình Chiểu, Phường 5, Quận 3, Thành phố Hồ Chí Minh", "0789012345", rc9));
-        resDao.insertRestaurant(new Restaurant("Nhà Hàng Panda", "468 Cách Mạng Tháng Tám, Phường 11, Quận 3, Thành phố Hồ Chí Minh", "0890123456", rc7));
+        resDao.insertRestaurant(new Restaurant("Gà Rán KFC", "123 Nguyễn Thị Minh Khai, Phường Bến Nghé, Quận 1, Thành phố Hồ Chí Minh", "057265484", rc1, "https://down-bs-vn.img.susercontent.com/vn-11134513-7r98o-lstz97xambb85d@resize_ss280x175!@crop_w280_h175_cT"));
+        resDao.insertRestaurant(new Restaurant("Pizza Domino's", "456 Lê Lai, Phường Bến Thành, Quận 1, Thành phố Hồ Chí Minh", "0123456789", rc2, "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp"));
+        resDao.insertRestaurant(new Restaurant("Burgers King", "789 Phạm Văn Đồng, Phường 11, Quận Bình Thạnh, Thành phố Hồ Chí Minh", "0987654321", rc3, "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp"));
+        resDao.insertRestaurant(new Restaurant("Sakura Sushi", "321 Đinh Tiên Hoàng, Phường 1, Quận 1, Thành phố Hồ Chí Minh", "0234567890", rc4, "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp"));
+        resDao.insertRestaurant(new Restaurant("Taco Bell", "654 Nguyễn Huệ, Phường Bến Nghé, Quận 1, Thành phố Hồ Chí Minh", "0345678901", rc5, "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp"));
+        resDao.insertRestaurant(new Restaurant("Nhà Hàng Cà Ri", "987 Bùi Viện, Phường Phạm Ngũ Lão, Quận 1, Thành phố Hồ Chí Minh", "0456789012", rc6, "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp"));
+        resDao.insertRestaurant(new Restaurant("Nhà Hàng Đại Trường Thành", "135 Nguyễn Thị Thập, Phường Tân Phú, Quận 7, Thành phố Hồ Chí Minh", "0567890123", rc7, "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp"));
+        resDao.insertRestaurant(new Restaurant("La Dolce Vita", "246 Trường Sơn, Phường 15, Quận Tân Bình, Thành phố Hồ Chí Minh", "0678901234", rc8, "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp"));
+        resDao.insertRestaurant(new Restaurant("Quán Ngọt Ngào", "357 Nguyễn Đình Chiểu, Phường 5, Quận 3, Thành phố Hồ Chí Minh", "0789012345", rc9, "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp"));
+        resDao.insertRestaurant(new Restaurant("Nhà Hàng Panda", "468 Cách Mạng Tháng Tám, Phường 11, Quận 3, Thành phố Hồ Chí Minh", "0890123456", rc7, "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp"));
 
         Restaurant res1 = resDao.getRestaurantByName("Gà Rán KFC");
         Restaurant res2 = resDao.getRestaurantByName("Pizza Domino's");

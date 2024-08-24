@@ -41,6 +41,7 @@ import com.example.food_order_final.models.CartDetail;
 import com.example.food_order_final.models.Food;
 import com.example.food_order_final.models.Restaurant;
 import com.example.food_order_final.models.User;
+import com.example.food_order_final.util.LoadImageUtil;
 import com.example.food_order_final.util.PriceUtil;
 
 import java.util.List;
@@ -102,6 +103,8 @@ public class RestaurantActivity extends AppCompatActivity {
                     new RestaurantCategoryDao(dbhelper));
             this.restaurant = restaurantDao.getRestaurantById((restaurantId));
 
+
+            LoadImageUtil.loadImage(ivRestaurantAvatar, restaurant.getAvatar());
 
             SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
             String username = sharedPreferences.getString("username", "Guest");

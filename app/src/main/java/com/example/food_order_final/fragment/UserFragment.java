@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.food_order_final.R;
 import com.example.food_order_final.activity.CartActivity;
+import com.example.food_order_final.activity.EditRestaurantActivity;
 import com.example.food_order_final.activity.LoadScreenActivity;
 import com.example.food_order_final.activity.LoginActivity;
 import com.example.food_order_final.activity.RestaurantActivity;
@@ -27,6 +28,7 @@ import com.example.food_order_final.activity.UserSettingActivity;
 import com.example.food_order_final.dao.RoleDao;
 import com.example.food_order_final.dao.UserDao;
 import com.example.food_order_final.database.DatabaseHelper;
+import com.example.food_order_final.models.Restaurant;
 import com.example.food_order_final.models.User;
 import com.example.food_order_final.util.LoadImageUtil;
 
@@ -106,16 +108,35 @@ public class UserFragment extends Fragment {
             DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
             userDao = new UserDao(dbHelper, new RoleDao(dbHelper));
             currentUser = userDao.getUserByUsername(username);
+            if (currentUser.getRole().getName().equals("Owner")) {
+                btnShopOwner.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getActivity(), RestaurantManagerActivity.class);
+                        intent.putExtra("restaurantOwnerId", currentUser.getId());
+                        startActivity(intent);
+                    }
+                });
+            } else if (currentUser.getRole().getName().equals("User")) {
+                btnShopOwner.setText("Tạo nhà hàng >");
+
+                btnShopOwner.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getActivity(), EditRestaurantActivity.class);
+                        Restaurant restaurant = dbHelper.resDao.getRestaurantByUserId(currentUser.getId());
+                        int restaurantId = -1;
+                        if (restaurant != null) {
+                            restaurantId = restaurant.getId();
+                        }
+                        intent.putExtra("restaurantId", restaurantId);
+                        intent.putExtra("ownerId", currentUser.getId());
+                        startActivity(intent);
+                    }
+                });
+            }
             updateUI(currentUser);
 
-            btnShopOwner.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), RestaurantManagerActivity.class);
-                    intent.putExtra("restaurantOwnerId", currentUser.getId());
-                    startActivity(intent);
-                }
-            });
 
             btnLogout.setOnClickListener(new View.OnClickListener() {
                 @Override

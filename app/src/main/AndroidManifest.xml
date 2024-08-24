@@ -5,7 +5,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
     <application
@@ -19,55 +20,61 @@
         android:theme="@style/Theme.Food_Order_Final"
         tools:targetApi="31">
         <activity
+            android:name=".activity.EditRestaurantActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.CreateRestaurantActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.PaymentSuccess"
             android:exported="false" />
         <activity
-            android:name=".activity.AdminReviewFoodDetail"
+            android:name=".activity.admin.AdminReviewFoodDetail"
             android:exported="false" />
         <activity
-            android:name=".activity.AdminReviewResDetail"
+            android:name=".activity.admin.AdminReviewResDetail"
             android:exported="false" />
         <activity
-            android:name=".activity.AdminReviewFoodManagement"
+            android:name=".activity.admin.AdminReviewFoodManagement"
             android:exported="false" />
         <activity
-            android:name=".activity.AdminReviewResManagement"
+            android:name=".activity.admin.AdminReviewResManagement"
             android:exported="false" />
         <activity
-            android:name=".activity.AdminFoodCateDetail"
+            android:name=".activity.admin.AdminFoodCateDetail"
             android:exported="false" />
         <activity
-            android:name=".activity.AdminFoodCateManagement"
+            android:name=".activity.admin.AdminFoodCateManagement"
             android:exported="false" />
         <activity
-            android:name=".activity.AdminFoodDetail"
+            android:name=".activity.admin.AdminFoodDetail"
             android:exported="false" />
         <activity
-            android:name=".activity.AdminFoodManagement"
+            android:name=".activity.admin.AdminFoodManagement"
             android:exported="false" />
         <activity
-            android:name=".activity.AdminResCateDetail"
+            android:name=".activity.admin.AdminResCateDetail"
             android:exported="false" />
         <activity
-            android:name=".activity.AdminResCateManagement"
+            android:name=".activity.admin.AdminResCateManagement"
             android:exported="false" />
         <activity
-            android:name=".activity.AdminRestaurantDetail"
+            android:name=".activity.admin.AdminRestaurantDetail"
             android:exported="false" />
         <activity
-            android:name=".activity.AdminRestaurantManagement"
+            android:name=".activity.admin.AdminRestaurantManagement"
             android:exported="false" />
         <activity
-            android:name=".activity.AdminRoleDetail"
+            android:name=".activity.admin.AdminRoleDetail"
             android:exported="false" />
         <activity
-            android:name=".activity.AdminRoleManagement"
+            android:name=".activity.admin.AdminRoleManagement"
             android:exported="false" />
         <activity
-            android:name=".activity.AdminUserDetail"
+            android:name=".activity.admin.AdminUserDetail"
             android:exported="false" />
         <activity
-            android:name=".activity.AdminUserManagement"
+            android:name=".activity.admin.AdminUserManagement"
             android:exported="false" />
         <activity
             android:name=".activity.EditFoodActivity"
@@ -79,7 +86,7 @@
             android:name=".activity.RestaurantManagerActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.LoadScreenActivity"
+            android:name=".activity.admin.AdminMainActivity"
             android:exported="false" />
         <activity
             android:name=".activity.RatingActivity"
@@ -117,7 +124,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activity.AdminMainActivity"
+            android:name=".activity.LoadScreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -128,7 +135,7 @@
 
         <meta-data
             android:name="CLOUDINARY_URL"
-            android:value="cloudinary://271295249232522:E5p9fqKGnvRRg-gtU8HxUpynWvI@dpacbtjva"/>
+            android:value="cloudinary://271295249232522:E5p9fqKGnvRRg-gtU8HxUpynWvI@dpacbtjva" />
     </application>
 
 </manifest>

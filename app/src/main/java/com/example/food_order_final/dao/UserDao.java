@@ -67,6 +67,18 @@ public class UserDao extends BaseDao{
         return result;
     }
 
+    public boolean updateUserRole(int userId, int roleId) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseHelper.USER_ROLE_FIELD, roleId);
+        long update = db.update(DatabaseHelper.TABLE_USER_NAME, contentValues, DatabaseHelper.ID_FIELD + " = ?", new String[]{String.valueOf(userId)});
+        if (update == -1) {
+            return false;
+        }
+        return true;
+    }
+
     public int updateUserInfo(User user){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 

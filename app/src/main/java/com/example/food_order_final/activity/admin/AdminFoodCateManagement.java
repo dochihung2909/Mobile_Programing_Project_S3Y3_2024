@@ -1,9 +1,7 @@
-package com.example.food_order_final.activity;
+package com.example.food_order_final.activity.admin;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -16,10 +14,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.food_order_final.R;
 import com.example.food_order_final.adapter.AdminFoodCateAdapter;
-import com.example.food_order_final.adapter.AdminResCateAdapter;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.FoodCategory;
-import com.example.food_order_final.models.RestaurantCategory;
 
 import java.util.List;
 

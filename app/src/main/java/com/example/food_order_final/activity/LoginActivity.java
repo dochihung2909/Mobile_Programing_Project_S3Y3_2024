@@ -13,8 +13,10 @@ import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
 import com.basgeekball.awesomevalidation.utility.RegexTemplate;
 import com.example.food_order_final.R;
+import com.example.food_order_final.activity.admin.AdminMainActivity;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.hideSoftKeyboard;
+import com.example.food_order_final.models.User;
 import com.google.android.material.textfield.TextInputEditText;
 
 public class LoginActivity extends AppCompatActivity {
@@ -55,16 +57,20 @@ public class LoginActivity extends AppCompatActivity {
 
                     if (dbHelper.userDao.isUserCredential(username, password)){
                         Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-
+                        User user = dbHelper.userDao.getUserByUsername(username);
+                        if (user.getRole().getName().equals("Admin")) {
+                            Intent intent = new Intent(LoginActivity.this, AdminMainActivity.class);
+                            startActivity(intent);
+                        } else {
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        }
                         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString("username", username);
                         editor.putString("password", password);
+                        editor.putString("currentUserRole", user.getRole().getName());
                         editor.apply();
-
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-
                         finish();
                     } else {
                         Toast.makeText(LoginActivity.this, "Thông tin tài khoản hoặc mật khẩu không chính xác !", Toast.LENGTH_SHORT).show();

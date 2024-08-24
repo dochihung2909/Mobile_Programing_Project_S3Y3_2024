@@ -138,6 +138,7 @@ public class HomeFragment extends Fragment {
 
             restaurantCardView.setRestaurantName(restaurant.getName());
             restaurantCardView.setRestaurantDistance(restaurant.getAddress());
+            restaurantCardView.setRestaurantImage(restaurant.getAvatar());
 
             restaurantCardView.setOnClickListener(new View.OnClickListener() {
                 @Override

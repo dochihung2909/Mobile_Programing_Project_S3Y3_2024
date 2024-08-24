@@ -9,6 +9,7 @@ import com.example.food_order_final.models.RestaurantCategory;
 import com.example.food_order_final.models.Role;
 import com.example.food_order_final.util.DateUtil;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -70,10 +71,10 @@ public class RestaurantCategoryDao extends BaseDao{
         return result;
     }
 
-    public List<RestaurantCategory> getAllRestaurantCategories() {
+    public ArrayList<RestaurantCategory> getAllRestaurantCategories() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = null;
-        List<RestaurantCategory> resCategories = new ArrayList<>();
+        ArrayList<RestaurantCategory> resCategories = new ArrayList<>();
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_CATEGORY_NAME,

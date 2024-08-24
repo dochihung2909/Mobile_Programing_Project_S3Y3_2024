@@ -1,4 +1,4 @@
-package com.example.food_order_final.activity;
+package com.example.food_order_final.activity.admin;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,7 +23,6 @@ import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Food;
 import com.example.food_order_final.models.FoodCategory;
 import com.example.food_order_final.models.Restaurant;
-import com.example.food_order_final.models.Role;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
@@ -147,7 +146,7 @@ public class AdminFoodDetail extends AppCompatActivity {
 
             if (selectedFood == null) {
                 if (!dbHelper.foodDao.isFoodExists(FoodName, FoodRes)) {
-                    Food newFood = new Food(FoodName, FoodPrice, FoodCategory, FoodRes);
+                    Food newFood = new Food(FoodName, FoodPrice, "", FoodCategory, FoodRes);
                     newFood.setDiscount(FoodDiscount);
                     dbHelper.foodDao.insertFood(newFood);
                     Toast.makeText(AdminFoodDetail.this, "Tạo Món ăn mới thành công", Toast.LENGTH_SHORT).show();

@@ -13,7 +13,7 @@ public class Restaurant extends Base{
     private String avatar;
     private User owner;
 
-    public Restaurant(int id, String name, String address, String phoneNumber, RestaurantCategory category, String avatar, boolean isPartner, double rating, Date createdDate, Date updatedDate) {
+    public Restaurant(int id, String name, String address, String phoneNumber, RestaurantCategory category, String avatar, User owner, boolean isPartner, double rating, Date createdDate, Date updatedDate) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -22,8 +22,34 @@ public class Restaurant extends Base{
         this.avatar = avatar;
         this.isPartner = isPartner;
         this.rating = rating;
+        this.owner = owner;
         this.setCreatedDate(createdDate);
         this.setUpdatedDate(updatedDate);
+    }
+
+    public Restaurant(String name, String address, String phoneNumber, RestaurantCategory category, String avatar, User owner) {
+        this.name = name;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.category = category;
+        this.isPartner = false;
+        this.rating = 0.0;
+        this.avatar = avatar;
+        this.owner = owner;
+        this.setCreatedDate(new Date());
+        this.setUpdatedDate(new Date());
+    }
+
+    public Restaurant(String name, String address, String phoneNumber, RestaurantCategory category, String avatar) {
+        this.name = name;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.category = category;
+        this.isPartner = false;
+        this.rating = 0.0;
+        this.avatar = avatar;
+        this.setCreatedDate(new Date());
+        this.setUpdatedDate(new Date());
     }
 
     public Restaurant(String name, String address, String phoneNumber, RestaurantCategory category) {
@@ -36,6 +62,14 @@ public class Restaurant extends Base{
         this.avatar = null;
         this.setCreatedDate(new Date());
         this.setUpdatedDate(new Date());
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 
     public int getId() {

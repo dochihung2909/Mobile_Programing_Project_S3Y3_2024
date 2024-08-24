@@ -12,11 +12,12 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.example.food_order_final.R;
+import com.example.food_order_final.util.LoadImageUtil;
 
 public class RestaurantCardView extends LinearLayout {
 
-    public void setRestaurantImage(int d) {
-        this.restaurantImage.setImageDrawable(getResources().getDrawable(d));
+    public void setRestaurantImage(String image) {
+        LoadImageUtil.loadImage(this.restaurantImage, image);
     }
 
     public void setRestaurantName(String name) {

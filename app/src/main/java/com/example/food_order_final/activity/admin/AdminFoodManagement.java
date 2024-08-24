@@ -1,4 +1,4 @@
-package com.example.food_order_final.activity;
+package com.example.food_order_final.activity.admin;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,10 +14,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.food_order_final.R;
 import com.example.food_order_final.adapter.AdminFoodAdapter;
-import com.example.food_order_final.adapter.AdminRestaurantAdapter;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Food;
-import com.example.food_order_final.models.Restaurant;
 
 import java.util.List;
 

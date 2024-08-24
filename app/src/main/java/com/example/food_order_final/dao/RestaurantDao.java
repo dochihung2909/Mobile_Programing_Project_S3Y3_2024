@@ -32,11 +32,16 @@ public class RestaurantDao extends BaseDao{
         this.resCateDao = resCateDao;
     }
 
-    public void insertRestaurant(Restaurant restaurant){
+    public boolean insertRestaurant(Restaurant restaurant){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues contentValues = dbHelper.getRestaurantContentValues(restaurant);
-        db.insert(DatabaseHelper.TABLE_RESTAURANT_NAME, null, contentValues);
+        long insert = db.insert(DatabaseHelper.TABLE_RESTAURANT_NAME, null, contentValues);
+        if (insert == -1) {
+            db.close();
+            return false;
+        }
         db.close();
+        return true;
     }
 
     public int updateRestaurant(Restaurant restaurant){
@@ -305,9 +310,11 @@ public class RestaurantDao extends BaseDao{
         double rating = getDouble(cursor, DatabaseHelper.RATING_FIELD);
         String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
         String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
+        int ownerId = getInt(cursor, DatabaseHelper.RESTAURANT_USER_FIELD);
+        User owner = dbHelper.userDao.getUserById(ownerId);
         Date createdDate = DateUtil.timestampToDate(createdDateString);
         Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
-        return (new Restaurant(id, name, address, phone, resCate, avatar, isPartner, rating, createdDate, updatedDate));
+        return (new Restaurant(id, name, address, phone, resCate, avatar, owner, isPartner, rating, createdDate, updatedDate));
     }
 }
