@@ -57,6 +57,7 @@ public class UserFragment extends Fragment {
     private Button btnLogout;
     private User currentUser;
     private UserDao userDao;
+    private int REQUEST_CODE_USER_CREATE_RESTAURANT = 201;
 
     public UserFragment() {
         // Required empty public constructor
@@ -130,8 +131,7 @@ public class UserFragment extends Fragment {
                             restaurantId = restaurant.getId();
                         }
                         intent.putExtra("restaurantId", restaurantId);
-                        intent.putExtra("ownerId", currentUser.getId());
-                        startActivity(intent);
+                        startActivityForResult(intent, REQUEST_CODE_USER_CREATE_RESTAURANT);
                     }
                 });
             }
@@ -193,7 +193,7 @@ public class UserFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_CODE_USER_SETTING) {
+        if (requestCode == REQUEST_CODE_USER_SETTING || requestCode == REQUEST_CODE_USER_CREATE_RESTAURANT) {
             if (resultCode == Activity.RESULT_OK) {
                 currentUser = userDao.getUserById(currentUser.getId());
                 updateUI(currentUser);
@@ -205,5 +205,16 @@ public class UserFragment extends Fragment {
         tvUsername.setText(currentUser.getUsername());
         tvUserFullName.setText(currentUser.getFullName());
         LoadImageUtil.loadImage(ivUserAvatar, currentUser.getAvatar());
+        if (currentUser.getRole().getName().equals("Owner")) {
+            btnShopOwner.setText("Nhà hàng của tôi >");
+            btnShopOwner.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), RestaurantManagerActivity.class);
+                    intent.putExtra("restaurantOwnerId", currentUser.getId());
+                    startActivity(intent);
+                }
+            });
+        }
     }
 }

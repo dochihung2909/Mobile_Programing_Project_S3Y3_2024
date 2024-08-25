@@ -67,6 +67,34 @@ public class PaymentPendingDao extends BaseDao{
         return paymentPendings;
     }
 
+    public ArrayList<PaymentPending> getAllPaymentByRestaurantId(int restaurantId) {
+        Cursor cursor = null;
+        ArrayList<PaymentPending> paymentPendings = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        try {
+            cursor = db.rawQuery("SELECT p.* from " + DatabaseHelper.TABLE_PAYMENT_PENDING_NAME + " p " +
+                    "INNER JOIN " + DatabaseHelper.TABLE_CART_NAME + " c ON c." + DatabaseHelper.ID_FIELD + " = p." + DatabaseHelper.PAYMENT_PENDING_CART +
+                    " WHERE " + DatabaseHelper.CART_RESTAURANT_FIELD + " = ?", new String[]{String.valueOf(restaurantId)});
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    paymentPendings.add(getPaymentPendingInfo(cursor));
+                } while (cursor.moveToNext());
+            }
+
+        } catch (Exception e) {
+
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return paymentPendings;
+
+    }
+
     public PaymentPending getPaymentPendingInfo(Cursor cursor) {
         int id = getInt(cursor, DatabaseHelper.ID_FIELD);
         int methodId = getInt(cursor, DatabaseHelper.PAYMENT_PENDING_METHOD);

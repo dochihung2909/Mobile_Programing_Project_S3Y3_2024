@@ -22,16 +22,17 @@ public class Food extends Base{
         this.category = category;
         this.description = description;
         this.restaurant = restaurant;
+        this.avatar = avatar;
         this.setCreatedDate(createdDate);
         this.setUpdatedDate(updatedDate);
     }
 
-    public Food(String name, double price, String avatar, String description, FoodCategory category, Restaurant restaurant) {
+    public Food(String name, double price, double discount, String avatar, String description, FoodCategory category, Restaurant restaurant) {
         this.name = name;
         this.price = price;
         this.category = category;
         this.avatar = avatar;
-        this.discount = 0.0;
+        this.discount =discount;
         this.rating = 0.0;
         this.description = description;
         this.restaurant = restaurant;

@@ -69,10 +69,10 @@ public class FoodCategoryDao extends BaseDao{
         return result;
     }
 
-    public List<FoodCategory> getAllFoodCategories() {
+    public ArrayList<FoodCategory> getAllFoodCategories() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = null;
-        List<FoodCategory> foodCategories = new ArrayList<>();
+        ArrayList<FoodCategory> foodCategories = new ArrayList<>();
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_CATEGORY_NAME,

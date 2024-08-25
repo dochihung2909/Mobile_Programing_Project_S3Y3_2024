@@ -24,6 +24,7 @@ import com.example.food_order_final.models.Cart;
 import com.example.food_order_final.models.Food;
 import com.example.food_order_final.models.Role;
 import com.example.food_order_final.models.User;
+import com.example.food_order_final.util.LoadImageUtil;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -171,7 +172,7 @@ public class FoodCardView extends LinearLayout {
         this.tvFoodDescription.setText(tvFoodDescription);
     }
 
-    public void setIvFoodAvatar(int ivFoodAvatar) {
-        this.ivFoodAvatar.setImageDrawable(getResources().getDrawable(ivFoodAvatar));
+    public void setIvFoodAvatar(String avatar) {
+        LoadImageUtil.loadImage(this.ivFoodAvatar, avatar);
     }
 }

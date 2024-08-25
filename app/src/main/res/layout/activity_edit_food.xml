@@ -73,6 +73,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Giá món ăn"
                 android:id="@+id/etFoodPrice"
+                android:inputType="numberDecimal|number"
                 />
 
 
@@ -81,6 +82,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Giảm giá"
                 android:id="@+id/etFoodDiscount"
+                android:inputType="numberDecimal|number"
                 />
 
 
@@ -91,6 +93,14 @@
                 android:id="@+id/snFoodCategory"
                 android:paddingVertical="10dp"
                 />
+
+            <EditText
+                android:id="@+id/etFoodDiscription"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:inputType="text|textMultiLine"
+                android:hint="Mô tả"
+                android:gravity="top"/>
 
         </LinearLayout>
 

@@ -2,6 +2,7 @@ package com.example.food_order_final.activity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -107,7 +108,8 @@ public class EditRestaurantActivity extends AppCompatActivity {
         // Get restaurant Info
         int restaurantId = getIntent().getIntExtra("restaurantId", -1);
 
-        ownerId = getIntent().getIntExtra("ownerId", -1);
+        SharedPreferences preferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        ownerId = preferences.getInt("userId", -1);
 
         if (restaurantId != -1) {
             restaurant = dbHelper.resDao.getRestaurantById(restaurantId);

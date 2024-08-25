@@ -5,7 +5,15 @@ import java.util.Date;
 public abstract class Base {
     private Date createdDate;
     private Date updatedDate;
+    private boolean isActived;
 
+    public boolean isActived() {
+        return isActived;
+    }
+
+    public void setActived(boolean actived) {
+        isActived = actived;
+    }
 
     public Date update(){
         return this.updatedDate = new Date();

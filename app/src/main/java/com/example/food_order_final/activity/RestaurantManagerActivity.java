@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -28,9 +29,12 @@ public class RestaurantManagerActivity extends AppCompatActivity {
     private ImageView ivRestaurantAvatar;
     private TextView tvRestaurantName;
     private LinearLayout restaurantRatingContainer;
-    private Button btnRestaurantStatistical, btnEditRestaurantInfo, btnFoodManager;
+    private Button btnRestaurantStatistical, btnEditRestaurantInfo, btnFoodManager, btnCheckOrder;
+    private int REQUEST_EDIT_RESTAURANT_INFO = 202;
 
     private int ownerId;
+    private Restaurant restaurant;
+    private DatabaseHelper dbHelper = new DatabaseHelper(RestaurantManagerActivity.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,18 +56,10 @@ public class RestaurantManagerActivity extends AppCompatActivity {
             }
         });
         this.ownerId = getIntent().getIntExtra("restaurantOwnerId", -1);
-        DatabaseHelper dbHelper = new DatabaseHelper(RestaurantManagerActivity.this);
         RestaurantDao restaurantDao = new RestaurantDao(dbHelper, new RestaurantCategoryDao(dbHelper));
         if (ownerId != -1 ) {
-            Restaurant restaurant = restaurantDao.getRestaurantByUserId(ownerId);
-            tvRestaurantName.setText(restaurant.getName());
-//           Set avatar for Restaurant ivRestaurantAvatar.set
-            double ratting = restaurant.getRating();
-            for (int i = 1; i<=ratting; i++ ) {
-                ImageView rattingStar = new ImageView(RestaurantManagerActivity.this);
-                rattingStar.setImageResource(R.drawable.baseline_star_24);
-                restaurantRatingContainer.addView(rattingStar);
-            }
+            restaurant = restaurantDao.getRestaurantByUserId(ownerId);
+            updateUI();
 
             btnFoodManager.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -77,6 +73,9 @@ public class RestaurantManagerActivity extends AppCompatActivity {
             btnEditRestaurantInfo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Intent intent = new Intent(RestaurantManagerActivity.this, EditRestaurantActivity.class);
+                    intent.putExtra("restaurantId", restaurant.getId());
+                    startActivityForResult(intent, REQUEST_EDIT_RESTAURANT_INFO);
 
                 }
             });
@@ -91,10 +90,28 @@ public class RestaurantManagerActivity extends AppCompatActivity {
 
                 }
             });
+
+            btnCheckOrder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(RestaurantManagerActivity.this, RestaurantOrderManagementActivity.class);
+                    intent.putExtra("restaurantId", restaurant.getId());
+                    startActivity(intent);
+                }
+            });
         }
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-
+        if (requestCode == REQUEST_EDIT_RESTAURANT_INFO) {
+            if (resultCode == RESULT_OK) {
+                restaurant = dbHelper.resDao.getRestaurantById(restaurant.getId());
+                updateUI();
+            }
+        }
     }
 
     private void init() {
@@ -105,6 +122,21 @@ public class RestaurantManagerActivity extends AppCompatActivity {
         btnEditRestaurantInfo = findViewById(R.id.btnEditRestaurantInfo);
         btnFoodManager = findViewById(R.id.btnFoodManager);
         btnBack = findViewById(R.id.btnBack);
+        btnCheckOrder = findViewById(R.id.btnCheckOrder);
+    }
+
+    private void updateUI() {
+        if (restaurant.getAvatar() != null) {
+            LoadImageUtil.loadImage(ivRestaurantAvatar, restaurant.getAvatar());
+        }
+        tvRestaurantName.setText(restaurant.getName());
+
+        double ratting = restaurant.getRating();
+        for (int i = 1; i<=ratting; i++ ) {
+            ImageView rattingStar = new ImageView(RestaurantManagerActivity.this);
+            rattingStar.setImageResource(R.drawable.baseline_star_24);
+            restaurantRatingContainer.addView(rattingStar);
+        }
 
     }
 }

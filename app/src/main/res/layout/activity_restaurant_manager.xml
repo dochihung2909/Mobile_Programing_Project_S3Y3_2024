@@ -21,6 +21,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:id="@+id/avatarContainer"
+        android:layout_below="@+id/btnBack"
         >
         <ImageView
             android:layout_width="match_parent"
@@ -109,6 +110,13 @@
                 android:layout_height="wrap_content"
                 android:text="Thống kê doanh thu"
                 android:id="@+id/btnRestaurantStatistical"
+                android:backgroundTint="@android:color/holo_blue_light"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nhận đơn"
+                android:id="@+id/btnCheckOrder"
                 android:backgroundTint="@android:color/holo_blue_light"/>
 
         </LinearLayout>

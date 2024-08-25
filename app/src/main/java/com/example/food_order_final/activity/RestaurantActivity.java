@@ -152,6 +152,7 @@ public class RestaurantActivity extends AppCompatActivity {
                 foodCardView.setFood(food);
                 foodCardView.setTvFoodName(food.getName());
                 foodCardView.setTvFoodDiscountPrice(food.getPrice());
+                foodCardView.setIvFoodAvatar(food.getAvatar());
                 TextView btnAddToCart = foodCardView.findViewById(R.id.btnAddToCart);
 
                 foodCardView.setOnClickListener(new View.OnClickListener() {

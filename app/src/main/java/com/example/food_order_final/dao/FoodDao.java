@@ -27,11 +27,15 @@ public class FoodDao extends BaseDao{
         this.restaurantDao = restaurantDao;
     }
 
-    public void insertFood(Food food) {
+    public boolean insertFood(Food food) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues contentValues = dbHelper.getFoodContentValues(food);
-        db.insert(DatabaseHelper.TABLE_FOOD_NAME, null, contentValues);
+        long insert = db.insert(DatabaseHelper.TABLE_FOOD_NAME, null, contentValues);
         db.close();
+        if (insert == -1) {
+            return false;
+        }
+        return true;
     }
 
     public int updateFood(Food food) {
@@ -40,8 +44,10 @@ public class FoodDao extends BaseDao{
         ContentValues contentValues = new ContentValues();
         contentValues.put(DatabaseHelper.FOOD_NAME_FIELD, food.getName());
         contentValues.put(DatabaseHelper.FOOD_PRICE_FIELD, food.getPrice());
+        contentValues.put(DatabaseHelper.FOOD_DISCOUNT_FIELD, food.getDiscount());
+        contentValues.put(DatabaseHelper.FOOD_DESCRIPTION_FIELD, food.getDescription());
+        contentValues.put(DatabaseHelper.FOOD_AVATAR_FIELD, food.getAvatar());
         contentValues.put(DatabaseHelper.FOOD_CATEGORY_FIELD, food.getCategory().getId());
-        contentValues.put(DatabaseHelper.FOOD_RESTAURANT_FIELD, food.getRestaurant().getId());
         contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
 
         String whereClause = DatabaseHelper.ID_FIELD + " = ? ";

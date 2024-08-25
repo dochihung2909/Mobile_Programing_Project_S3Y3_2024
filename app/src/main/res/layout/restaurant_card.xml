@@ -98,7 +98,7 @@
         android:layout_width="match_parent"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
-        android:layout_height="10dp"
+        android:layout_height="2dp"
         android:background="@drawable/separate"
         android:clickable="false"/>
 </LinearLayout>

@@ -26,7 +26,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Shop của tôi >"
+                    android:text="Nhà hàng của tôi >"
                     android:padding="10dp"
                     android:background="@drawable/border_right"
                     android:textStyle="bold"

@@ -8,8 +8,11 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.example.food_order_final.dao.CartDao;
+import com.example.food_order_final.dao.CartDetailDao;
 import com.example.food_order_final.dao.FoodCategoryDao;
 import com.example.food_order_final.dao.FoodDao;
+import com.example.food_order_final.dao.PaymentPendingDao;
 import com.example.food_order_final.dao.RestaurantCategoryDao;
 import com.example.food_order_final.dao.RestaurantDao;
 import com.example.food_order_final.dao.ReviewFoodDao;
@@ -127,6 +130,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public FoodDao foodDao;
     public ReviewRestaurantDao reviewRestaurantDao;
     public ReviewFoodDao reviewFoodDao;
+    public PaymentPendingDao paymentPendingDao;
+    public CartDetailDao cartDetailDao;
+    public CartDao cartDao;
 
     public DatabaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -138,6 +144,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         this.foodDao = new FoodDao(this, this.foodCateDao, this.resDao);
         this.reviewRestaurantDao = new ReviewRestaurantDao(this, this.userDao, this.resDao);
         this.reviewFoodDao = new ReviewFoodDao(this, this.userDao, this.foodDao);
+        this.paymentPendingDao = new PaymentPendingDao(this);
+        this.cartDetailDao = new CartDetailDao(this);
+        this.cartDao = new CartDao(this);
     }
 
     @Override
@@ -211,7 +220,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 RATING_FIELD + " FLOAT, " +
                 FOOD_CATEGORY_FIELD + " INTEGER, " +
                 FOOD_RESTAURANT_FIELD + " INTEGER, " +
-                FOOD_AVATAR_FIELD + " BLOB, " +
+                FOOD_AVATAR_FIELD + " TEXT, " +
                 FOOD_DESCRIPTION_FIELD + " TEXT, " +
                 CREATED_DATE_FIELD + " TIMESTAMP, " +
                 UPDATED_DATE_FIELD + " TIMESTAMP, " +

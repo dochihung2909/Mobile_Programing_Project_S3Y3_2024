@@ -1,5 +1,6 @@
 package com.example.food_order_final.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -7,8 +8,11 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -33,8 +37,11 @@ public class FoodManagerActivity extends AppCompatActivity {
     private ImageButton btnBack;
     private Button btnAddFoodToRestaurant;
     private LinearLayout foodsContainer;
+    private TextView tvEmptyFoods;
 
     private int restaurantId;
+    private DatabaseHelper dbHelper = new DatabaseHelper(FoodManagerActivity.this);
+    private int REQUEST_EDIT_FOOD = 102;
 
 
     @Override
@@ -62,33 +69,81 @@ public class FoodManagerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(FoodManagerActivity.this,EditFoodActivity.class);
-                startActivity(intent);
+                intent.putExtra("restaurantId", restaurantId);
+                startActivityForResult(intent, REQUEST_EDIT_FOOD);
             }
         });
 
-        DatabaseHelper dbHelper = new DatabaseHelper(FoodManagerActivity.this);
-        FoodDao foodDao = new FoodDao(dbHelper, new FoodCategoryDao(dbHelper), new RestaurantDao(dbHelper, new RestaurantCategoryDao(dbHelper)));
-        List<Food> foods = foodDao.getFoodsByRestaurantId(restaurantId);
-        for (Food food: foods) {
-            FoodCardView foodCardView = new FoodCardView(FoodManagerActivity.this);
-            foodCardView.findViewById(R.id.btnAddToCart).setVisibility(View.GONE);
-            foodCardView.findViewById(R.id.foodOwnerLayout).setVisibility(View.VISIBLE);
-            TextView btnEditFoodInfo = foodCardView.findViewById(R.id.btnEditFoodInfo);
-            TextView btnDeleteFood = foodCardView.findViewById(R.id.btnDeleteFood);
+        loadUI();
 
-            btnEditFoodInfo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(FoodManagerActivity.this, EditFoodActivity.class);
-                }
-            });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_EDIT_FOOD) {
+            if (resultCode == RESULT_OK) {
+                loadUI();
+            }
         }
-
     }
 
     private void init() {
         btnBack = findViewById(R.id.btnBack);
         btnAddFoodToRestaurant = findViewById(R.id.btnAddFoodToRestaurant);
         foodsContainer = findViewById(R.id.foodsContainer);
+        tvEmptyFoods = findViewById(R.id.tvEmptyFoods);
+    }
+
+    private void loadUI() {
+        List<Food> foods = dbHelper.foodDao.getFoodsByRestaurantId(restaurantId);
+        Toast.makeText(this, "" + foods.size(), Toast.LENGTH_SHORT).show();
+        if (foods.size() > 0) {
+            foodsContainer.removeAllViews();
+            for (Food food: foods) {
+                FoodCardView foodCardView = new FoodCardView(FoodManagerActivity.this);
+                //set food card info
+                foodCardView.setTvFoodName(food.getName());
+                foodCardView.setTvFoodDescription(food.getDescription());
+                foodCardView.setTvFoodDiscountPrice(food.getPrice());
+                foodCardView.setIvFoodAvatar(food.getAvatar());
+
+                foodCardView.findViewById(R.id.btnAddToCart).setVisibility(View.GONE);
+                foodCardView.findViewById(R.id.foodOwnerLayout).setVisibility(View.VISIBLE);
+                TextView btnEditFoodInfo = foodCardView.findViewById(R.id.btnEditFoodInfo);
+                TextView btnDeleteFood = foodCardView.findViewById(R.id.btnDeleteFood);
+
+                foodsContainer.addView(foodCardView);
+
+                btnEditFoodInfo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(FoodManagerActivity.this, EditFoodActivity.class);
+                        intent.putExtra("foodId", food.getId());
+                        startActivityForResult(intent, REQUEST_EDIT_FOOD);
+                    }
+                });
+
+                btnDeleteFood.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(FoodManagerActivity.this);
+                        alertDialog.setTitle("Xác nhận xoá món ăn");
+                        alertDialog.setMessage("Bạn có muốn xoá món ăn này");
+                        alertDialog.setPositiveButton("Xoá", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+//                                dbHelper.foodDao.deleteFood(food.getId());
+                                // Soft Delete
+                            }
+                        }).setNegativeButton("Huỷ", null);
+
+                    }
+                });
+            }
+        } else {
+            tvEmptyFoods.setVisibility(View.GONE);
+        }
     }
 }

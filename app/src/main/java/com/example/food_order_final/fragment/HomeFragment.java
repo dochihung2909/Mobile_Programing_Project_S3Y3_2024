@@ -44,6 +44,7 @@ import com.example.food_order_final.util.LocationUtil;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.sql.Array;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -137,8 +138,11 @@ public class HomeFragment extends Fragment {
             RestaurantCardView restaurantCardView = new RestaurantCardView(getActivity());
 
             restaurantCardView.setRestaurantName(restaurant.getName());
-            restaurantCardView.setRestaurantDistance(restaurant.getAddress());
+//            restaurantCardView.setRestaurantDistance(restaurant.getAddress());
             restaurantCardView.setRestaurantImage(restaurant.getAvatar());
+            DecimalFormat df = new DecimalFormat("#.#");
+            double rating = restaurant.getRating();
+            restaurantCardView.setRestaurantRating(df.format(restaurant.getRating()));
 
             restaurantCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
