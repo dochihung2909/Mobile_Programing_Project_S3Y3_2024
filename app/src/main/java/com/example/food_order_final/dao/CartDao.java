@@ -37,9 +37,7 @@ public class CartDao extends BaseDao {
     public long insertCart(Cart cart) {
         long result = -1;
         if (cart == null) {
-            if (cart == null) {
-                Log.d(TAG, "Cart can not be null!");
-            }
+            Log.d(TAG, "Cart can not be null!");
             // Other validates
         } else {
             Log.d(TAG, "Cart: " + cart);
@@ -71,31 +69,6 @@ public class CartDao extends BaseDao {
         db.close();
     }
 
-    public double getTotalAmount(Cart cart) {
-        if (cart == null) {
-            Log.d(TAG, "Cart can not be null!");
-            throw new IllegalArgumentException("Cart can not be null!");
-        }
-        double totalAmount = 0;
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = null;
-        try {
-            cursor = db.rawQuery("SELECT SUM("
-                            + DatabaseHelper.CART_DETAIL_QUANTITY_FIELD + " * " + DatabaseHelper.CART_DETAIL_PRICE_FIELD + ") AS total FROM "
-                            + DatabaseHelper.TABLE_CART_DETAIL_NAME
-                            + " WHERE " + DatabaseHelper.CART_DETAIL_CART_FIELD + " = ?",
-                    new String[]{String.valueOf(cart.getId())});
-            if (cursor.moveToFirst()) {
-                totalAmount = getDouble(cursor, "total");
-            }
-        } finally {
-            if (cursor != null)
-                cursor.close();
-            db.close();
-        }
-
-        return totalAmount;
-    }
 
     public Cart addToCard(User user, Restaurant restaurant, Food food, int quantity) {
         Cart cart = null;

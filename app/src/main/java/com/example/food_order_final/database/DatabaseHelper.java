@@ -470,19 +470,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Trần Quang Hải", "admin@12345", adminRole,
                 "https://static.vecteezy.com/system/resources/previews/002/002/403/non_2x/man-with-beard-avatar-character-isolated-icon-free-vector.jpg"));
         userDao.insertUser(new User("lethanhh", "0912345679", "lethanhh@gmail.com",
-                "Lê Thanh Hà", "admin@12345", userRole,
+                "Lê Thanh Hà", "admin@12345", ownerRole,
                 "https://static.vecteezy.com/system/resources/previews/014/212/681/original/female-user-profile-avatar-is-a-woman-a-character-for-a-screen-saver-with-emotions-for-website-and-mobile-app-design-illustration-on-a-white-isolated-background-vector.jpg"));
         userDao.insertUser(new User("nguyenducm", "0901234568", "nguyenducm@gmail.com",
-                "Nguyễn Đức Minh", "admin@12345", userRole,
+                "Nguyễn Đức Minh", "admin@12345", ownerRole,
                 "https://img.freepik.com/premium-vector/female-user-profile-avatar-is-woman-character-screen-saver-with-emotions_505620-617.jpg"));
         userDao.insertUser(new User("hoangthi", "0987123457", "hoangthi@gmail.com",
-                "Hoàng Thị Lan", "admin@12345", userRole,
+                "Hoàng Thị Lan", "admin@12345", ownerRole,
                 "https://img.freepik.com/premium-vector/avatar-icon002_750950-52.jpg"));
         userDao.insertUser(new User("phanvanq", "0898765433", "phanvanq@gmail.com",
-                "Phan Văn Quân", "admin@12345", userRole,
+                "Phan Văn Quân", "admin@12345", ownerRole,
                 "https://img.freepik.com/free-photo/androgynous-avatar-non-binary-queer-person_23-2151100270.jpg?size=338&ext=jpg&ga=GA1.1.2008272138.1724630400&semt=ais_hybrid"));
         userDao.insertUser(new User("vuongthanh", "0876543211", "vuongthanh@gmail.com",
-                "Vương Thành", "admin@12345", userRole,
+                "Vương Thành", "admin@12345", ownerRole,
                 "https://cdn1.iconfinder.com/data/icons/user-pictures/101/malecostume-512.png"));
         userDao.insertUser(new User("daohoang", "0865432110", "daohoang@gmail.com",
                 "Đào Hoàng Nam", "admin@12345", userRole,
@@ -531,27 +531,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "123 Nguyễn Thị Minh Khai, Phường Bến Nghé, Quận 1, Thành phố Hồ Chí Minh",
                 "057265484", rc1,
                 "https://down-bs-vn.img.susercontent.com/vn-11134513-7r98o-lstz97xambb85d@resize_ss280x175!@crop_w280_h175_cT",
-                user1));
+                user3));
         resDao.insertRestaurant(new Restaurant("Pizza Domino's",
                 "456 Lê Lai, Phường Bến Thành, Quận 1, Thành phố Hồ Chí Minh",
                 "0123456789", rc2,
                 "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp",
-                user2));
+                user4));
         resDao.insertRestaurant(new Restaurant("Burgers King",
                 "789 Phạm Văn Đồng, Phường 11, Quận Bình Thạnh, Thành phố Hồ Chí Minh",
                 "0987654321", rc3,
                 "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp",
-                user3));
+                user5));
         resDao.insertRestaurant(new Restaurant("Sakura Sushi",
                 "321 Đinh Tiên Hoàng, Phường 1, Quận 1, Thành phố Hồ Chí Minh",
                 "0234567890", rc4,
                 "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp",
-                user4));
+                user6));
         resDao.insertRestaurant(new Restaurant("Taco Bell",
                 "654 Nguyễn Huệ, Phường Bến Nghé, Quận 1, Thành phố Hồ Chí Minh",
                 "0345678901", rc5,
                 "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp",
-                user5));
+                user7));
 
         Restaurant res1 = resDao.getRestaurantByName("Gà Rán KFC");
         Restaurant res2 = resDao.getRestaurantByName("Pizza Domino's");
@@ -939,8 +939,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         reviewFoodDao.insertReview(new ReviewFood("Chất lượng món ăn và dịch vụ không như mong đợi.", 2.0,
                 "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
                 user10, f10));
-
-
     }
 
 

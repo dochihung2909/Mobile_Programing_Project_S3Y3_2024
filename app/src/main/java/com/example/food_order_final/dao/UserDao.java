@@ -31,46 +31,55 @@ public class UserDao extends BaseDao{
         this.dbHelper = dbHelper;
         this.roleDao = roleDao;
     }
-    public long insertUser(User user) {
-        long result = -1;
 
-        if (user == null ||
-                dbHelper.userDao.checkUsername(user.getUsername()) ||
-                !user.getUsername().matches("^[\\S]{3,}$") ||
-                !user.getEmail().matches(String.valueOf(Patterns.EMAIL_ADDRESS)) ||
-                !user.getPhoneNumber().matches("(84|0[3|5|7|8|9])+([0-9]{8})\\b") ||
-                user.getFullName() == null || user.getFullName().trim().isEmpty() ||
-                !user.getPassword().matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$")) {
+    public boolean validateUser(User user) {
+        if (user == null) {
+            Log.d(TAG, "User can not be null");
+            return false;
+        }
+        boolean isUsername = user.getUsername().matches("^[\\S]{3,}$");
+        boolean isEmail = user.getEmail().matches(String.valueOf(Patterns.EMAIL_ADDRESS));
+        boolean isPhoneNumber = user.getPhoneNumber().matches("^(\\+84|84|0)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5|8|9]|9[0-4|6-9])[0-9]{7}$");
+        boolean isFullname = user.getFullName() != null || !user.getFullName().trim().isEmpty();
+        boolean isPassword = user.getPassword().matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$");
+        boolean isUserExist = dbHelper.userDao.checkUsername(user.getUsername());
 
-            if (user == null) {
-                Log.d(TAG, "User can not be null");
-            }
-            if (dbHelper.userDao.checkUsername(user.getUsername())) {
+        if (!isUsername || !isEmail || !isPhoneNumber || !isFullname || !isPassword) {
+            if (isUserExist) {
                 Log.d(TAG, "Username " + user.getUsername() + " already exist!");
 //            throw new IllegalArgumentException("Invalid username: Username already exists.");
             }
-            if (!user.getUsername().matches("^[\\S]{3,}$")) {
+            if (!isUsername) {
                 Log.d(TAG, "Username too short!");
 //            throw new IllegalArgumentException("Invalid username: Must be at least 3 non-whitespace characters.");
             }
-            if (!user.getEmail().matches(String.valueOf(Patterns.EMAIL_ADDRESS))) {
+            if (!isEmail) {
                 Log.d(TAG, "Email not valid!");
 //            throw new IllegalArgumentException("Invalid email address.");
             }
-            if (!user.getPhoneNumber().matches("(84|0[3|5|7|8|9])+([0-9]{8})\\b")) {
+            if (!isPhoneNumber) {
                 Log.d(TAG, "Phone number not available!");
 //            throw new IllegalArgumentException("Invalid phone number format.");
             }
-            if (user.getFullName() == null || user.getFullName().trim().isEmpty()) {
+            if (!isFullname) {
                 Log.d(TAG, "Full name can not be null or contain only spaces!");
 //            throw new IllegalArgumentException("Full name can not be null or contain only spaces!");
             }
-            if (!user.getPassword().matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$")) {
+            if (!isPassword) {
                 Log.d(TAG, "Invalid password: Must be at least 8 characters, including letters, numbers, and special characters.");
 //            throw new IllegalArgumentException("Invalid password: Must be at least 8 characters, including letters, numbers, and special characters.");
             }
-            result = -1;
-        } else {
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public long insertUser(User user) {
+        long result = -1;
+
+        if (validateUser(user)) {
             Log.d(TAG, "User: " + user);
             Log.d(TAG, "Username: " + user.getUsername());
             Log.d(TAG, "Phone number: " + user.getPhoneNumber());
@@ -169,24 +178,6 @@ public class UserDao extends BaseDao{
         return result;
     }
 
-    public int authorizeOwner(User user) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Role ownerRole = dbHelper.roleDao.getRoleByName("Owner");
-        ContentValues values = dbHelper.getUserContentValues(user);
-        values.put(DatabaseHelper.USER_ROLE_FIELD, ownerRole.getId());
-        String whereClause = DatabaseHelper.ID_FIELD + " = ?";
-        String[] whereArgs = new String[]{String.valueOf(user.getId())};
-        int result = db.update(DatabaseHelper.TABLE_USER_NAME, values, whereClause, whereArgs);
-        db.close();
-
-        if (result != -1)
-            Log.d(TAG, "Authorize user " + user.getUsername() + " to 'Owner' successful");
-        else
-            Log.d(TAG, "Authorize user " + user.getUsername() + " to 'Owner' failed !");
-
-        return result;
-    }
-
     public int updateUserPassword(int userId, String password) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -219,7 +210,9 @@ public class UserDao extends BaseDao{
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_NAME
                     + " WHERE " + DatabaseHelper.RESTAURANT_USER_FIELD + " = ?",
                     new String[]{String.valueOf(userId)});
-            result = cursor.getCount() > 1;
+            if (cursor.moveToFirst()) {
+                result = cursor.getCount() > 1;
+            }
         } finally {
             if (cursor != null)
                 cursor.close();

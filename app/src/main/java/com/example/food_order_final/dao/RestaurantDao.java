@@ -37,24 +37,21 @@ public class RestaurantDao extends BaseDao{
 
     public long insertRestaurant(Restaurant restaurant){
         long result = -1;
-        User owner = dbHelper.userDao.getUserById(restaurant.getOwner().getId());
-        if (restaurant == null ||
-                dbHelper.userDao.hasRestaurant(owner.getId()) ||
-                dbHelper.resDao.isRestaurantExists(restaurant)) {
-
+        User owner = restaurant.getOwner();
+        boolean hasRestaurant = dbHelper.userDao.hasRestaurant(owner.getId());
+        boolean isRestaurantExit = dbHelper.resDao.isRestaurantExists(restaurant);
+        if (restaurant == null || hasRestaurant || isRestaurantExit) {
             if (restaurant == null) {
                 Log.d(TAG, "Restaurant can not be null");
-            }
-
-            if (dbHelper.userDao.hasRestaurant(owner.getId())) {
+            } 
+            if (hasRestaurant) {
                 Log.d(TAG, "User " + owner.getUsername() + " already has restaurant!");
 //            throw new IllegalArgumentException("User " + owner.getUsername() + " already has restaurant!");
             }
-            if (dbHelper.resDao.isRestaurantExists(restaurant)) {
+            if (isRestaurantExit) {
                 Log.d(TAG, "Restaurant has name " + restaurant.getName() + " already exists at " + restaurant.getAddress());
 //                throw new IllegalArgumentException("Restaurant has name " + restaurant.getName() + " already exists at " + restaurant.getAddress());
             }
-            result = -1;
         } else {
             Log.d(TAG, "Restaurant: " + restaurant);
             Log.d(TAG, "Name: " + restaurant.getName());

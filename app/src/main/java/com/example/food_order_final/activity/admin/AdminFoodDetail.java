@@ -23,6 +23,7 @@ import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Food;
 import com.example.food_order_final.models.FoodCategory;
 import com.example.food_order_final.models.Restaurant;
+import com.example.food_order_final.util.LoadImageUtil;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
@@ -133,8 +134,7 @@ public class AdminFoodDetail extends AppCompatActivity {
                 spnEditFoodCate.setSelection(position);
             }
 
-            // Set image using Picasso
-            Picasso.get().load(selectedFood.getAvatar()).into(imgEditFoodAvatar);
+            LoadImageUtil.loadImage(imgEditFoodAvatar, selectedFood.getAvatar());
 
         } else {
             btnEditFoodDelete.setVisibility(View.GONE);

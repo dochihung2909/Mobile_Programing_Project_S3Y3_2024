@@ -32,15 +32,14 @@ public class FoodDao extends BaseDao{
 
     public long insertFood(Food food) {
         long result = -1;
-        Restaurant restaurant = dbHelper.resDao.getRestaurantById(food.getRestaurant().getId());
-        if (food == null ||
-                dbHelper.foodDao.isFoodExists(food.getName(), restaurant)) {
+        Restaurant restaurant = food.getRestaurant();
+        boolean isFoodExist = dbHelper.foodDao.isFoodExists(food.getName(), restaurant);
+        if (food == null || isFoodExist) {
             if (food == null){
                 Log.d(TAG, "Food can not be null!");
-            }
-
-            if (dbHelper.foodDao.isFoodExists(food.getName(), restaurant)) {
+            } else {
                 Log.d(TAG, "Food name " + food.getName() + " already exists at restaurant " + food.getRestaurant().getName());
+
             }
         } else {
             Log.d(TAG, "Food: " + food);

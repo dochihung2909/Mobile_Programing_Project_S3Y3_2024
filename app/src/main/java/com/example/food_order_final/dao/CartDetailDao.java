@@ -29,9 +29,7 @@ public class CartDetailDao extends BaseDao {
     public long insertCartDetail(CartDetail cartDetail) {
         long result = -1;
         if (cartDetail == null) {
-            if (cartDetail == null) {
-                Log.d(TAG, "CartDetail ca not be null!");
-            }
+            Log.d(TAG, "CartDetail ca not be null!");
         } else {
             Log.d(TAG, "CartDetail: " + cartDetail);
             Log.d(TAG, "Food name: " + cartDetail.getFood().getName());

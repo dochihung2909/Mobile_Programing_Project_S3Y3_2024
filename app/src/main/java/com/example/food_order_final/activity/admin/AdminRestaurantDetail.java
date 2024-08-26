@@ -23,6 +23,7 @@ import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Restaurant;
 import com.example.food_order_final.models.RestaurantCategory;
 import com.example.food_order_final.models.User;
+import com.example.food_order_final.util.LoadImageUtil;
 import com.google.android.material.textfield.TextInputLayout;
 import com.squareup.picasso.Picasso;
 
@@ -126,9 +127,7 @@ public class AdminRestaurantDetail extends AppCompatActivity {
             edtEditRestaurantRating.setText(String.valueOf(selectedRestaurant.getRating()));
             String avatarUrl = selectedRestaurant.getAvatar();
 
-            Picasso.get()
-                    .load(avatarUrl)
-                    .into(imgEditResAvatar);
+            LoadImageUtil.loadImage(imgEditResAvatar, avatarUrl);
 
             edtEditRestaurantId.setEnabled(false);
 
