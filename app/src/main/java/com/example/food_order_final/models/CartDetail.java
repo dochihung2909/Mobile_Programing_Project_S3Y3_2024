@@ -9,11 +9,12 @@ public class CartDetail extends Base{
     private double price;
     private Cart cart;
 
-    public CartDetail(int id, Food food, int quantity, Date createdDate, Date updatedDate, Cart cart) {
+    public CartDetail(int id, Food food, int quantity, boolean actived, Date createdDate, Date updatedDate, Cart cart) {
         this.id = id;
         this.food = food;
         this.quantity = quantity;
         this.price = food.getPrice();
+        this.setActived(actived);
         this.setCreatedDate(createdDate);
         this.setUpdatedDate(updatedDate);
         this.cart = cart;
@@ -23,6 +24,7 @@ public class CartDetail extends Base{
         this.food = food;
         this.quantity = quantity;
         this.price = food.getPrice();
+        this.setActived(true);
         this.setCreatedDate(new Date());
         this.setUpdatedDate(new Date());
         this.cart = cart;

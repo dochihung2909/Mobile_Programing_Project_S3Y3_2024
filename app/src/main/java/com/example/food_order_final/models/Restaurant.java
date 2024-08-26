@@ -13,7 +13,7 @@ public class Restaurant extends Base{
     private String avatar;
     private User owner;
 
-    public Restaurant(int id, String name, String address, String phoneNumber, RestaurantCategory category, String avatar, User owner, boolean isPartner, double rating, Date createdDate, Date updatedDate) {
+    public Restaurant(int id, String name, String address, String phoneNumber, RestaurantCategory category, String avatar, User owner, boolean isPartner, double rating, boolean actived, Date createdDate, Date updatedDate) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -23,6 +23,7 @@ public class Restaurant extends Base{
         this.isPartner = isPartner;
         this.rating = rating;
         this.owner = owner;
+        this.setActived(actived);
         this.setCreatedDate(createdDate);
         this.setUpdatedDate(updatedDate);
     }
@@ -36,6 +37,7 @@ public class Restaurant extends Base{
         this.rating = 0.0;
         this.avatar = avatar;
         this.owner = owner;
+        this.setActived(true);
         this.setCreatedDate(new Date());
         this.setUpdatedDate(new Date());
     }
@@ -48,6 +50,7 @@ public class Restaurant extends Base{
         this.isPartner = false;
         this.rating = 0.0;
         this.avatar = avatar;
+        this.setActived(true);
         this.setCreatedDate(new Date());
         this.setUpdatedDate(new Date());
     }
@@ -60,6 +63,7 @@ public class Restaurant extends Base{
         this.isPartner = false;
         this.rating = 0.0;
         this.avatar = null;
+        this.setActived(true);
         this.setCreatedDate(new Date());
         this.setUpdatedDate(new Date());
     }

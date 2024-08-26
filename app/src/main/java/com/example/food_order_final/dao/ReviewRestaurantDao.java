@@ -30,14 +30,7 @@ public class ReviewRestaurantDao extends BaseDao{
 
         long result = -1;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseHelper.REVIEW_COMMENT_FIELD, reviewRestaurant.getComment());
-        contentValues.put(DatabaseHelper.REVIEW_USER_FIELD, reviewRestaurant.getUser().getId());
-        contentValues.put(DatabaseHelper.REVIEW_RESTAURANT_FIELD, reviewRestaurant.getRestaurant().getId());
-        contentValues.put(DatabaseHelper.RATING_FIELD, reviewRestaurant.getRating());
-        contentValues.put(DatabaseHelper.REVIEW_IMAGE_FIELD, reviewRestaurant.getImage());
-        contentValues.put(DatabaseHelper.CREATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
-        contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
+        ContentValues contentValues = dbHelper.getReviewResContentValues(reviewRestaurant);
 
         try {
             result = db.insert(DatabaseHelper.TABLE_REVIEW_RESTAURANT_NAME, null, contentValues);
@@ -184,11 +177,12 @@ public class ReviewRestaurantDao extends BaseDao{
         User user = userDao.getUserById(user_id);
         int restaurant_id = getInt(cursor, DatabaseHelper.REVIEW_RESTAURANT_FIELD);
         Restaurant restaurant = restaurantDao.getRestaurantById(restaurant_id);
+        boolean isActived = getBoolean(cursor, DatabaseHelper.ACTIVE_FIELD);
         String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
         Date createdDate = DateUtil.timestampToDate(createdDateString);
         String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
         Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
-        return (new ReviewRestaurant(id, comment, rating, image, user, restaurant, createdDate, updatedDate));
+        return (new ReviewRestaurant(id, comment, rating, image, user, restaurant, isActived, createdDate, updatedDate));
     }
 }

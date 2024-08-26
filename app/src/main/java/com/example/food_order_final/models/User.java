@@ -16,7 +16,7 @@ public class User extends Base{
     private Role role;
     private String avatar;
 
-    public User(int id, String username, String phoneNumber, String email, String fullName, String password, Role role, String avatar, Date createdDate, Date updatedDate) {
+    public User(int id, String username, String phoneNumber, String email, String fullName, String password, Role role, String avatar, boolean actived, Date createdDate, Date updatedDate) {
         this.id = id;
         this.username = username;
         this.phoneNumber = phoneNumber;
@@ -25,9 +25,11 @@ public class User extends Base{
         this.password = password;
         this.role = role;
         this.avatar = avatar;
+        this.setActived(actived);
         this.setCreatedDate(createdDate);
         this.setUpdatedDate(updatedDate);
     }
+
     public User(String username, String phoneNumber, String email, String fullName, String password, Role role) {
         this.username = username;
         this.phoneNumber = phoneNumber;
@@ -36,6 +38,20 @@ public class User extends Base{
         this.password = password;
         this.role = role;
         this.avatar = null;
+        this.setActived(true);
+        this.setCreatedDate(new Date());
+        this.setUpdatedDate(new Date());
+    }
+
+    public User(String username, String phoneNumber, String email, String fullName, String password, Role role, String avatar) {
+        this.username = username;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.fullName = fullName;
+        this.password = password;
+        this.role = role;
+        this.avatar = avatar;
+        this.setActived(true);
         this.setCreatedDate(new Date());
         this.setUpdatedDate(new Date());
     }

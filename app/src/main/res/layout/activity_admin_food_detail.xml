@@ -1,182 +1,182 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".activity.admin.AdminFoodDetail"
-    android:id="@+id/main">
+    android:id="@+id/main"
+    android:fitsSystemWindows="true">
 
-    <androidx.appcompat.widget.Toolbar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="?actionBarSize"
-        android:theme="?actionBarTheme">
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_arrow_back_24"
-            android:background="@android:color/transparent"
-            android:layout_margin="20dp"
-            android:id="@+id/btnBackToMain"/>
-
-        <TextView
-            android:id="@+id/tvEditFoodTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Chỉnh sửa thông tin"
-            android:textSize="24sp"
-            android:textColor="@color/black"
-            android:layout_gravity="center"/>
-
-        <ImageButton
-            android:id="@+id/btnEditFoodSave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_check"
-            android:background="@android:color/transparent"
-            android:layout_gravity="end"
-            android:padding="8dp" />
-
-    </androidx.appcompat.widget.Toolbar>
-
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
-
-        <LinearLayout
+        android:orientation="vertical">
+        <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:minHeight="?actionBarSize"
+            android:theme="?actionBarTheme">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:background="@color/primaryColor"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/imgEditFoodAvatar"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_gravity="center"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/undraw_breakfast_psiw"
-                    android:background="@drawable/circle_button"
-                    android:clipToOutline="true"/>
-            </LinearLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/inputLayoutEditFoodId"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="ID"
-                android:enabled="false"
-                android:visibility="gone">
-
-                <EditText
-                    android:id="@+id/edtEditFoodId"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Name"
-                android:layout_marginTop="16dp">
-
-                <EditText
-                    android:id="@+id/edtEditFoodName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Price"
-                android:layout_marginTop="16dp">
-
-                <EditText
-                    android:id="@+id/edtEditFoodPrice"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Discount"
-                android:layout_marginTop="16dp">
-
-                <EditText
-                    android:id="@+id/edtEditFoodDiscount"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/inputLayoutEditFoodRating"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Rating"
-                android:layout_marginTop="16dp"
-                android:enabled="false"
-                android:visibility="gone">
-
-                <EditText
-                    android:id="@+id/edtEditFoodRating"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Category"
-                android:layout_marginTop="16dp">
-
-                <Spinner
-                    android:id="@+id/spnEditFoodCate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:paddingVertical="8dp"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Owner"
-                android:layout_marginTop="16dp">
-
-                <Spinner
-                    android:id="@+id/spnEditFoodRes"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="8dp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <Button
-                android:id="@+id/btnEditFoodDelete"
+            <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Xóa món ăn"
-                android:backgroundTint="@color/red"
-                android:layout_gravity="center"
-                android:layout_marginTop="16dp"/>
+                android:src="@drawable/baseline_arrow_back_24"
+                android:background="@android:color/transparent"
+                android:layout_margin="20dp"
+                android:id="@+id/btnBackToMain"/>
 
-        </LinearLayout>
-    </ScrollView>
+            <TextView
+                android:id="@+id/tvEditFoodTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chỉnh sửa thông tin"
+                android:textSize="24sp"
+                android:textColor="@color/black"
+                android:layout_gravity="center"/>
 
-</LinearLayout>
+            <ImageButton
+                android:id="@+id/btnEditFoodSave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_check"
+                android:background="@android:color/transparent"
+                android:layout_gravity="end"
+                android:padding="8dp" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:background="@color/primaryColor"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imgEditFoodAvatar"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/undraw_breakfast_psiw"
+                        android:background="@drawable/circle_button"
+                        android:clipToOutline="true"/>
+                </LinearLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/inputLayoutEditFoodId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="ID"
+                    android:enabled="false"
+                    android:visibility="gone">
+
+                    <EditText
+                        android:id="@+id/edtEditFoodId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Name"
+                    android:layout_marginTop="16dp">
+
+                    <EditText
+                        android:id="@+id/edtEditFoodName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Price"
+                    android:layout_marginTop="16dp">
+
+                    <EditText
+                        android:id="@+id/edtEditFoodPrice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Discount"
+                    android:layout_marginTop="16dp">
+
+                    <EditText
+                        android:id="@+id/edtEditFoodDiscount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/inputLayoutEditFoodRating"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Rating"
+                    android:layout_marginTop="16dp"
+                    android:enabled="false"
+                    android:visibility="gone">
+
+                    <EditText
+                        android:id="@+id/edtEditFoodRating"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textEmailAddress"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Category"
+                    android:layout_marginTop="16dp">
+
+                    <Spinner
+                        android:id="@+id/spnEditFoodCate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:paddingVertical="8dp"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Owner"
+                    android:layout_marginTop="16dp">
+
+                    <Spinner
+                        android:id="@+id/spnEditFoodRes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Button
+                    android:id="@+id/btnEditFoodDelete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Xóa món ăn"
+                    android:backgroundTint="@color/red"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp"/>
+
+            </LinearLayout>
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

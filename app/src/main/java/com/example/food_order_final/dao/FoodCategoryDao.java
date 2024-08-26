@@ -134,12 +134,13 @@ public class FoodCategoryDao extends BaseDao{
     public FoodCategory getFoodCateInfo(Cursor cursor) {
         int id = getInt(cursor, DatabaseHelper.ID_FIELD);
         String name = getString(cursor, DatabaseHelper.FOOD_CATEGORY_NAME_FIELD);
+        boolean isActived = getBoolean(cursor, DatabaseHelper.ACTIVE_FIELD);
         String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
         String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
         Date createdDate = DateUtil.timestampToDate(createdDateString);
         Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
-        return new FoodCategory(id, name, createdDate, updatedDate);
+        return new FoodCategory(id, name, isActived,createdDate, updatedDate);
     }
 
 }

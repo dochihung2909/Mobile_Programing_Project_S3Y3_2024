@@ -1,5 +1,6 @@
 package com.example.food_order_final.dao;
 
+import static com.android.volley.VolleyLog.TAG;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -31,38 +32,78 @@ public class UserDao extends BaseDao{
         this.roleDao = roleDao;
     }
 
-    public long insertUser(User user){
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+    public boolean validateUser(User user) {
+        if (user == null) {
+            Log.d(TAG, "User can not be null");
+            return false;
+        }
+        boolean isUsername = user.getUsername().matches("^[\\S]{3,}$");
+        boolean isEmail = user.getEmail().matches(String.valueOf(Patterns.EMAIL_ADDRESS));
+        boolean isPhoneNumber = user.getPhoneNumber().matches("^(\\+84|84|0)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5|8|9]|9[0-4|6-9])[0-9]{7}$");
+        boolean isFullname = user.getFullName() != null || !user.getFullName().trim().isEmpty();
+        boolean isPassword = user.getPassword().matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$");
+        boolean isUserExist = dbHelper.userDao.checkUsername(user.getUsername());
 
-//        if (!dbHelper.userDao.checkUsername(user.getUsername())) {
+        if (!isUsername || !isEmail || !isPhoneNumber || !isFullname || !isPassword) {
+            if (isUserExist) {
+                Log.d(TAG, "Username " + user.getUsername() + " already exist!");
 //            throw new IllegalArgumentException("Invalid username: Username already exists.");
-//        }
-//
-//        if (!user.getUsername().matches("^[\\S]{3,}$")) {
+            }
+            if (!isUsername) {
+                Log.d(TAG, "Username too short!");
 //            throw new IllegalArgumentException("Invalid username: Must be at least 3 non-whitespace characters.");
-//        }
-//
-//        if (!user.getEmail().matches(String.valueOf(Patterns.EMAIL_ADDRESS))) {
+            }
+            if (!isEmail) {
+                Log.d(TAG, "Email not valid!");
 //            throw new IllegalArgumentException("Invalid email address.");
-//        }
-//
-//        if (!user.getPhoneNumber().matches("(84|0[3|5|7|8|9])+([0-9]{8})\\b")) {
+            }
+            if (!isPhoneNumber) {
+                Log.d(TAG, "Phone number not available!");
 //            throw new IllegalArgumentException("Invalid phone number format.");
-//        }
-//
-//        if (!user.getPassword().matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$")) {
+            }
+            if (!isFullname) {
+                Log.d(TAG, "Full name can not be null or contain only spaces!");
+//            throw new IllegalArgumentException("Full name can not be null or contain only spaces!");
+            }
+            if (!isPassword) {
+                Log.d(TAG, "Invalid password: Must be at least 8 characters, including letters, numbers, and special characters.");
 //            throw new IllegalArgumentException("Invalid password: Must be at least 8 characters, including letters, numbers, and special characters.");
-//        }
+            }
 
-        ContentValues contentValues = dbHelper.getUserContentValues(user);
-        String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-        contentValues.put(DatabaseHelper.USER_PASSWORD_FIELD, hashedPassword);
+            return false;
+        }
 
-        long result = db.insert(DatabaseHelper.TABLE_USER_NAME, null, contentValues);
-        db.close();
+        return true;
+    }
 
-        if (result == -1)
-            throw new IllegalArgumentException("Failed to insert user into the database.");
+    public long insertUser(User user) {
+        long result = -1;
+
+        if (validateUser(user)) {
+            Log.d(TAG, "User: " + user);
+            Log.d(TAG, "Username: " + user.getUsername());
+            Log.d(TAG, "Phone number: " + user.getPhoneNumber());
+            Log.d(TAG, "Email: " + user.getEmail());
+            Log.d(TAG, "Full name: " + user.getFullName());
+            Log.d(TAG, "Password: " + user.getPassword());
+            Log.d(TAG, "Is active: " + user.getActived());
+
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+            ContentValues contentValues = dbHelper.getUserContentValues(user);
+            String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+            contentValues.put(DatabaseHelper.USER_PASSWORD_FIELD, hashedPassword);
+
+            result = db.insert(DatabaseHelper.TABLE_USER_NAME, null, contentValues);
+            db.close();
+        }
+
+        if (result == -1) {
+            Log.e(TAG, "Failed to insert user into the database.");
+//            throw new IllegalArgumentException("Failed to insert user into the database.");
+        } else {
+            Log.d(TAG, "User inserted successfully with ID: " + result);
+        }
 
         return result;
     }
@@ -98,6 +139,45 @@ public class UserDao extends BaseDao{
         return rowAffected;
     }
 
+    public int updateUser(User user){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseHelper.USER_USERNAME_FIELD, user.getUsername());
+        contentValues.put(DatabaseHelper.USER_PHONE_NUMBER_FIELD, user.getPhoneNumber());
+        contentValues.put(DatabaseHelper.USER_EMAIL_FIELD, user.getEmail());
+        contentValues.put(DatabaseHelper.USER_FULL_NAME_FIELD, user.getFullName());
+        contentValues.put(DatabaseHelper.USER_ROLE_FIELD, user.getRole().getId());
+        contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
+        contentValues.put(DatabaseHelper.USER_AVATAR_FIELD, (user.getAvatar()));
+
+        String whereClause = DatabaseHelper.ID_FIELD + " = ? ";
+        String[] whereArgs = new String[]{String.valueOf(user.getId())};
+
+        int rowAffected = db.update(DatabaseHelper.TABLE_USER_NAME, contentValues, whereClause, whereArgs);
+
+        db.close();
+        return rowAffected;
+    }
+
+    public int authorizeEmployee(User user) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Role employeeRole = dbHelper.roleDao.getRoleByName("Employee");
+        ContentValues values = dbHelper.getUserContentValues(user);
+        values.put(DatabaseHelper.USER_ROLE_FIELD, employeeRole.getId());
+        String whereClause = DatabaseHelper.ID_FIELD + " = ?";
+        String[] whereArgs = new String[]{String.valueOf(user.getId())};
+        int result = db.update(DatabaseHelper.TABLE_USER_NAME, values, whereClause, whereArgs);
+        db.close();
+
+        if (result != -1)
+            Log.d(TAG, "Authorize user " + user.getUsername() + " to employee successful");
+        else
+            Log.d(TAG, "Authorize user " + user.getUsername() + " to employee failed !");
+
+        return result;
+    }
+
     public int updateUserPassword(int userId, String password) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -122,22 +202,24 @@ public class UserDao extends BaseDao{
         db.close();
     }
 
-//    public boolean hasRestaurant(int userId) {
-//        SQLiteDatabase db = dbHelper.getReadableDatabase();
-//        Cursor cursor = null;
-//        boolean result = false;
-//        try {
-//            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_NAME
-//                    + " WHERE " + DatabaseHelper.RESTAURANT_OWNER_FIELD + " = ?",
-//                    new String[]{})
-//        } finally {
-//            if (cursor != null)
-//                cursor.close();
-//            db.close();
-//        }
-//
-//        return result;
-//    }
+    public boolean hasRestaurant(int userId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        boolean result = false;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_NAME
+                    + " WHERE " + DatabaseHelper.RESTAURANT_USER_FIELD + " = ?",
+                    new String[]{String.valueOf(userId)});
+            if (cursor.moveToFirst()) {
+                result = cursor.getCount() > 1;
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+        return result;
+    }
 
     public boolean checkUsername(String username) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -356,12 +438,13 @@ public class UserDao extends BaseDao{
         int role_id = getInt(cursor, DatabaseHelper.USER_ROLE_FIELD);
         Role role = roleDao.getRoleById(role_id);
         String avatar = getString(cursor, DatabaseHelper.USER_AVATAR_FIELD);
+        boolean isActived = getBoolean(cursor, DatabaseHelper.ACTIVE_FIELD);
         String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
         String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
         Date createdDate = DateUtil.timestampToDate(createdDateString);
         Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
-        return (new User(id, username, phone, email, fullName, password, role, avatar, createdDate, updatedDate));
+        return (new User(id, username, phone, email, fullName, password, role, avatar, isActived, createdDate, updatedDate));
     }
 
 }

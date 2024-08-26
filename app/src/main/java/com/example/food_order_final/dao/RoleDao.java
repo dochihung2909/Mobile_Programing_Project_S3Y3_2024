@@ -160,12 +160,13 @@ public class RoleDao extends BaseDao {
     public Role getRoleInfo(Cursor cursor) {
         int id = getInt(cursor, DatabaseHelper.ID_FIELD);
         String name = getString(cursor, DatabaseHelper.ROLE_NAME_FIELD);
+        boolean isActived = getBoolean(cursor, DatabaseHelper.ACTIVE_FIELD);
         String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
         String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
         Date createdDate = DateUtil.timestampToDate(createdDateString);
         Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
-        return (new Role(id, name, createdDate, updatedDate));
+        return (new Role(id, name, isActived, createdDate, updatedDate));
     }
 
 }

@@ -283,7 +283,7 @@ public class EditFoodActivity extends AppCompatActivity {
     private void createFood() {
         if (isValidate()) {
             food.setAvatar(cloudinaryPath);
-            boolean insert = dbHelper.foodDao.insertFood(food);
+            boolean insert = dbHelper.foodDao.insertFood(food) != -1;
             if (insert) {
                 Toast.makeText(EditFoodActivity.this,  "Create Restaurant Success", Toast.LENGTH_SHORT).show();
 

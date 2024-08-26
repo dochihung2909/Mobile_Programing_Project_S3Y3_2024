@@ -1,9 +1,12 @@
 package com.example.food_order_final.dao;
 
+import static com.android.volley.VolleyLog.TAG;
+
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Food;
@@ -27,15 +30,35 @@ public class FoodDao extends BaseDao{
         this.restaurantDao = restaurantDao;
     }
 
-    public boolean insertFood(Food food) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues contentValues = dbHelper.getFoodContentValues(food);
-        long insert = db.insert(DatabaseHelper.TABLE_FOOD_NAME, null, contentValues);
-        db.close();
-        if (insert == -1) {
-            return false;
+    public long insertFood(Food food) {
+        long result = -1;
+        Restaurant restaurant = food.getRestaurant();
+        boolean isFoodExist = dbHelper.foodDao.isFoodExists(food.getName(), restaurant);
+        if (food == null || isFoodExist) {
+            if (food == null){
+                Log.d(TAG, "Food can not be null!");
+            } else {
+                Log.d(TAG, "Food name " + food.getName() + " already exists at restaurant " + food.getRestaurant().getName());
+
+            }
+        } else {
+            Log.d(TAG, "Food: " + food);
+            Log.d(TAG, "Name: " + food.getName());
+            Log.d(TAG, "Restaurant: " + food.getRestaurant().getName());
+
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            ContentValues contentValues = dbHelper.getFoodContentValues(food);
+            result = db.insert(DatabaseHelper.TABLE_FOOD_NAME, null, contentValues);
+            db.close();
         }
-        return true;
+
+        if (result == -1) {
+            Log.e(TAG, "Failed to insert food into the database.");
+        } else {
+            Log.d(TAG, "Food inserted successfully with ID: " + result);
+        }
+
+        return result;
     }
 
     public int updateFood(Food food) {
@@ -305,12 +328,13 @@ public class FoodDao extends BaseDao{
         FoodCategory category = foodCategoryDao.getFoodCategoryById(categoryId);
         int restaurantId = getInt(cursor, DatabaseHelper.FOOD_RESTAURANT_FIELD);
         Restaurant restaurant = restaurantDao.getRestaurantById(restaurantId);
+        boolean isActived = getBoolean(cursor, DatabaseHelper.ACTIVE_FIELD);
         String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
         Date createdDate = DateUtil.timestampToDate(createdDateString);
         String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
         Date updatedDate = DateUtil.timestampToDate(updatedDateString);
         String description = getString(cursor, DatabaseHelper.FOOD_DESCRIPTION_FIELD);
 
-        return (new Food(id, name, price, discount, rating, avatar, description, category, restaurant, createdDate, updatedDate));
+        return (new Food(id, name, price, discount, rating, avatar, description, category, restaurant, isActived, createdDate, updatedDate));
     }
 }

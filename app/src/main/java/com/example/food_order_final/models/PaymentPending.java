@@ -11,15 +11,16 @@ public class PaymentPending extends Base {
     private PaymentMethod paymentMethod;
     private String note;
 
-    public PaymentPending(int id, PaymentStatus paymentStatus, Cart cart, double total, PaymentMethod paymentMethod, String note) {
+    public PaymentPending(int id, PaymentStatus paymentStatus, Cart cart, double total, PaymentMethod paymentMethod, String note, boolean actived, Date createdDate, Date updatedDate) {
         this.id = id;
         this.paymentStatus = paymentStatus;
         this.cart = cart;
         this.total = total;
         this.paymentMethod = paymentMethod;
         this.note = note;
-        this.setCreatedDate(new Date());
-        this.setUpdatedDate(new Date());
+        this.setActived(actived);
+        this.setCreatedDate(createdDate);
+        this.setUpdatedDate(updatedDate);
     }
 
     public PaymentPending(PaymentStatus paymentStatus, Cart cart, double total, PaymentMethod paymentMethod, String note) {
@@ -28,6 +29,7 @@ public class PaymentPending extends Base {
         this.total = total;
         this.paymentMethod = paymentMethod;
         this.note = note;
+        this.setActived(true);
         this.setCreatedDate(new Date());
         this.setUpdatedDate(new Date());
     }

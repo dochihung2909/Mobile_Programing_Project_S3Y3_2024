@@ -297,7 +297,7 @@ public class EditRestaurantActivity extends AppCompatActivity {
             restaurant.setAvatar(cloudinaryPath);
             Role role = dbHelper.roleDao.getRoleByName("Owner");
             boolean updateUser = dbHelper.userDao.updateUserRole(ownerId, role.getId());
-            boolean insert = dbHelper.resDao.insertRestaurant(restaurant);
+            boolean insert = dbHelper.resDao.insertRestaurant(restaurant) != -1;
             if (insert && updateUser) {
                 Toast.makeText(EditRestaurantActivity.this,  "Create Restaurant Success", Toast.LENGTH_SHORT).show();
                 Intent returnIntent = new Intent();

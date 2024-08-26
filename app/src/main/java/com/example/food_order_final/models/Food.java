@@ -13,7 +13,7 @@ public class Food extends Base{
     private String avatar;
     private String description;
 
-    public Food(int id, String name, double price, double discount, double rating, String avatar, String description, FoodCategory category, Restaurant restaurant, Date createdDate, Date updatedDate) {
+    public Food(int id, String name, double price, double discount, double rating, String avatar, String description, FoodCategory category, Restaurant restaurant, boolean actived, Date createdDate, Date updatedDate) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -23,6 +23,7 @@ public class Food extends Base{
         this.description = description;
         this.restaurant = restaurant;
         this.avatar = avatar;
+        this.setActived(actived);
         this.setCreatedDate(createdDate);
         this.setUpdatedDate(updatedDate);
     }
@@ -36,6 +37,7 @@ public class Food extends Base{
         this.rating = 0.0;
         this.description = description;
         this.restaurant = restaurant;
+        this.setActived(true);
         this.setCreatedDate(new Date());
         this.setUpdatedDate(new Date());
     }

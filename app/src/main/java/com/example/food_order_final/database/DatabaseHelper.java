@@ -1,5 +1,7 @@
 package com.example.food_order_final.database;
 
+import static com.android.volley.VolleyLog.TAG;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -31,6 +33,8 @@ import com.example.food_order_final.models.Role;
 import com.example.food_order_final.models.User;
 import com.example.food_order_final.util.DateUtil;
 
+import java.util.Date;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
     // Database setup
     public static final String DATABASE_NAME = "FoodOrderDB";
@@ -54,6 +58,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String CREATED_DATE_FIELD = "created_date";
     public static final String UPDATED_DATE_FIELD = "updated_date";
     public static final String ID_FIELD = "id";
+    public static final String ACTIVE_FIELD = "is_actived";
     public static final String RATING_FIELD = "rating";
 
     // Table Cart Detail columns
@@ -158,6 +163,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 TABLE_ROLE_NAME,
                 ID_FIELD,
                 ROLE_NAME_FIELD,
+                ACTIVE_FIELD + " BOOL, " +
                 CREATED_DATE_FIELD, UPDATED_DATE_FIELD);
         db.execSQL(sqlRole);
 
@@ -170,6 +176,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 USER_PASSWORD_FIELD + " TEXT, " +
                 USER_ROLE_FIELD + " INTEGER, " +
                 USER_AVATAR_FIELD + " TEXT, " +
+                ACTIVE_FIELD + " BOOL, " +
                 CREATED_DATE_FIELD + " TIMESTAMP, " +
                 UPDATED_DATE_FIELD + " TIMESTAMP," +
                 "FOREIGN KEY (" + USER_ROLE_FIELD + ") REFERENCES " + TABLE_ROLE_NAME + " (" + ID_FIELD + ")) ";
@@ -182,6 +189,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 TABLE_RESTAURANT_CATEGORY_NAME,
                 ID_FIELD,
                 RESTAURANT_CATEGORY_NAME_FIELD,
+                ACTIVE_FIELD + " BOOL, " +
                 CREATED_DATE_FIELD, UPDATED_DATE_FIELD);
         db.execSQL(sqlRestaurantCate);
 
@@ -194,6 +202,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 RESTAURANT_IS_PARTNER_FIELD + " BOOLEAN, " +
                 RATING_FIELD + " FLOAT, " +
                 RESTAURANT_AVATAR_FIELD + " VARCHAR, " +
+                ACTIVE_FIELD + " BOOL, " +
                 CREATED_DATE_FIELD + " TIMESTAMP, " +
                 UPDATED_DATE_FIELD + " TIMESTAMP, " +
                 RESTAURANT_USER_FIELD + " INTEGER, " +
@@ -209,6 +218,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 TABLE_FOOD_CATEGORY_NAME,
                 ID_FIELD,
                 FOOD_CATEGORY_NAME_FIELD,
+                ACTIVE_FIELD + " BOOL, " +
                 CREATED_DATE_FIELD, UPDATED_DATE_FIELD);
         db.execSQL(sqlFoodCate);
 
@@ -222,6 +232,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 FOOD_RESTAURANT_FIELD + " INTEGER, " +
                 FOOD_AVATAR_FIELD + " TEXT, " +
                 FOOD_DESCRIPTION_FIELD + " TEXT, " +
+                ACTIVE_FIELD + " BOOL, " +
                 CREATED_DATE_FIELD + " TIMESTAMP, " +
                 UPDATED_DATE_FIELD + " TIMESTAMP, " +
                 "FOREIGN KEY (" + FOOD_CATEGORY_FIELD + ") REFERENCES " + TABLE_FOOD_CATEGORY_NAME + " (" + ID_FIELD + "), " +
@@ -230,10 +241,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String sqlCart = "CREATE TABLE " + TABLE_CART_NAME + " (" +
                 ID_FIELD + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                CART_ORDER_DATE + " TIMESTAMP, " +
+//                CART_ORDER_DATE + " TIMESTAMP, " +
                 CART_USER_FIELD + " INTEGER, " +
                 CART_RESTAURANT_FIELD + " INTEGER, " +
                 CART_STATUS + " INTEGER, " +
+                ACTIVE_FIELD + " BOOL, " +
                 CREATED_DATE_FIELD + " TIMESTAMP, " +
                 UPDATED_DATE_FIELD + " TIMESTAMP, " +
                 "FOREIGN KEY (" + CART_USER_FIELD + ") REFERENCES " + TABLE_USER_NAME + "(" + ID_FIELD + "), " +
@@ -246,6 +258,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 CART_DETAIL_FOOD_FIELD + " INTEGER, " +
                 CART_DETAIL_QUANTITY_FIELD + " INTEGER, " +
                 CART_DETAIL_PRICE_FIELD + " FLOAT, " +
+                ACTIVE_FIELD + " BOOL, " +
                 CREATED_DATE_FIELD + " TIMESTAMP, " +
                 UPDATED_DATE_FIELD + " TIMESTAMP, " +
                 "FOREIGN KEY (" + CART_DETAIL_CART_FIELD + ") REFERENCES " + TABLE_CART_NAME + "(" + ID_FIELD + "), " +
@@ -259,6 +272,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 REVIEW_COMMENT_FIELD + " TEXT, " +
                 RATING_FIELD + " FLOAT, " +
                 REVIEW_IMAGE_FIELD + " TEXT, " +
+                ACTIVE_FIELD + " BOOL, " +
                 CREATED_DATE_FIELD + " TIMESTAMP, " +
                 UPDATED_DATE_FIELD + " TIMESTAMP, " +
                 "FOREIGN KEY (" + REVIEW_USER_FIELD + ") REFERENCES " + TABLE_USER_NAME + "(" + ID_FIELD + "), "+
@@ -272,6 +286,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 REVIEW_COMMENT_FIELD + " TEXT, " +
                 RATING_FIELD + " FLOAT, " +
                 REVIEW_IMAGE_FIELD + " TEXT, " +
+                ACTIVE_FIELD + " BOOL, " +
                 CREATED_DATE_FIELD + " TIMESTAMP, " +
                 UPDATED_DATE_FIELD + " TIMESTAMP, " +
                 "FOREIGN KEY (" + REVIEW_USER_FIELD + ") REFERENCES " + TABLE_USER_NAME + "(" + ID_FIELD + "), "+
@@ -285,6 +300,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 PAYMENT_PENDING_STATUS + " INTEGER, " +
                 PAYMENT_PENDING_TOTAL + " FLOAT, " +
                 PAYMENT_PENDING_NOTE + " TEXT, " +
+                ACTIVE_FIELD + " BOOL, " +
                 CREATED_DATE_FIELD + " TIMESTAMP, " +
                 UPDATED_DATE_FIELD + " TIMESTAMP, " +
                 "FOREIGN KEY (" + PAYMENT_PENDING_CART + ") REFERENCES " + TABLE_CART_NAME + "(" + ID_FIELD + "))";
@@ -300,6 +316,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ContentValues getRoleContentValues(Role role) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ROLE_NAME_FIELD, role.getName());
+        contentValues.put(ACTIVE_FIELD, role.isActived());
         contentValues.put(CREATED_DATE_FIELD, DateUtil.dateToTimestamp(role.getCreatedDate()));
         contentValues.put(UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(role.getUpdatedDate()));
 
@@ -313,6 +330,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(USER_FULL_NAME_FIELD, user.getFullName());
         contentValues.put(USER_ROLE_FIELD, user.getRole().getId());
         contentValues.put(USER_AVATAR_FIELD, user.getAvatar());
+        contentValues.put(ACTIVE_FIELD, user.isActived());
         contentValues.put(CREATED_DATE_FIELD, DateUtil.dateToTimestamp(user.getCreatedDate()));
         contentValues.put(UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(user.getUpdatedDate()));
 
@@ -322,6 +340,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ContentValues getResCateContentValues(RestaurantCategory resCate) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(RESTAURANT_CATEGORY_NAME_FIELD, resCate.getName());
+        contentValues.put(ACTIVE_FIELD, resCate.isActived());
         contentValues.put(CREATED_DATE_FIELD, DateUtil.dateToTimestamp(resCate.getCreatedDate()));
         contentValues.put(UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(resCate.getUpdatedDate()));
 
@@ -338,10 +357,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(RESTAURANT_CATEGORY_FIELD, restaurant.getCategory().getId());
         contentValues.put(RESTAURANT_IS_PARTNER_FIELD, restaurant.isPartner());
 
-        User owner = restaurant.getOwner();
-        if (owner != null) {
-            contentValues.put(RESTAURANT_USER_FIELD, owner.getId());
-        }
+        contentValues.put(RESTAURANT_USER_FIELD, restaurant.getOwner().getId());
+//        User owner = restaurant.getOwner();
+//        if (owner != null) {
+//            contentValues.put(RESTAURANT_USER_FIELD, owner.getId());
+//        }
+        contentValues.put(ACTIVE_FIELD, restaurant.isActived());
         contentValues.put(CREATED_DATE_FIELD, DateUtil.dateToTimestamp(restaurant.getCreatedDate()));
         contentValues.put(UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(restaurant.getUpdatedDate()));
 
@@ -351,6 +372,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ContentValues getFoodCateContentValues(FoodCategory foodCate) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DatabaseHelper.FOOD_CATEGORY_NAME_FIELD, foodCate.getName());
+        contentValues.put(ACTIVE_FIELD, foodCate.isActived());
         contentValues.put(CREATED_DATE_FIELD, DateUtil.dateToTimestamp(foodCate.getCreatedDate()));
         contentValues.put(UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(foodCate.getUpdatedDate()));
 
@@ -367,6 +389,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(DatabaseHelper.RATING_FIELD, food.getRating());
         contentValues.put(DatabaseHelper.FOOD_DESCRIPTION_FIELD, food.getDescription());
         contentValues.put(DatabaseHelper.FOOD_RESTAURANT_FIELD, food.getRestaurant().getId());
+        contentValues.put(ACTIVE_FIELD, food.isActived());
         contentValues.put(CREATED_DATE_FIELD, DateUtil.dateToTimestamp(food.getCreatedDate()));
         contentValues.put(UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(food.getUpdatedDate()));
 
@@ -378,6 +401,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(DatabaseHelper.CART_USER_FIELD, cart.getUser().getId());
         contentValues.put(DatabaseHelper.CART_RESTAURANT_FIELD, cart.getRestaurant().getId());
         contentValues.put(DatabaseHelper.CART_STATUS, cart.getStatus());
+        contentValues.put(ACTIVE_FIELD, cart.isActived());
         contentValues.put(CREATED_DATE_FIELD, DateUtil.dateToTimestamp(cart.getCreatedDate()));
         contentValues.put(UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(cart.getUpdatedDate()));
 
@@ -391,8 +415,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(DatabaseHelper.CART_DETAIL_QUANTITY_FIELD, cartDetail.getQuantity());
         contentValues.put(DatabaseHelper.CART_DETAIL_CART_FIELD, cartDetail.getCart().getId());
         contentValues.put(DatabaseHelper.CART_DETAIL_PRICE_FIELD, cartDetail.getPrice());
+        contentValues.put(ACTIVE_FIELD, cartDetail.isActived());
         contentValues.put(CREATED_DATE_FIELD, DateUtil.dateToTimestamp(cartDetail.getCreatedDate()));
         contentValues.put(UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(cartDetail.getUpdatedDate()));
+
+        return contentValues;
+    }
+
+    public ContentValues getReviewFoodContentValues(ReviewFood reviewFood) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseHelper.REVIEW_COMMENT_FIELD, reviewFood.getComment());
+        contentValues.put(DatabaseHelper.REVIEW_USER_FIELD, reviewFood.getUser().getId());
+        contentValues.put(DatabaseHelper.REVIEW_FOOD_FIELD, reviewFood.getFood().getId());
+        contentValues.put(DatabaseHelper.RATING_FIELD, reviewFood.getRating());
+        contentValues.put(DatabaseHelper.REVIEW_IMAGE_FIELD, reviewFood.getImage());
+        contentValues.put(DatabaseHelper.ACTIVE_FIELD, reviewFood.getActived());
+        contentValues.put(DatabaseHelper.CREATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
+        contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
+
+        return contentValues;
+    }
+
+    public ContentValues getReviewResContentValues(ReviewRestaurant reviewRestaurant) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseHelper.REVIEW_COMMENT_FIELD, reviewRestaurant.getComment());
+        contentValues.put(DatabaseHelper.REVIEW_USER_FIELD, reviewRestaurant.getUser().getId());
+        contentValues.put(DatabaseHelper.REVIEW_RESTAURANT_FIELD, reviewRestaurant.getRestaurant().getId());
+        contentValues.put(DatabaseHelper.RATING_FIELD, reviewRestaurant.getRating());
+        contentValues.put(DatabaseHelper.REVIEW_IMAGE_FIELD, reviewRestaurant.getImage());
+        contentValues.put(DatabaseHelper.ACTIVE_FIELD, reviewRestaurant.getActived());
+        contentValues.put(DatabaseHelper.CREATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
+        contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
 
         return contentValues;
     }
@@ -411,36 +464,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // User data
         userDao.insertUser(new User("ngynhg", "0364452867", "hung@gmail.com",
-                "Nguyễn Văn Hùng", "123", adminRole));
+                "Nguyễn Văn Hùng", "admin@123", adminRole,
+                "https://static.vecteezy.com/system/resources/previews/004/819/327/original/male-avatar-profile-icon-of-smiling-caucasian-man-vector.jpg"));
         userDao.insertUser(new User("tranquangh", "0976543210", "tranquangh@gmail.com",
-                "Trần Quang Hải", "123", adminRole));
+                "Trần Quang Hải", "admin@12345", adminRole,
+                "https://static.vecteezy.com/system/resources/previews/002/002/403/non_2x/man-with-beard-avatar-character-isolated-icon-free-vector.jpg"));
         userDao.insertUser(new User("lethanhh", "0912345679", "lethanhh@gmail.com",
-                "Lê Thanh Hà", "123", userRole));
+                "Lê Thanh Hà", "admin@12345", ownerRole,
+                "https://static.vecteezy.com/system/resources/previews/014/212/681/original/female-user-profile-avatar-is-a-woman-a-character-for-a-screen-saver-with-emotions-for-website-and-mobile-app-design-illustration-on-a-white-isolated-background-vector.jpg"));
         userDao.insertUser(new User("nguyenducm", "0901234568", "nguyenducm@gmail.com",
-                "Nguyễn Đức Minh", "123", ownerRole));
+                "Nguyễn Đức Minh", "admin@12345", ownerRole,
+                "https://img.freepik.com/premium-vector/female-user-profile-avatar-is-woman-character-screen-saver-with-emotions_505620-617.jpg"));
         userDao.insertUser(new User("hoangthi", "0987123457", "hoangthi@gmail.com",
-                "Hoàng Thị Lan", "123", ownerRole));
+                "Hoàng Thị Lan", "admin@12345", ownerRole,
+                "https://img.freepik.com/premium-vector/avatar-icon002_750950-52.jpg"));
         userDao.insertUser(new User("phanvanq", "0898765433", "phanvanq@gmail.com",
-                "Phan Văn Quân", "123", userRole));
+                "Phan Văn Quân", "admin@12345", ownerRole,
+                "https://img.freepik.com/free-photo/androgynous-avatar-non-binary-queer-person_23-2151100270.jpg?size=338&ext=jpg&ga=GA1.1.2008272138.1724630400&semt=ais_hybrid"));
         userDao.insertUser(new User("vuongthanh", "0876543211", "vuongthanh@gmail.com",
-                "Vương Thành", "123", employeeRole));
+                "Vương Thành", "admin@12345", ownerRole,
+                "https://cdn1.iconfinder.com/data/icons/user-pictures/101/malecostume-512.png"));
         userDao.insertUser(new User("daohoang", "0865432110", "daohoang@gmail.com",
-                "Đào Hoàng Nam", "123", employeeRole));
+                "Đào Hoàng Nam", "admin@12345", userRole,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIJxOLfDct_vEPdS-6OsRnS-kDl_HCv5nI2A&s"));
         userDao.insertUser(new User("ngoanguyen", "0854321099", "ngoanguyen@gmail.com",
-                "Ngô Anh Nguyễn", "123", userRole));
+                "Ngô Anh Nguyễn", "admin@12345", userRole,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnTPndLSFHM9SS8t1wJYeBjfurdYsg8MVYsg&s"));
         userDao.insertUser(new User("phamquang", "0843210988", "phamquang@gmail.com",
-                "Phạm Quang Hưng", "123", userRole));
+                "Phạm Quang Hưng", "admin@12345", userRole,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0BtGB_9GUsrrRqX2Wo4sgzHfh9LNmm4gkkQ&s"));
 
-        User user1 = userDao.getUserByUsername("ngynhg");
-        User user2 = userDao.getUserByUsername("tranquangh");
+        User user10 = userDao.getUserByUsername("phamquang");
+        User user9 = userDao.getUserByUsername("ngoanguyen");
         User user3 = userDao.getUserByUsername("lethanhh");
         User user4 = userDao.getUserByUsername("nguyenducm");
         User user5 = userDao.getUserByUsername("hoangthi");
         User user6 = userDao.getUserByUsername("phanvanq");
         User user7 = userDao.getUserByUsername("vuongthanh");
         User user8 = userDao.getUserByUsername("daohoang");
-        User user9 = userDao.getUserByUsername("ngoanguyen");
-        User user10 = userDao.getUserByUsername("phamquang");
+        User user2 = userDao.getUserByUsername("tranquangh");
+        User user1 = userDao.getUserByUsername("ngynhg");
 
         //Restaurant Category data
         resCateDao.insertRestaurantCategory(new RestaurantCategory("Mỳ"));
@@ -464,27 +527,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         RestaurantCategory rc9 = resCateDao.getRestaurantCategoryByName("Tráng miệng");
 
         // Restaurant data
-        resDao.insertRestaurant(new Restaurant("Gà Rán KFC", "123 Nguyễn Thị Minh Khai, Phường Bến Nghé, Quận 1, Thành phố Hồ Chí Minh", "057265484", rc1, "https://down-bs-vn.img.susercontent.com/vn-11134513-7r98o-lstz97xambb85d@resize_ss280x175!@crop_w280_h175_cT"));
-        resDao.insertRestaurant(new Restaurant("Pizza Domino's", "456 Lê Lai, Phường Bến Thành, Quận 1, Thành phố Hồ Chí Minh", "0123456789", rc2, "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp"));
-        resDao.insertRestaurant(new Restaurant("Burgers King", "789 Phạm Văn Đồng, Phường 11, Quận Bình Thạnh, Thành phố Hồ Chí Minh", "0987654321", rc3, "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp"));
-        resDao.insertRestaurant(new Restaurant("Sakura Sushi", "321 Đinh Tiên Hoàng, Phường 1, Quận 1, Thành phố Hồ Chí Minh", "0234567890", rc4, "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp"));
-        resDao.insertRestaurant(new Restaurant("Taco Bell", "654 Nguyễn Huệ, Phường Bến Nghé, Quận 1, Thành phố Hồ Chí Minh", "0345678901", rc5, "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp"));
-        resDao.insertRestaurant(new Restaurant("Nhà Hàng Cà Ri", "987 Bùi Viện, Phường Phạm Ngũ Lão, Quận 1, Thành phố Hồ Chí Minh", "0456789012", rc6, "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp"));
-        resDao.insertRestaurant(new Restaurant("Nhà Hàng Đại Trường Thành", "135 Nguyễn Thị Thập, Phường Tân Phú, Quận 7, Thành phố Hồ Chí Minh", "0567890123", rc7, "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp"));
-        resDao.insertRestaurant(new Restaurant("La Dolce Vita", "246 Trường Sơn, Phường 15, Quận Tân Bình, Thành phố Hồ Chí Minh", "0678901234", rc8, "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp"));
-        resDao.insertRestaurant(new Restaurant("Quán Ngọt Ngào", "357 Nguyễn Đình Chiểu, Phường 5, Quận 3, Thành phố Hồ Chí Minh", "0789012345", rc9, "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp"));
-        resDao.insertRestaurant(new Restaurant("Nhà Hàng Panda", "468 Cách Mạng Tháng Tám, Phường 11, Quận 3, Thành phố Hồ Chí Minh", "0890123456", rc7, "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp"));
+        resDao.insertRestaurant(new Restaurant("Gà Rán KFC",
+                "123 Nguyễn Thị Minh Khai, Phường Bến Nghé, Quận 1, Thành phố Hồ Chí Minh",
+                "057265484", rc1,
+                "https://down-bs-vn.img.susercontent.com/vn-11134513-7r98o-lstz97xambb85d@resize_ss280x175!@crop_w280_h175_cT",
+                user3));
+        resDao.insertRestaurant(new Restaurant("Pizza Domino's",
+                "456 Lê Lai, Phường Bến Thành, Quận 1, Thành phố Hồ Chí Minh",
+                "0123456789", rc2,
+                "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp",
+                user4));
+        resDao.insertRestaurant(new Restaurant("Burgers King",
+                "789 Phạm Văn Đồng, Phường 11, Quận Bình Thạnh, Thành phố Hồ Chí Minh",
+                "0987654321", rc3,
+                "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp",
+                user5));
+        resDao.insertRestaurant(new Restaurant("Sakura Sushi",
+                "321 Đinh Tiên Hoàng, Phường 1, Quận 1, Thành phố Hồ Chí Minh",
+                "0234567890", rc4,
+                "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp",
+                user6));
+        resDao.insertRestaurant(new Restaurant("Taco Bell",
+                "654 Nguyễn Huệ, Phường Bến Nghé, Quận 1, Thành phố Hồ Chí Minh",
+                "0345678901", rc5,
+                "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp",
+                user7));
 
         Restaurant res1 = resDao.getRestaurantByName("Gà Rán KFC");
         Restaurant res2 = resDao.getRestaurantByName("Pizza Domino's");
         Restaurant res3 = resDao.getRestaurantByName("Burgers King");
         Restaurant res4 = resDao.getRestaurantByName("Sakura Sushi");
         Restaurant res5 = resDao.getRestaurantByName("Taco Bell");
-        Restaurant res6 = resDao.getRestaurantByName("Nhà Hàng Cà Ri");
-        Restaurant res7 = resDao.getRestaurantByName("Nhà Hàng Đại Trường Thành");
-        Restaurant res8 = resDao.getRestaurantByName("La Dolce Vita");
-        Restaurant res9 = resDao.getRestaurantByName("Quán Ngọt Ngào");
-        Restaurant res10 = resDao.getRestaurantByName("Nhà Hàng Panda");
 
         //Food Category data
         foodCateDao.insertFoodCategory(new FoodCategory("Mì Ý"));
@@ -510,16 +583,100 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         FoodCategory fc10 = foodCateDao.getFoodCategoryByName("Súp");
 
         // Food data
-        foodDao.insertFood(new Food("Mì Ý Bò Băm", 45000, "Mì bò 2 trứng", fc1, res1));
-        foodDao.insertFood(new Food("Pizza Pepperoni", 55000, "Mì bò 2 trứng", fc2, res2));
-        foodDao.insertFood(new Food("Sushi California", 60000, "Mì bò 2 trứng", fc3, res4));
-        foodDao.insertFood(new Food("Bánh Hamburger Phô Mai", 40000, "Mì bò 2 trứng", fc4, res3));
-        foodDao.insertFood(new Food("Tacos Bò", 35000, "Mì bò 2 trứng", fc5, res5));
-        foodDao.insertFood(new Food("Salad Caesar", 30000, "Mì bò 2 trứng", fc6, res6));
-        foodDao.insertFood(new Food("Bánh Mì Club", 32000, "Mì bò 2 trứng", fc7, res7));
-        foodDao.insertFood(new Food("Bánh Chocolate", 28000, "Mì bò 2 trứng", fc8, res8));
-        foodDao.insertFood(new Food("Cá Hồi Nướng", 70000, "Mì bò 2 trứng", fc9, res9));
-        foodDao.insertFood(new Food("Súp Tom Yum", 33000, "Mì bò 2 trứng", fc10, res10));
+        foodDao.insertFood(new Food("Mì Ý Bò Băm",
+                45000, 0,
+                "https://hidafoods.vn/wp-content/uploads/2024/06/cach-lam-mi-y-sot-thit-bo-bam-ngon-chuan-vi-Y-1.jpg",
+                "Mì bò 2 trứng",
+                fc1, res1));
+        foodDao.insertFood(new Food("Pizza Pepperoni",
+                50000, 0,
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Eq_it-na_pizza-margherita_sep2005_sml.jpg/640px-Eq_it-na_pizza-margherita_sep2005_sml.jpg",
+                "Pizza Pepperoni với phô mai và ớt",
+                fc2, res2));
+        foodDao.insertFood(new Food("Sushi California",
+                55000, 0,
+                "https://www.vinmec.com/static/uploads/20210317_143609_055773_sushi_max_1800x1800_jpg_3690d18076.jpg",
+                "Sushi California với cá hồi",
+                fc3, res3));
+        foodDao.insertFood(new Food("Bánh Hamburger Phô Mai",
+                40000, 0,
+                "https://www.google.com/search?sca_esv=0d4a60feda95d33d&q=sushi&udm=2&fbs=AEQNm0D7NTKsOqMPi-yhU7bWDsijXeHIssQxQHiKhz3Orm0Szk2q6O3Esev6DIwpyqAb2BgF85BRuPPo79PGgFxkr43-tgC09mLCjuCWnGc7KSn2Tfk8NzZmTtYZjrvI6GV5ySofPj92LXd54Sp_06vdKT2PuwAv57L1mtkNcwdHezXL3Ok_k4jNKW5hL3_JXQeK63u95elp-ny7uQrE57cLx3PQ897PGeofiD-NpMob5Qsj__OMly0&sa=X&ved=2ahUKEwiO65DilpCIAxV67jgGHYdgEAEQtKgLegQIERAB&biw=1912&bih=964&dpr=1#vhid=RPdruozn2Wt7wM&vssid=mosaic",
+                "Bánh hamburger với phô mai và thịt bò",
+                fc4, res4));
+        foodDao.insertFood(new Food("Tacos Bò",
+                35000, 0, "https://bizweb.dktcdn.net/100/004/714/files/banh-taco-mexico.jpg?v=1662973104483",
+                "Tacos bò với rau và sốt",
+                fc5, res5));
+        foodDao.insertFood(new Food("Bánh Chocolate",
+                27000, 0,
+                "https://cdn.tgdd.vn/Files/2020/05/05/1253712/cach-lam-banh-fudge-socola-tan-chay-mem-min-thom-n-6-760x367.jpg",
+                "Bánh chocolate mềm với lớp kem",
+                fc8, res1));
+        foodDao.insertFood(new Food("Pizza Margherita",
+                55000, 0,
+                "https://au.ooni.com/cdn/shop/articles/20220211142645-margherita-9920.jpg?crop=center&height=800&v=1662539926&width=800",
+                "Pizza Margherita với cà chua và phô mai",
+                fc2, res1));
+        foodDao.insertFood(new Food("Pizza BBQ Chicken",
+                60000, 0,
+                "https://www.allrecipes.com/thmb/qZ7LKGV1_RYDCgYGSgfMn40nmks=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/AR-24878-bbq-chicken-pizza-beauty-4x3-39cd80585ad04941914dca4bd82eae3d.jpg",
+                "Pizza BBQ Chicken với gà và sốt BBQ",
+                fc2, res1));
+        foodDao.insertFood(new Food("Pizza Veggie",
+                57000, 0,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOkN2Vc0CMbhBQbEpTcaZiaA2q_022efEmjg&s",
+                "Pizza Veggie với rau củ",
+                fc2, res1));
+        foodDao.insertFood(new Food("Bánh Burger Gà",
+                42000, 0,
+                "https://cdn.tgdd.vn/Files/2022/01/06/1409368/3-cach-lam-banh-hamburger-ga-ngon-nhu-ngoai-tiem-202201070934570531.jpg",
+                "Bánh Burger với thịt gà",
+                fc4, res2));
+        foodDao.insertFood(new Food("Bánh Burger Veggie",
+                40000, 0,
+                "https://cdn-images.vtv.vn/zoom/640_400/2019/10/10/0018livekindly-hungry-jacks-1-1570683910192838263212.jpg",
+                "Bánh Burger với rau củ",
+                fc4, res2));
+        foodDao.insertFood(new Food("Khoai Tây Chiên",
+                25000, 0,
+                "https://cdn.tgdd.vn/2021/07/CookProduct/khoai-tay-chien-bao-nhieu-calo-an-khoai-lang-hay-khoai-tay-chien-tot-hon-00-1200x676.jpg",
+                "Khoai tây chiên giòn",
+                fc4, res3));
+        foodDao.insertFood(new Food("Sushi Ngũ Cốc",
+                60000, 0,
+                "https://afamilycdn.com/150157425591193600/2021/4/1/photo-1617291824523-16172918247441452577508.jpg",
+                "Sushi với ngũ cốc và rau củ",
+                fc3, res4));
+        foodDao.insertFood(new Food("Sushi Salmon",
+                65000, 0,
+                "https://recipes.net/wp-content/uploads/2023/07/easy-salmon-sushi_e1b62dc704501a791c2bd8a92e60dd54.jpeg",
+                "Sushi với cá hồi tươi",
+                fc3, res4));
+        foodDao.insertFood(new Food("Sushi Tuna",
+                62000, 0,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbfV7iV6CZBb5VR_92P5pFHdcbtsNv8ABAKg&s",
+                "Sushi với cá ngừ tươi",
+                fc3, res4));
+        foodDao.insertFood(new Food("Sashimi",
+                70000, 0,
+                "https://cdn.tgdd.vn/2021/10/CookRecipe/CookTipsNote/mon-sashimi-la-gi-cach-an-sashimi-nhat-ban-phan-biet-sushi-va-tipsnote-800x533.jpg",
+                "Sashimi với các loại cá tươi",
+                fc3, res4));
+        foodDao.insertFood(new Food("Burrito",
+                38000, 0,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHoo43FA37wwpActbqR1Bjvm_s5gaq_Ik3Xw&s",
+                "Burrito với thịt bò và rau",
+                fc5, res5));
+        foodDao.insertFood(new Food("Quesadilla",
+                35000, 0,
+                "https://cdn.loveandlemons.com/wp-content/uploads/2024/01/quesadilla.jpg",
+                "Quesadilla với phô mai và gà",
+                fc5, res5));
+        foodDao.insertFood(new Food("Nachos",
+                33000, 0,
+                "https://www.simplyrecipes.com/thmb/xTCx1mKCjjPYgGasys_JGafuem0=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2019__04__Nachos-LEAD-3-e6dd6cbb61474c9889e1524b3796601e.jpg",
+                "Nachos với sốt phô mai và thịt",
+                fc5, res5));
 
         Food f1 = foodDao.getFoodById(1);
         Food f2 = foodDao.getFoodById(2);
@@ -532,68 +689,256 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Food f9 = foodDao.getFoodById(9);
         Food f10 = foodDao.getFoodById(10);
 
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ tại đây rất chuyên nghiệp và không gian rất ấm cúng và thoải mái.", 5.0, user1, res1));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Không gian quán đẹp mắt nhưng giá cả hơi cao so với chất lượng dịch vụ.", 4.0, user2, res2));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng có không gian sang trọng và dịch vụ tận tình, tạo cảm giác dễ chịu.", 4.5, user3, res3));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Mặc dù không gian và trang trí khá đẹp, nhưng dịch vụ cần được cải thiện thêm.", 3.5, user4, res4));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Tôi thích không gian và trang trí của quán, nhưng có vẻ hơi ồn ào và cần thêm sự riêng tư.", 4.0, user5, res5));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Quán có dịch vụ nhanh chóng và không khí dễ chịu, trang trí phù hợp với chủ đề của quán.", 4.5, user6, res6));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Không gian quán rộng rãi và thoải mái, tuy nhiên, cách trang trí có thể cần thêm sự tinh tế.", 4.0, user7, res7));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ tại đây không tốt lắm và không gian cũng khá đơn điệu.", 2.5, user8, res8));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Không gian thoải mái và ấm cúng, nhưng dịch vụ hơi chậm và cần cải thiện.", 5.0, user9, res9));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Quán có không gian dễ chịu và dịch vụ ổn, tuy nhiên trang trí cần phải được nâng cấp.", 3.5, user10, res10));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Thực đơn đa dạng và món ăn rất ngon, phục vụ nhiệt tình.", 4.5, user1, res1));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Không gian đẹp, nhưng món ăn hơi đắt so với chất lượng.", 3.5, user2, res2));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ không được như mong đợi, nhân viên chưa thân thiện.", 2.0, user3, res3));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng sạch sẽ và đồ ăn rất tươi ngon. Giá cả hợp lý.", 4.0, user4, res4));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng có không gian lãng mạn, rất phù hợp cho các cặp đôi.", 5.0, user5, res5));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Món ăn ngon nhưng phục vụ hơi chậm. Hy vọng sẽ cải thiện.", 3.0, user6, res6));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Chất lượng món ăn rất tốt, nhưng không khí có phần ồn ào.", 4.0, user7, res7));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng rất đẹp, tuy nhiên giá cả có phần cao hơn so với mặt bằng chung.", 3.5, user8, res8));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Thực sự không hài lòng với chất lượng món ăn và thái độ phục vụ.", 1.5, user9, res9));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ tận tâm và món ăn rất đặc sắc. Mình sẽ quay lại.", 4.5, user10, res10));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Không gian thoải mái và thực đơn phong phú. Món ăn hơi ngọt.", 4.0, user1, res1));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng có vẻ hơi cũ và cần nâng cấp. Đồ ăn cũng bình thường.", 2.5, user2, res2));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Chất lượng phục vụ rất tốt, nhưng món ăn chưa được đặc biệt lắm.", 3.5, user3, res3));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Món ăn ngon, nhưng không gian quá chật hẹp và không thoải mái.", 3.0, user4, res4));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Mình rất ấn tượng với sự sáng tạo trong món ăn và cách phục vụ chuyên nghiệp.", 5.0, user5, res5));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng có phong cách trang trí đẹp mắt nhưng món ăn chưa đạt yêu cầu.", 3.0, user6, res6));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ rất nhanh chóng và đồ ăn luôn tươi mới. Giá cả hợp lý.", 4.5, user7, res7));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Không gian nhà hàng khá đơn giản, nhưng món ăn thì tuyệt vời.", 4.0, user8, res8));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng không đáp ứng được mong đợi về chất lượng phục vụ và món ăn.", 2.0, user9, res9));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Một trải nghiệm ẩm thực đáng nhớ với món ăn đa dạng và dịch vụ chu đáo.", 5.0, user10, res10));
+        // Cart data
+        cartDao.insertCart(new Cart(user1, res1, 0));
+        cartDao.insertCart(new Cart(user2, res1, 0));
+        cartDao.insertCart(new Cart(user3, res2, 0));
+        cartDao.insertCart(new Cart(user4, res3, 0));
+        cartDao.insertCart(new Cart(user5, res4, 1));
+        cartDao.insertCart(new Cart(user6, res5, 1));
+        cartDao.insertCart(new Cart(user7, res1, 1));
+        cartDao.insertCart(new Cart(user8, res2, 1));
+        cartDao.insertCart(new Cart(user9, res3, 1));
+        cartDao.insertCart(new Cart(user10, res4, 1));
+        cartDao.insertCart(new Cart(user2, res5, 1));
 
-        reviewFoodDao.insertReview(new ReviewFood("Rất ngon, dịch vụ tuyệt vời!", 5.0, user1, f1));
-        reviewFoodDao.insertReview(new ReviewFood("Pizza rất thơm, nhưng giá hơi cao.", 4.0, user2, f2));
-        reviewFoodDao.insertReview(new ReviewFood("Sushi rất tươi ngon, không gian đẹp.", 4.5, user3, f3));
-        reviewFoodDao.insertReview(new ReviewFood("Hamburger hơi bị nhạt, cần thêm gia vị.", 3.5, user4, f4));
-        reviewFoodDao.insertReview(new ReviewFood("Tacos rất tuyệt, nhưng món tráng miệng không ngon lắm.", 4.0, user5, f5));
-        reviewFoodDao.insertReview(new ReviewFood("Salad rất tươi, dịch vụ rất nhanh.", 4.5, user6, f6));
-        reviewFoodDao.insertReview(new ReviewFood("Bánh mì rất ngon, giá cả hợp lý.", 4.0, user7, f7));
-        reviewFoodDao.insertReview(new ReviewFood("Bánh chocolate không được như kỳ vọng.", 2.5, user8, f8));
-        reviewFoodDao.insertReview(new ReviewFood("Cá hồi nướng rất ngon, không gian thoải mái.", 5.0, user9, f9));
-        reviewFoodDao.insertReview(new ReviewFood("Súp Tom Yum có vị hơi chua, cần điều chỉnh.", 3.5, user10, f10));
-        reviewFoodDao.insertReview(new ReviewFood("Món ăn tuyệt vời, sẽ quay lại lần nữa!", 4.5, user1, f1));
-        reviewFoodDao.insertReview(new ReviewFood("Dịch vụ tốt, món ăn hơi nhạt.", 3.5, user2, f2));
-        reviewFoodDao.insertReview(new ReviewFood("Thực phẩm tươi ngon, nhưng thời gian chờ hơi lâu.", 4.0, user3, f3));
-        reviewFoodDao.insertReview(new ReviewFood("Không gian sạch sẽ, món ăn không như kỳ vọng.", 2.5, user4, f4));
-        reviewFoodDao.insertReview(new ReviewFood("Chất lượng món ăn rất tốt, giá hơi cao.", 4.0, user5, f5));
-        reviewFoodDao.insertReview(new ReviewFood("Dịch vụ không đạt yêu cầu, món ăn cũng bình thường.", 2.0, user6, f6));
-        reviewFoodDao.insertReview(new ReviewFood("Món ăn rất ngon và phục vụ nhanh chóng.", 5.0, user7, f7));
-        reviewFoodDao.insertReview(new ReviewFood("Nhà hàng có không gian đẹp, nhưng món ăn chỉ ở mức trung bình.", 3.0, user8, f8));
-        reviewFoodDao.insertReview(new ReviewFood("Dịch vụ xuất sắc và món ăn rất ngon.", 4.5, user9, f9));
-        reviewFoodDao.insertReview(new ReviewFood("Món ăn không đạt yêu cầu, nhưng không gian khá dễ chịu.", 2.5, user10, f10));
-        reviewFoodDao.insertReview(new ReviewFood("Món ăn ngon tuyệt vời, dịch vụ rất thân thiện.", 5.0, user1, f1));
-        reviewFoodDao.insertReview(new ReviewFood("Thực đơn đa dạng, nhưng món ăn hơi ngọt.", 3.5, user2, f2));
-        reviewFoodDao.insertReview(new ReviewFood("Dịch vụ hơi chậm, món ăn không đồng đều.", 2.5, user3, f3));
-        reviewFoodDao.insertReview(new ReviewFood("Chất lượng món ăn rất tốt, không gian hơi ồn ào.", 4.0, user4, f4));
-        reviewFoodDao.insertReview(new ReviewFood("Món ăn rất ngon nhưng giá cả hơi cao.", 4.5, user5, f5));
-        reviewFoodDao.insertReview(new ReviewFood("Nhà hàng sạch sẽ nhưng món ăn khá đơn giản.", 3.0, user6, f6));
-        reviewFoodDao.insertReview(new ReviewFood("Dịch vụ tận tâm và món ăn rất sáng tạo.", 5.0, user7, f7));
-        reviewFoodDao.insertReview(new ReviewFood("Món ăn được trình bày đẹp mắt, nhưng hương vị chưa thuyết phục.", 3.5, user8, f8));
-        reviewFoodDao.insertReview(new ReviewFood("Món ăn rất ngon và phong phú, phục vụ chuyên nghiệp.", 4.5, user9, f9));
-        reviewFoodDao.insertReview(new ReviewFood("Chất lượng món ăn và dịch vụ không như mong đợi.", 2.0, user10, f10));
+        Cart cart1 = cartDao.getCartById(1);
+        Cart cart2 = cartDao.getCartById(2);
+        Cart cart3 = cartDao.getCartById(3);
+        Cart cart4 = cartDao.getCartById(4);
+        Cart cart5 = cartDao.getCartById(5);
+        Cart cart6 = cartDao.getCartById(6);
+        Cart cart7 = cartDao.getCartById(7);
+        Cart cart8 = cartDao.getCartById(8);
+        Cart cart9 = cartDao.getCartById(9);
+        Cart cart10 = cartDao.getCartById(10);
 
+        // Cart detail data
+        cartDetailDao.insertCartDetail(new CartDetail(f1, 2, cart2));
+        cartDetailDao.insertCartDetail(new CartDetail(f2, 3, cart2));
+        cartDetailDao.insertCartDetail(new CartDetail(f3, 4, cart2));
+        cartDetailDao.insertCartDetail(new CartDetail(f4, 5, cart2));
+        cartDetailDao.insertCartDetail(new CartDetail(f1, 1, cart1));
+        cartDetailDao.insertCartDetail(new CartDetail(f2, 2, cart1));
+        cartDetailDao.insertCartDetail(new CartDetail(f3, 3, cart1));
+        cartDetailDao.insertCartDetail(new CartDetail(f4, 4, cart1));
+        cartDetailDao.insertCartDetail(new CartDetail(f5, 5, cart1));
+        cartDetailDao.insertCartDetail(new CartDetail(f6, 1, cart2));
+        cartDetailDao.insertCartDetail(new CartDetail(f7, 2, cart2));
+        cartDetailDao.insertCartDetail(new CartDetail(f8, 3, cart2));
+        cartDetailDao.insertCartDetail(new CartDetail(f9, 4, cart2));
+        cartDetailDao.insertCartDetail(new CartDetail(f10, 5, cart2));
+        cartDetailDao.insertCartDetail(new CartDetail(f1, 2, cart3));
+        cartDetailDao.insertCartDetail(new CartDetail(f2, 3, cart3));
+        cartDetailDao.insertCartDetail(new CartDetail(f3, 4, cart3));
+        cartDetailDao.insertCartDetail(new CartDetail(f4, 5, cart3));
+        cartDetailDao.insertCartDetail(new CartDetail(f5, 1, cart3));
+        cartDetailDao.insertCartDetail(new CartDetail(f6, 2, cart4));
+        cartDetailDao.insertCartDetail(new CartDetail(f7, 3, cart4));
+        cartDetailDao.insertCartDetail(new CartDetail(f8, 4, cart4));
+        cartDetailDao.insertCartDetail(new CartDetail(f9, 5, cart4));
+        cartDetailDao.insertCartDetail(new CartDetail(f10, 1, cart4));
+        cartDetailDao.insertCartDetail(new CartDetail(f1, 3, cart5));
+        cartDetailDao.insertCartDetail(new CartDetail(f2, 4, cart5));
+        cartDetailDao.insertCartDetail(new CartDetail(f3, 5, cart5));
+        cartDetailDao.insertCartDetail(new CartDetail(f4, 1, cart5));
+        cartDetailDao.insertCartDetail(new CartDetail(f5, 2, cart5));
+        cartDetailDao.insertCartDetail(new CartDetail(f6, 3, cart6));
+        cartDetailDao.insertCartDetail(new CartDetail(f7, 4, cart6));
+        cartDetailDao.insertCartDetail(new CartDetail(f8, 5, cart6));
+        cartDetailDao.insertCartDetail(new CartDetail(f9, 1, cart6));
+        cartDetailDao.insertCartDetail(new CartDetail(f10, 2, cart6));
+        cartDetailDao.insertCartDetail(new CartDetail(f1, 4, cart7));
+        cartDetailDao.insertCartDetail(new CartDetail(f2, 5, cart7));
+        cartDetailDao.insertCartDetail(new CartDetail(f3, 1, cart7));
+        cartDetailDao.insertCartDetail(new CartDetail(f4, 2, cart7));
+        cartDetailDao.insertCartDetail(new CartDetail(f5, 3, cart7));
+        cartDetailDao.insertCartDetail(new CartDetail(f6, 4, cart8));
+        cartDetailDao.insertCartDetail(new CartDetail(f7, 5, cart8));
+        cartDetailDao.insertCartDetail(new CartDetail(f8, 1, cart8));
+        cartDetailDao.insertCartDetail(new CartDetail(f9, 2, cart8));
+        cartDetailDao.insertCartDetail(new CartDetail(f10, 3, cart8));
+        cartDetailDao.insertCartDetail(new CartDetail(f1, 5, cart9));
+        cartDetailDao.insertCartDetail(new CartDetail(f2, 1, cart9));
+        cartDetailDao.insertCartDetail(new CartDetail(f3, 2, cart9));
+        cartDetailDao.insertCartDetail(new CartDetail(f4, 3, cart9));
+        cartDetailDao.insertCartDetail(new CartDetail(f5, 4, cart9));
+        cartDetailDao.insertCartDetail(new CartDetail(f6, 5, cart10));
+        cartDetailDao.insertCartDetail(new CartDetail(f7, 1, cart10));
+        cartDetailDao.insertCartDetail(new CartDetail(f8, 2, cart10));
+        cartDetailDao.insertCartDetail(new CartDetail(f9, 3, cart10));
+        cartDetailDao.insertCartDetail(new CartDetail(f10, 4, cart10));
+
+        // Review data
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ tại đây rất chuyên nghiệp và không gian rất ấm cúng và thoải mái.", 5.0,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user1, res1));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Không gian quán đẹp mắt nhưng giá cả hơi cao so với chất lượng dịch vụ.", 4.0,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user2, res2));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng có không gian sang trọng và dịch vụ tận tình, tạo cảm giác dễ chịu.", 4.5,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user3, res3));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Mặc dù không gian và trang trí khá đẹp, nhưng dịch vụ cần được cải thiện thêm.", 3.5,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user4, res4));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Tôi thích không gian và trang trí của quán, nhưng có vẻ hơi ồn ào và cần thêm sự riêng tư.", 4.0,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user5, res5));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ rất nhanh chóng và không gian thật sự dễ chịu.", 4.5,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user1, res1));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng có không gian sang trọng, nhưng giá cả hơi cao.", 3.5,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user2, res2));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Không gian đẹp, món ăn ngon, nhưng dịch vụ hơi chậm.", 4.0,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user3, res3));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Món ăn tuyệt vời, nhưng không gian quán khá ồn ào.", 3.5,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user4, res4));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Quán có dịch vụ rất tốt và không gian rất ấm cúng.", 5.0,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user5, res5));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng sạch sẽ nhưng trang trí có vẻ hơi đơn giản.", 3.0,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user1, res1));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ tốt nhưng không gian hơi nhỏ và không thoải mái lắm.", 3.5,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user2, res2));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Tôi rất thích món ăn, tuy nhiên không gian có phần ồn ào.", 4.0,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user3, res3));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng có không gian đẹp và phục vụ tận tình.", 4.5,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user4, res4));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Món ăn rất ngon nhưng giá cả hơi cao so với chất lượng.", 3.5,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user5, res5));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ và không gian đều rất tốt, mình sẽ quay lại.", 5.0,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user1, res1));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Không gian đẹp, nhưng món ăn và dịch vụ cần cải thiện.", 3.0,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user2, res2));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Quán có không gian thoải mái nhưng món ăn hơi nhạt.", 3.5,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user3, res3));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ rất chuyên nghiệp nhưng không gian hơi nhỏ.", 4.0,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user4, res4));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Tôi rất thích không gian quán, mặc dù món ăn còn cần cải thiện.", 4.0,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user5, res5));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng có không gian ấm cúng và dịch vụ nhanh chóng.", 4.5,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user1, res1));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ tốt nhưng không gian hơi chật chội.", 3.5,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user2, res2));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Không gian rất đẹp và món ăn rất ngon.", 4.0,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user3, res3));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng có phong cách trang trí đẹp nhưng món ăn hơi đắt.", 3.5,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user4, res4));
+        reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ tuyệt vời và không gian thoải mái, nhưng món ăn chưa đặc sắc.", 3.5,
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
+                user5, res5));
+
+        reviewFoodDao.insertReview(new ReviewFood("Rất ngon, dịch vụ tuyệt vời!", 5.0,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user1, f1));
+        reviewFoodDao.insertReview(new ReviewFood("Rất ngon, dịch vụ tuyệt vời!", 5.0,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user1, f1));
+        reviewFoodDao.insertReview(new ReviewFood("Pizza rất thơm, nhưng giá hơi cao.", 4.0,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user2, f2));
+        reviewFoodDao.insertReview(new ReviewFood("Sushi rất tươi ngon, không gian đẹp.", 4.5,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user3, f3));
+        reviewFoodDao.insertReview(new ReviewFood("Hamburger hơi bị nhạt, cần thêm gia vị.", 3.5,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user4, f4));
+        reviewFoodDao.insertReview(new ReviewFood("Tacos rất tuyệt, nhưng món tráng miệng không ngon lắm.", 4.0,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user5, f5));
+        reviewFoodDao.insertReview(new ReviewFood("Salad rất tươi, dịch vụ rất nhanh.", 4.5,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user6, f6));
+        reviewFoodDao.insertReview(new ReviewFood("Bánh mì rất ngon, giá cả hợp lý.", 4.0,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user7, f7));
+        reviewFoodDao.insertReview(new ReviewFood("Bánh chocolate không được như kỳ vọng.", 2.5,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user8, f8));
+        reviewFoodDao.insertReview(new ReviewFood("Cá hồi nướng rất ngon, không gian thoải mái.", 5.0,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user9, f9));
+        reviewFoodDao.insertReview(new ReviewFood("Súp Tom Yum có vị hơi chua, cần điều chỉnh.", 3.5,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user10, f10));
+        reviewFoodDao.insertReview(new ReviewFood("Món ăn tuyệt vời, sẽ quay lại lần nữa!", 4.5,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user1, f1));
+        reviewFoodDao.insertReview(new ReviewFood("Dịch vụ tốt, món ăn hơi nhạt.", 3.5,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user2, f2));
+        reviewFoodDao.insertReview(new ReviewFood("Thực phẩm tươi ngon, nhưng thời gian chờ hơi lâu.", 4.0,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user3, f3));
+        reviewFoodDao.insertReview(new ReviewFood("Không gian sạch sẽ, món ăn không như kỳ vọng.", 2.5,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user4, f4));
+        reviewFoodDao.insertReview(new ReviewFood("Chất lượng món ăn rất tốt, giá hơi cao.", 4.0,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user5, f5));
+        reviewFoodDao.insertReview(new ReviewFood("Dịch vụ không đạt yêu cầu, món ăn cũng bình thường.", 2.0,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user6, f6));
+        reviewFoodDao.insertReview(new ReviewFood("Món ăn rất ngon và phục vụ nhanh chóng.", 5.0,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user7, f7));
+        reviewFoodDao.insertReview(new ReviewFood("Nhà hàng có không gian đẹp, nhưng món ăn chỉ ở mức trung bình.", 3.0,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user8, f8));
+        reviewFoodDao.insertReview(new ReviewFood("Dịch vụ xuất sắc và món ăn rất ngon.", 4.5,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user9, f9));
+        reviewFoodDao.insertReview(new ReviewFood("Món ăn không đạt yêu cầu, nhưng không gian khá dễ chịu.", 2.5,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user10, f10));
+        reviewFoodDao.insertReview(new ReviewFood("Món ăn ngon tuyệt vời, dịch vụ rất thân thiện.", 5.0,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user1, f1));
+        reviewFoodDao.insertReview(new ReviewFood("Thực đơn đa dạng, nhưng món ăn hơi ngọt.", 3.5,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user2, f2));
+        reviewFoodDao.insertReview(new ReviewFood("Dịch vụ hơi chậm, món ăn không đồng đều.", 2.5,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user3, f3));
+        reviewFoodDao.insertReview(new ReviewFood("Chất lượng món ăn rất tốt, không gian hơi ồn ào.", 4.0,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user4, f4));
+        reviewFoodDao.insertReview(new ReviewFood("Món ăn rất ngon nhưng giá cả hơi cao.", 4.5,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user5, f5));
+        reviewFoodDao.insertReview(new ReviewFood("Nhà hàng sạch sẽ nhưng món ăn khá đơn giản.", 3.0,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user6, f6));
+        reviewFoodDao.insertReview(new ReviewFood("Dịch vụ tận tâm và món ăn rất sáng tạo.", 5.0,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user7, f7));
+        reviewFoodDao.insertReview(new ReviewFood("Món ăn được trình bày đẹp mắt, nhưng hương vị chưa thuyết phục.", 3.5,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user8, f8));
+        reviewFoodDao.insertReview(new ReviewFood("Món ăn rất ngon và phong phú, phục vụ chuyên nghiệp.", 4.5,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user9, f9));
+        reviewFoodDao.insertReview(new ReviewFood("Chất lượng món ăn và dịch vụ không như mong đợi.", 2.0,
+                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
+                user10, f10));
     }
 
 
