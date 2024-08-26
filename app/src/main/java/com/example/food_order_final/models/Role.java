@@ -6,14 +6,16 @@ public class Role extends Base{
     private int id;
     private String name;
 
-    public Role(int id, String name, Date createdDate, Date updatedDate) {
+    public Role(int id, String name, boolean actived, Date createdDate, Date updatedDate) {
         this.id = id;
         this.name = name;
+        this.setActived(actived);
         this.setCreatedDate(createdDate);
         this.setUpdatedDate(updatedDate);
     }
     public Role(String name) {
         this.name = name;
+        this.setActived(true);
         this.setCreatedDate(new Date());
         this.setUpdatedDate(new Date());
     }

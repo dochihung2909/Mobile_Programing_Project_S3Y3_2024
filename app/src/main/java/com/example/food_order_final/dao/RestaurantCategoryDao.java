@@ -136,12 +136,13 @@ public class RestaurantCategoryDao extends BaseDao{
     public RestaurantCategory getResCateInfo(Cursor cursor) {
         int id = getInt(cursor, DatabaseHelper.ID_FIELD);
         String name = getString(cursor, DatabaseHelper.RESTAURANT_CATEGORY_NAME_FIELD);
+        boolean isActived = getBoolean(cursor, DatabaseHelper.ACTIVE_FIELD);
         String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
         String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
         Date createdDate = DateUtil.timestampToDate(createdDateString);
         Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
-        return new RestaurantCategory(id, name, createdDate, updatedDate);
+        return new RestaurantCategory(id, name, isActived, createdDate, updatedDate);
     }
 
 }

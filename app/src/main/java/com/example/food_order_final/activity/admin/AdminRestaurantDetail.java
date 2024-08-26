@@ -22,7 +22,9 @@ import com.example.food_order_final.R;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Restaurant;
 import com.example.food_order_final.models.RestaurantCategory;
+import com.example.food_order_final.models.User;
 import com.google.android.material.textfield.TextInputLayout;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,7 @@ public class AdminRestaurantDetail extends AppCompatActivity {
     private Spinner spnEditResCate, spnEditResOwner;
     private TextInputLayout inputLayoutEditRestaurantId, inputLayoutEditResRating;
     private ImageButton btnBackToMain;
-    private ImageView btnEditRestaurantSave;
+    private ImageView btnEditRestaurantSave, imgEditResAvatar;
     private Button btnEditRestaurantDelete;
     private DatabaseHelper dbHelper;
     private Restaurant selectedRestaurant;
@@ -48,6 +50,7 @@ public class AdminRestaurantDetail extends AppCompatActivity {
 
         initWidgets();
         loadRestaurantCategories();
+        loadUser();
         checkForEditRestaurant();
         setOnClickListener();
 
@@ -74,10 +77,12 @@ public class AdminRestaurantDetail extends AppCompatActivity {
         btnEditRestaurantDelete = findViewById(R.id.btnEditResDelete);
         btnEditRestaurantSave = findViewById(R.id.btnEditResSave);
 
+        imgEditResAvatar = findViewById(R.id.imgEditResAvatar);
+
         if (edtEditRestaurantId == null || edtEditRestaurantName == null || edtEditRestaurantAddress == null ||
                 edtEditRestaurantPhone == null || edtEditRestaurantRating == null || spnEditResCate == null ||
                 spnEditResOwner == null || inputLayoutEditRestaurantId == null || btnBackToMain == null ||
-                btnEditRestaurantDelete == null || btnEditRestaurantSave == null) {
+                btnEditRestaurantDelete == null || btnEditRestaurantSave == null || imgEditResAvatar == null) {
             throw new NullPointerException("One or more views were not found. Check your layout XML.");
         }
     }
@@ -95,6 +100,17 @@ public class AdminRestaurantDetail extends AppCompatActivity {
         spnEditResCate.setAdapter(adapter);
     }
 
+    private void loadUser() {
+        List<User> users = dbHelper.userDao.getAllUsers();
+        List<String> userUsernames = new ArrayList<>();
+        for(User user : users) {
+            userUsernames.add(user.getUsername());
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, userUsernames);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnEditResOwner.setAdapter(adapter);
+    }
+
     private void checkForEditRestaurant() {
         Intent previousIntent = getIntent();
         int restaurantId = previousIntent.getIntExtra("restaurant_id", -1);
@@ -108,12 +124,23 @@ public class AdminRestaurantDetail extends AppCompatActivity {
             edtEditRestaurantAddress.setText(selectedRestaurant.getAddress());
             edtEditRestaurantPhone.setText(selectedRestaurant.getPhoneNumber());
             edtEditRestaurantRating.setText(String.valueOf(selectedRestaurant.getRating()));
+            String avatarUrl = selectedRestaurant.getAvatar();
+
+            Picasso.get()
+                    .load(avatarUrl)
+                    .into(imgEditResAvatar);
+
             edtEditRestaurantId.setEnabled(false);
 
             if (selectedRestaurant.getCategory() != null) {
                 ArrayAdapter<String> adapter = (ArrayAdapter<String>) spnEditResCate.getAdapter();
                 int position = adapter.getPosition(selectedRestaurant.getCategory().getName());
                 spnEditResCate.setSelection(position);
+            }
+            if (selectedRestaurant.getOwner() != null) {
+                ArrayAdapter<String> adapter = (ArrayAdapter<String>) spnEditResOwner.getAdapter();
+                int position = adapter.getPosition(selectedRestaurant.getOwner().getUsername());
+                spnEditResOwner.setSelection(position);
             }
         } else {
             btnEditRestaurantDelete.setVisibility(View.GONE);
@@ -128,10 +155,13 @@ public class AdminRestaurantDetail extends AppCompatActivity {
             String restaurantPhone = edtEditRestaurantPhone.getText().toString().trim();
             String resCateName = spnEditResCate.getSelectedItem().toString();
             RestaurantCategory restaurantCategory = dbHelper.resCateDao.getRestaurantCategoryByName(resCateName);
+            String ownerUsername = spnEditResOwner.getSelectedItem().toString();
+            User owner = dbHelper.userDao.getUserByUsername(ownerUsername);
+            String avatar = selectedRestaurant.getAvatar();
 
             if (selectedRestaurant == null) {
-                if (!dbHelper.resDao.isRestaurantExists(restaurantName, restaurantAddress)) {
-                    Restaurant newRestaurant = new Restaurant(restaurantName, restaurantAddress, restaurantPhone, restaurantCategory);
+                Restaurant newRestaurant = new Restaurant(restaurantName, restaurantAddress, restaurantPhone, restaurantCategory, avatar, owner);
+                if (!dbHelper.resDao.isRestaurantExists(newRestaurant)) {
                     dbHelper.resDao.insertRestaurant(newRestaurant);
                     Toast.makeText(AdminRestaurantDetail.this, "Tạo Nhà hàng mới thành công", Toast.LENGTH_SHORT).show();
                     finish();
@@ -143,6 +173,7 @@ public class AdminRestaurantDetail extends AppCompatActivity {
                 selectedRestaurant.setAddress(restaurantAddress);
                 selectedRestaurant.setPhoneNumber(restaurantPhone);
                 selectedRestaurant.setCategory(restaurantCategory);
+                selectedRestaurant.setAvatar(avatar);
                 dbHelper.resDao.updateRestaurant(selectedRestaurant);
                 Toast.makeText(AdminRestaurantDetail.this, "Cập nhật Nhà hàng thành công", Toast.LENGTH_SHORT).show();
                 finish();
@@ -153,6 +184,7 @@ public class AdminRestaurantDetail extends AppCompatActivity {
 
         btnBackToMain.setOnClickListener(v -> finish());
     }
+
 
     private void showDeleteConfirmDialog() {
         new AlertDialog.Builder(this)

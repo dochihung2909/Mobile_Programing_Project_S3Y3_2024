@@ -30,14 +30,7 @@ public class ReviewFoodDao extends BaseDao{
 
         long result = -1;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseHelper.REVIEW_COMMENT_FIELD, reviewFood.getComment());
-        contentValues.put(DatabaseHelper.REVIEW_USER_FIELD, reviewFood.getUser().getId());
-        contentValues.put(DatabaseHelper.REVIEW_FOOD_FIELD, reviewFood.getFood().getId());
-        contentValues.put(DatabaseHelper.RATING_FIELD, reviewFood.getRating());
-        contentValues.put(DatabaseHelper.REVIEW_IMAGE_FIELD, reviewFood.getImage());
-        contentValues.put(DatabaseHelper.CREATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
-        contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
+        ContentValues contentValues = dbHelper.getReviewFoodContentValues(reviewFood);
 
         try {
             result = db.insert(DatabaseHelper.TABLE_REVIEW_FOOD_NAME, null, contentValues);
@@ -180,11 +173,12 @@ public class ReviewFoodDao extends BaseDao{
         User user = userDao.getUserById(user_id);
         int food_id = getInt(cursor, DatabaseHelper.REVIEW_FOOD_FIELD);
         Food food = foodDao.getFoodById(food_id);
+        boolean isActived = getBoolean(cursor, DatabaseHelper.ACTIVE_FIELD);
         String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
         Date createdDate = DateUtil.timestampToDate(createdDateString);
         String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
         Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
-        return (new ReviewFood(id, comment, rating, image, user, food, createdDate, updatedDate));
+        return (new ReviewFood(id, comment, rating, image, user, food, isActived, createdDate, updatedDate));
     }
 }

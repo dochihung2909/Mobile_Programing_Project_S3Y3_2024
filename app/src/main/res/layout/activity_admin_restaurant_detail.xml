@@ -68,6 +68,7 @@
                     android:src="@drawable/undraw_breakfast_psiw"
                     android:background="@drawable/circle_button"
                     android:clipToOutline="true"/>
+
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout

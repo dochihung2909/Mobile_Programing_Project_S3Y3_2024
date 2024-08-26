@@ -27,6 +27,7 @@ public class LoadScreenActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        dbHelper.initializeData();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load_screen);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);

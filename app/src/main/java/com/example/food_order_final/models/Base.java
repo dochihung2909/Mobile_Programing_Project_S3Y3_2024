@@ -11,6 +11,10 @@ public abstract class Base {
         return isActived;
     }
 
+    public boolean getActived() {
+        return isActived;
+    }
+
     public void setActived(boolean actived) {
         isActived = actived;
     }

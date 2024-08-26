@@ -46,8 +46,9 @@ public class RegisterActivity extends AppCompatActivity {
                     String email = String.valueOf(etEmail.getText());
                     String username = String.valueOf(etUsername.getText());
                     String password = String.valueOf(etPassword.getText());
+                    Role userRole = dbHelper.roleDao.getRoleByName("User");
                     if (!dbHelper.userDao.checkUsername(username)) {
-                        User newUser = new User(username, phoneNumber, email, fullName, password, new Role(1, "User", new Date(), new Date()));
+                        User newUser = new User(username, phoneNumber, email, fullName, password, userRole);
 //                        dbHelper.addUserToDatabase(newUser);
                         dbHelper.userDao.insertUser(newUser);
                         Toast.makeText(RegisterActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();

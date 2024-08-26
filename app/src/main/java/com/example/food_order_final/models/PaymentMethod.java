@@ -1,8 +1,6 @@
 package com.example.food_order_final.models;
 
 public enum PaymentMethod {
-
-
     BANK(2),
     E_WALLET(1),
     CASH(0);

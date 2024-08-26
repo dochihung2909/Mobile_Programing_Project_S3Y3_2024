@@ -1,9 +1,12 @@
 package com.example.food_order_final.dao;
 
+import static com.android.volley.VolleyLog.TAG;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.util.Patterns;
 
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Food;
@@ -32,16 +35,64 @@ public class RestaurantDao extends BaseDao{
         this.resCateDao = resCateDao;
     }
 
-    public boolean insertRestaurant(Restaurant restaurant){
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues contentValues = dbHelper.getRestaurantContentValues(restaurant);
-        long insert = db.insert(DatabaseHelper.TABLE_RESTAURANT_NAME, null, contentValues);
-        if (insert == -1) {
+    public long insertRestaurant(Restaurant restaurant){
+        long result = -1;
+        User owner = dbHelper.userDao.getUserById(restaurant.getOwner().getId());
+        if (restaurant == null ||
+                dbHelper.userDao.hasRestaurant(owner.getId()) ||
+                dbHelper.resDao.isRestaurantExists(restaurant)) {
+
+            if (restaurant == null) {
+                Log.d(TAG, "Restaurant can not be null");
+            }
+
+            if (dbHelper.userDao.hasRestaurant(owner.getId())) {
+                Log.d(TAG, "User " + owner.getUsername() + " already has restaurant!");
+//            throw new IllegalArgumentException("User " + owner.getUsername() + " already has restaurant!");
+            }
+            if (dbHelper.resDao.isRestaurantExists(restaurant)) {
+                Log.d(TAG, "Restaurant has name " + restaurant.getName() + " already exists at " + restaurant.getAddress());
+//                throw new IllegalArgumentException("Restaurant has name " + restaurant.getName() + " already exists at " + restaurant.getAddress());
+            }
+            result = -1;
+        } else {
+            Log.d(TAG, "Restaurant: " + restaurant);
+            Log.d(TAG, "Name: " + restaurant.getName());
+            Log.d(TAG, "Address: " + restaurant.getAddress());
+
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            ContentValues restaurantValues = dbHelper.getRestaurantContentValues(restaurant);
+            result = db.insert(DatabaseHelper.TABLE_RESTAURANT_NAME, null, restaurantValues);
+
+            // Update user role if create restaurant successful
+
+//            Role ownerRole = dbHelper.roleDao.getRoleByName("Owner");
+//            if (ownerRole != null) {
+//                ContentValues userValues = dbHelper.getUserContentValues(owner);
+//                userValues.put(DatabaseHelper.USER_ROLE_FIELD, ownerRole.getId());
+//                String whereClause = DatabaseHelper.ID_FIELD + " = ?";
+//                String[] whereArgs = new String[]{String.valueOf(owner.getId())};
+//                int rowUpdated = db.update(DatabaseHelper.TABLE_USER_NAME, userValues, whereClause, whereArgs);
+//                if (rowUpdated != -1) {
+//                    Log.d(TAG, "Role user " + owner.getUsername() + " updated successful");
+//                } else {
+//                    Log.d(TAG, "Role user " + owner.getUsername() + " updated failed!");
+//                }
+//            } else {
+//                Log.d(TAG, "Role 'Owner' not found!");
+//            }
+
             db.close();
-            return false;
         }
-        db.close();
-        return true;
+
+        if (result == -1) {
+            Log.e(TAG, "Failed to insert restaurant into the database.");
+//            throw new IllegalArgumentException("Failed to insert restaurant into the database.");
+        } else {
+            Log.d(TAG, "Restaurant inserted successfully with ID: " + result);
+        }
+
+        return result;
     }
 
     public int updateRestaurant(Restaurant restaurant){
@@ -54,6 +105,7 @@ public class RestaurantDao extends BaseDao{
         contentValues.put(DatabaseHelper.RESTAURANT_CATEGORY_FIELD, restaurant.getCategory().getId());
         contentValues.put(DatabaseHelper.RESTAURANT_IS_PARTNER_FIELD, restaurant.isPartner());
         contentValues.put(DatabaseHelper.RESTAURANT_AVATAR_FIELD, restaurant.getAvatar());
+        contentValues.put(DatabaseHelper.RESTAURANT_USER_FIELD, restaurant.getOwner().getId());
 
         String whereClause = DatabaseHelper.ID_FIELD + " = ? ";
         String[] whereArgs = new String[]{String.valueOf(restaurant.getId())};
@@ -139,7 +191,7 @@ public class RestaurantDao extends BaseDao{
         return result;
     }
 
-    public boolean isRestaurantExists(String resName, String resAddress) {
+    public boolean isRestaurantExists(Restaurant restaurant) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = null;
         boolean result = false;
@@ -147,7 +199,7 @@ public class RestaurantDao extends BaseDao{
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_NAME
                     + " WHERE " + DatabaseHelper.RESTAURANT_NAME_FIELD + " = ? "
                     + " AND " + DatabaseHelper.RESTAURANT_ADDRESS_FIELD + " = ?",
-                    new String[]{resName, resAddress});
+                    new String[]{restaurant.getName(), restaurant.getAddress()});
             if (cursor.moveToFirst())
                 result = true;
         } finally {
@@ -308,6 +360,7 @@ public class RestaurantDao extends BaseDao{
         String avatar = getString(cursor, DatabaseHelper.RESTAURANT_AVATAR_FIELD);
         boolean isPartner = getBoolean(cursor, DatabaseHelper.RESTAURANT_IS_PARTNER_FIELD);
         double rating = getDouble(cursor, DatabaseHelper.RATING_FIELD);
+        boolean isActived = getBoolean(cursor, DatabaseHelper.ACTIVE_FIELD);
         String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
         String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
         int ownerId = getInt(cursor, DatabaseHelper.RESTAURANT_USER_FIELD);
@@ -315,6 +368,6 @@ public class RestaurantDao extends BaseDao{
         Date createdDate = DateUtil.timestampToDate(createdDateString);
         Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
-        return (new Restaurant(id, name, address, phone, resCate, avatar, owner, isPartner, rating, createdDate, updatedDate));
+        return (new Restaurant(id, name, address, phone, resCate, avatar, owner, isPartner, rating, isActived, createdDate, updatedDate));
     }
 }

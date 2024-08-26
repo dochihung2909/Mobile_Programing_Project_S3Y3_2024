@@ -10,13 +10,14 @@ public class ReviewFood extends Base{
     private double rating;
     private String image;
 
-    public ReviewFood(int id, String comment, double rating, String image, User user, Food food, Date createdDate, Date updatedDate) {
+    public ReviewFood(int id, String comment, double rating, String image, User user, Food food, boolean actived, Date createdDate, Date updatedDate) {
         this.id = id;
         this.comment = comment;
         this.rating = rating;
         this.image = image;
         this.user = user;
         this.food = food;
+        this.setActived(actived);
         this.setCreatedDate(createdDate);
         this.setUpdatedDate(updatedDate);
     }
@@ -27,6 +28,7 @@ public class ReviewFood extends Base{
         this.image = image;
         this.user = user;
         this.food = food;
+        this.setActived(true);
         this.setCreatedDate(new Date());
         this.setUpdatedDate(new Date());
     }
@@ -37,6 +39,7 @@ public class ReviewFood extends Base{
         this.image = null;
         this.user = user;
         this.food = food;
+        this.setActived(true);
         this.setCreatedDate(new Date());
         this.setUpdatedDate(new Date());
     }

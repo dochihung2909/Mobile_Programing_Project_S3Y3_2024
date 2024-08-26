@@ -106,8 +106,13 @@ public class PaymentPendingDao extends BaseDao{
         double total = getDouble(cursor, DatabaseHelper.PAYMENT_PENDING_TOTAL);
         Cart cart = cartDao.getCartById(cartId);
         String note = getString(cursor, DatabaseHelper.PAYMENT_PENDING_NOTE);
+        boolean isActived = getBoolean(cursor, DatabaseHelper.ACTIVE_FIELD);
+        String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
+        String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
+        Date createdDate = DateUtil.timestampToDate(createdDateString);
+        Date updatedDate = DateUtil.timestampToDate(updatedDateString);
 
-        return (new PaymentPending(id, paymentStatus, cart, total, paymentMethod, note));
+        return (new PaymentPending(id, paymentStatus, cart, total, paymentMethod, note, isActived, createdDate, updatedDate));
     }
 
 }

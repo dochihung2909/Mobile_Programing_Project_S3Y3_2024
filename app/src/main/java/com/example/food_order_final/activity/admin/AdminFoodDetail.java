@@ -28,13 +28,15 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.squareup.picasso.Picasso;
+
 public class AdminFoodDetail extends AppCompatActivity {
     private EditText edtEditFoodId, edtEditFoodName, edtEditFoodPrice,
             edtEditFoodDiscount, edtEditFoodRating;
     private Spinner spnEditFoodCate, spnEditFoodRes;
     private TextInputLayout inputLayoutEditFoodId, inputLayoutEditFoodRating;
     private ImageButton btnBackToMain;
-    private ImageView btnEditFoodSave;
+    private ImageView btnEditFoodSave, imgEditFoodAvatar;
     private Button btnEditFoodDelete;
     private DatabaseHelper dbHelper;
     private Food selectedFood;
@@ -71,6 +73,8 @@ public class AdminFoodDetail extends AppCompatActivity {
 
         inputLayoutEditFoodId = findViewById(R.id.inputLayoutEditFoodId);
         inputLayoutEditFoodRating = findViewById(R.id.inputLayoutEditFoodRating);
+
+        imgEditFoodAvatar = findViewById(R.id.imgEditFoodAvatar);
 
         btnBackToMain = findViewById(R.id.btnBackToMain);
         btnEditFoodDelete = findViewById(R.id.btnEditFoodDelete);
@@ -128,6 +132,10 @@ public class AdminFoodDetail extends AppCompatActivity {
                 int position = adapter.getPosition(selectedFood.getCategory().getName());
                 spnEditFoodCate.setSelection(position);
             }
+
+            // Set image using Picasso
+            Picasso.get().load(selectedFood.getAvatar()).into(imgEditFoodAvatar);
+
         } else {
             btnEditFoodDelete.setVisibility(View.GONE);
             inputLayoutEditFoodId.setVisibility(View.GONE);
@@ -137,8 +145,25 @@ public class AdminFoodDetail extends AppCompatActivity {
     private void setOnClickListener() {
         btnEditFoodSave.setOnClickListener(v -> {
             String FoodName = edtEditFoodName.getText().toString().trim();
-            double FoodPrice = Double.parseDouble(edtEditFoodPrice.getText().toString().trim());
-            double FoodDiscount = Double.parseDouble(edtEditFoodDiscount.getText().toString().trim());
+            String priceStr = edtEditFoodPrice.getText().toString().trim();
+            String discountStr = edtEditFoodDiscount.getText().toString().trim();
+
+            if (FoodName.isEmpty() || priceStr.isEmpty() || discountStr.isEmpty()) {
+                Toast.makeText(AdminFoodDetail.this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            double FoodPrice;
+            double FoodDiscount;
+
+            try {
+                FoodPrice = Double.parseDouble(priceStr);
+                FoodDiscount = Double.parseDouble(discountStr);
+            } catch (NumberFormatException e) {
+                Toast.makeText(AdminFoodDetail.this, "Vui lòng nhập số hợp lệ cho giá và giảm giá", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             String FoodCateName = spnEditFoodCate.getSelectedItem().toString();
             FoodCategory FoodCategory = dbHelper.foodCateDao.getFoodCategoryByName(FoodCateName);
             String FoodResName = spnEditFoodRes.getSelectedItem().toString();

@@ -3,6 +3,7 @@ package com.example.food_order_final.activity.admin;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -106,7 +107,7 @@ public class AdminUserDetail extends AppCompatActivity {
                 String email = String.valueOf(edtEditUserEmail.getText());
                 String fullName = String.valueOf(edtEditUserFullName.getText());
                 String password = String.valueOf(edtEditUserPassword.getText());
-                String roleName = spnEditUserRole.toString();
+                String roleName = spnEditUserRole.getSelectedItem().toString();
                 Role role = dbHelper.roleDao.getRoleByName(roleName);
                 if (selectedUser == null) {
                     if (isValidate()) {
@@ -122,12 +123,13 @@ public class AdminUserDetail extends AppCompatActivity {
                     }
                 } else {
                     selectedUser.setUsername(username);
+                    Log.d("UserUpdate", "Updating user with username: " + username);
                     selectedUser.setPhoneNumber(phone);
                     selectedUser.setEmail(email);
                     selectedUser.setFullName(fullName);
                     dbHelper.userDao.updateUserPassword(selectedUser.getId(), password);
                     selectedUser.setRole(role);
-                    dbHelper.userDao.updateUserInfo(selectedUser);
+                    dbHelper.userDao.updateUser(selectedUser);
                     Toast.makeText(AdminUserDetail.this, "Cập nhật User thành công", Toast.LENGTH_SHORT).show();
                     finish();
                 }
