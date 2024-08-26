@@ -3,6 +3,7 @@ package com.example.food_order_final.activity;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +31,8 @@ import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Cart;
 import com.example.food_order_final.models.CartDetail;
 import com.example.food_order_final.models.Food;
+import com.example.food_order_final.util.LoadImageUtil;
+import com.example.food_order_final.util.PriceUtil;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -41,6 +44,7 @@ public class CartActivity extends AppCompatActivity {
     private LinearLayout foodsContainer;
 
     private TextView tvFoodDefaultPrice, tvFoodDiscountPrice;
+    private double totalAmount;
     private Button btnOrderSubmit;
     private ImageButton btnBackToMain;
     private DatabaseHelper dbHelper;
@@ -73,14 +77,22 @@ public class CartActivity extends AppCompatActivity {
                 foodCardView.setTvFoodName(food.getName());
                 foodCardView.findViewById(R.id.layoutInCart).setVisibility(FoodCardView.VISIBLE);
                 foodCardView.findViewById(R.id.btnAddToCart).setVisibility(FoodCardView.GONE);
-                foodCardView.setTvFoodDiscountPrice(cartDetail.getPrice());
+                if (food.getDiscount() > 0) {
+                    TextView defaulPrice = foodCardView.findViewById(R.id.tvFoodDefaultPrice);
+                    defaulPrice.setVisibility(View.VISIBLE);
+                    defaulPrice.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+                    foodCardView.setTvFoodDefaultPrice(PriceUtil.formatNumber(food.getPrice()));
+                }
+                foodCardView.setTvFoodDiscountPrice(PriceUtil.formatNumber(food.getPrice() - food.getDiscount()));
+                foodCardView.setIvFoodAvatar(food.getAvatar());
                 TextView tvQuantity = foodCardView.findViewById(R.id.tvQuantity);
                 tvQuantity.setText(String.valueOf(cartDetail.getQuantity()));
                 foodCardView.setQuantity(cartDetail.getQuantity());
                 TextView btnMinusQuantity = foodCardView.findViewById(R.id.btnMinus);
 
-                double totalAmount = cartDao.getTotalAmountByCartId(cartId);
+                totalAmount = cartDao.getTotalAmountByCartId(cartId);
                 tvFoodDiscountPrice.setText(formatNumber(totalAmount) + "đ");
+
 
                 Toast.makeText(CartActivity.this, "" + foodCardView.getQuantity(), Toast.LENGTH_SHORT).show();
                 btnMinusQuantity.setOnClickListener(new View.OnClickListener() {
@@ -105,7 +117,7 @@ public class CartActivity extends AppCompatActivity {
                                                 finish();
                                             } else {
                                                 foodsContainer.removeView(foodCardView);
-                                                double totalAmount = cartDao.getTotalAmountByCartId(cartId);
+                                                totalAmount = cartDao.getTotalAmountByCartId(cartId);
                                                 tvFoodDiscountPrice.setText(formatNumber(totalAmount) + "đ");
                                             }
                                         }
@@ -164,7 +176,7 @@ public class CartActivity extends AppCompatActivity {
         foodCardView.setQuantity(quantity);
         cartDetailDao.updateFoodQuantity(quantity, cartDetail.getId());
         tvQuantity.setText(String.valueOf(quantity));
-        double totalAmount = cartDetail.getPrice() * quantity;
+        totalAmount = cartDao.getTotalAmountByCartId(cartId);
         tvFoodDiscountPrice.setText(formatNumber(totalAmount) + "đ");
     }
 

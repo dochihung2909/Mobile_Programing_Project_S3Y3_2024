@@ -2,6 +2,7 @@ package com.example.food_order_final.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +28,7 @@ import com.example.food_order_final.dao.RestaurantDao;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Food;
 import com.example.food_order_final.models.Restaurant;
+import com.example.food_order_final.util.PriceUtil;
 
 import org.w3c.dom.Text;
 
@@ -106,8 +108,14 @@ public class FoodManagerActivity extends AppCompatActivity {
                 //set food card info
                 foodCardView.setTvFoodName(food.getName());
                 foodCardView.setTvFoodDescription(food.getDescription());
-                foodCardView.setTvFoodDiscountPrice(food.getPrice());
                 foodCardView.setIvFoodAvatar(food.getAvatar());
+                if (food.getDiscount() > 0) {
+                    TextView defaulPrice = foodCardView.findViewById(R.id.tvFoodDefaultPrice);
+                    defaulPrice.setVisibility(View.VISIBLE);
+                    defaulPrice.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+                    foodCardView.setTvFoodDefaultPrice(PriceUtil.formatNumber(food.getPrice()));
+                }
+                foodCardView.setTvFoodDiscountPrice(PriceUtil.formatNumber(food.getPrice() - food.getDiscount()));
 
                 foodCardView.findViewById(R.id.btnAddToCart).setVisibility(View.GONE);
                 foodCardView.findViewById(R.id.foodOwnerLayout).setVisibility(View.VISIBLE);
@@ -134,7 +142,7 @@ public class FoodManagerActivity extends AppCompatActivity {
                         alertDialog.setPositiveButton("Xoá", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-//                                dbHelper.foodDao.deleteFood(food.getId());
+                               dbHelper.foodDao.deleteFood(food.getId());
                                 // Soft Delete
                             }
                         }).setNegativeButton("Huỷ", null);

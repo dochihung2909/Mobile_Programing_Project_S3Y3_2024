@@ -2,8 +2,11 @@ package com.example.food_order_final.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Paint;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -21,6 +24,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -50,25 +54,34 @@ import com.example.food_order_final.models.User;
 import com.example.food_order_final.util.LocationUtil;
 import com.example.food_order_final.util.PriceUtil;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.util.List;
 import java.util.Locale;
 
 public class OrderActivity extends AppCompatActivity implements LocationListener {
 
-    private TextView tvFinalTotalPrice, tvTotalDishPrice, tvShipPrice, tvRestaurantName, tvUserFullName, tvUserPhoneNumber, tvUserAddress, tvNumberOfDishes;
+    private TextView tvPaymentMethod, tvFinalTotalPrice, tvTotalDishPrice, tvShipPrice, tvRestaurantName, tvUserFullName, tvUserPhoneNumber, tvUserAddress, tvNumberOfDishes;
     private LinearLayout foodsLayout;
     private EditText etOrderNote;
     private RadioGroup radioGroupPaymentMethod;
     private Button btnOrderSubmit, btnShowAllFood;
     private ImageButton btnBack;
     private int cartId = -1;
+    private int paymentPendingId = -1;
     private RadioButton  cashPaymentMethod, momoPaymentMethod;
 
     private PaymentMethod paymentMethod = PaymentMethod.CASH;
+    private PaymentPending paymentPending;
+    private String[] statusString = {"Nhận đơn", "Lấy hàng", "Giao hàng", "Thành công", "Thất bại"};
+    private String[] methodString = {"Tiền mặt", "Momo"};
 
     private Cart cart;
 
     private double finalTotalPrice = 0;
+    private boolean isShowAll = false;
+    private int currentStatus = -1;
+    private DatabaseHelper dbHelper = new DatabaseHelper(OrderActivity.this);
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -84,21 +97,31 @@ public class OrderActivity extends AppCompatActivity implements LocationListener
         init();
 
         this.cartId = getIntent().getIntExtra("cartId", -1);
+        paymentPendingId = getIntent().getIntExtra("paymentPendingId", -1);
 
+        if (paymentPendingId != -1) {
+            paymentPending = dbHelper.paymentPendingDao.getPaymentPendingById(paymentPendingId);
+            etOrderNote.setText(paymentPending.getNote());
+            etOrderNote.setEnabled(false);
+            cartId = paymentPending.getCart().getId();
+            radioGroupPaymentMethod.setVisibility(View.GONE);
+            tvPaymentMethod.setVisibility(View.VISIBLE);
+            tvPaymentMethod.setText(methodString[paymentPending.getPaymentMethod().getMethod()]);
+            currentStatus = paymentPending.getPaymentStatus().getStatus();
+            btnOrderSubmit.setText(statusString[currentStatus]);
+        }
         if (cartId != -1) {
-            DatabaseHelper dbHelper = new DatabaseHelper(OrderActivity.this);
-            CartDao cartDao = new CartDao(dbHelper);
-            RestaurantDao restaurantDao = new RestaurantDao(dbHelper, new RestaurantCategoryDao(dbHelper));
-            cart = cartDao.getCartById(cartId);
+            if (paymentPendingId != -1) {
+                cart = paymentPending.getCart();
+            } else {
+                cart = dbHelper.cartDao.getCartById(cartId);
+            }
             Restaurant restaurant = cart.getRestaurant();
-            CartDetailDao cartDetailDao = new CartDetailDao(dbHelper);
-            List<CartDetail> cartDetails = cartDetailDao.getAllCartDetailInCart(cartId);
+            List<CartDetail> cartDetails = dbHelper.cartDetailDao.getAllCartDetailInCart(cartId);
 
-            FoodDao foodDao = new FoodDao(dbHelper, new FoodCategoryDao(dbHelper), restaurantDao);
-
-            double totalDishAmount = cartDao.getTotalAmountByCartId(cartId);
+            double totalDishAmount = dbHelper.cartDao.getTotalAmountByCartId(cartId);
             double shipPrice = 16000;
-            int totalDishes = cartDao.getTotalDishes(cartId);
+            int totalDishes = dbHelper.cartDao.getTotalDishes(cartId);
             User currentUser = cart.getUser();
             tvUserFullName.setText(currentUser.getFullName());
 
@@ -110,35 +133,78 @@ public class OrderActivity extends AppCompatActivity implements LocationListener
             tvRestaurantName.setText(restaurant.getName());
             finalTotalPrice = totalDishAmount + shipPrice;
             tvFinalTotalPrice.setText(PriceUtil.formatNumber(finalTotalPrice) + "đ");
-
+            Toast.makeText(this, "" + cartDetails.size(), Toast.LENGTH_SHORT).show();
             if (cartDetails.size() > 1) {
                 btnShowAllFood.setVisibility(View.VISIBLE);
-            } else {
-                addFoodToContainer(cartDetails.get(0));
             }
+            addFoodToContainer(cartDetails.get(0));
 
             btnShowAllFood.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    for (CartDetail cartDetail: cartDetails) {
-                        addFoodToContainer(cartDetail);
+                    isShowAll = !isShowAll;
+                    if (isShowAll) {
+                        foodsLayout.removeAllViews();
+                        addFoodToContainer(cartDetails.get(0));
+                        btnShowAllFood.setText("Hiển thị thêm");
+                    } else {
+                        btnShowAllFood.setText("Thu gọn");
+                        foodsLayout.removeAllViews();
+                        for (CartDetail cartDetail: cartDetails) {
+                            addFoodToContainer(cartDetail);
+                        }
                     }
+
                 }
             });
 
-
-            btnOrderSubmit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String note = String.valueOf(etOrderNote.getText());
-                    PaymentPending paymentPending = new PaymentPending(PaymentStatus.PENDING, cart, finalTotalPrice, paymentMethod, note);
-                    PaymentPendingDao paymentPendingDao = new PaymentPendingDao(dbHelper);
-                    paymentPendingDao.insertPaymentPending(paymentPending);
-                    cartDao.updateCartStatus(cartId);
-                    Intent intent = new Intent(OrderActivity.this, PaymentSuccess.class);
-                    startActivity(intent);
+            if (paymentPendingId != -1) {
+                if (currentStatus < 3) {
+                    btnOrderSubmit.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // change payment pending status to confirm
+                            // if confirm change to delivery
+                            // if delivery change to finish
+                            PaymentStatus status = paymentPending.getPaymentStatus();
+                            if (currentStatus < 3) {
+                                status = PaymentStatus.fromStatus(status.getStatus() + 1);
+                                boolean update = dbHelper.paymentPendingDao.changePaymentPendingStatus(paymentPendingId, status);
+                                if (update) {
+                                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(OrderActivity.this);
+                                    alertDialog.setTitle(statusString[currentStatus] + " Thành công");
+                                    alertDialog.setMessage("Trở về trang đơn hàng");
+                                    alertDialog.setPositiveButton("Trở về", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent returnIntent = new Intent();
+                                            setResult(RESULT_OK, returnIntent);
+                                            finish();
+                                        }
+                                    }).show();
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    btnOrderSubmit.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.darker_gray)));
                 }
-            });
+
+            } else {
+                btnOrderSubmit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String note = String.valueOf(etOrderNote.getText());
+                        PaymentPending paymentPending = new PaymentPending(PaymentStatus.PENDING, cart, finalTotalPrice, paymentMethod, note);
+                        PaymentPendingDao paymentPendingDao = new PaymentPendingDao(dbHelper);
+                        paymentPendingDao.insertPaymentPending(paymentPending);
+                        dbHelper.cartDao.updateCartStatus(cartId);
+                        Intent intent = new Intent(OrderActivity.this, PaymentSuccess.class);
+                        startActivity(intent);
+                    }
+                });
+            }
+
         }
 
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -177,6 +243,7 @@ public class OrderActivity extends AppCompatActivity implements LocationListener
         tvTotalDishPrice = findViewById(R.id.tvTotalDishPrice);
         cashPaymentMethod = findViewById(R.id.cashPaymentMethod);
         momoPaymentMethod = findViewById(R.id.momoPaymentMethod);
+        tvPaymentMethod = findViewById(R.id.tvPaymentMethod);
     }
 
     private void addFoodToContainer(CartDetail cartDetail) {
@@ -185,6 +252,15 @@ public class OrderActivity extends AppCompatActivity implements LocationListener
         foodOrderCardView.setTvFoodName(food.getName());
         foodOrderCardView.setTvFoodDiscountPrice(PriceUtil.formatNumber(cartDetail.getPrice() * cartDetail.getQuantity()));
         foodOrderCardView.setFoodQuantityOrder(String.valueOf(cartDetail.getQuantity()) + "x");
+        double discount = food.getDiscount();
+        if (discount > 0) {
+            TextView defaulPrice = foodOrderCardView.findViewById(R.id.tvFoodDefaultPrice);
+            defaulPrice.setVisibility(View.VISIBLE);
+            defaulPrice.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            foodOrderCardView.setTvFoodDefaultPrice(PriceUtil.formatNumber(food.getPrice()) + "đ");
+        }
+        foodOrderCardView.setTvFoodDiscountPrice(PriceUtil.formatNumber(food.getPrice() - discount) + "đ");
+        foodOrderCardView.setIvFoodAvatar(food.getAvatar());
         foodOrderCardView.setTvFoodDescription(food.getDescription());
         foodsLayout.addView(foodOrderCardView);
     }

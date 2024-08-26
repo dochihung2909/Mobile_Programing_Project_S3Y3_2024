@@ -86,6 +86,7 @@
                 android:textColor="@color/textSecondaryColor"
                 android:textSize="14dp"
                 android:id="@+id/tvFoodDefaultPrice"
+                android:visibility="gone"
                 android:text="75.000đ"/>
 
         </LinearLayout>

@@ -481,14 +481,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         userDao.insertUser(new User("phanvanq", "0898765433", "phanvanq@gmail.com",
                 "Phan Văn Quân", "admin@12345", ownerRole,
                 "https://img.freepik.com/free-photo/androgynous-avatar-non-binary-queer-person_23-2151100270.jpg?size=338&ext=jpg&ga=GA1.1.2008272138.1724630400&semt=ais_hybrid"));
-        userDao.insertUser(new User("vuongthanh", "0876543211", "vuongthanh@gmail.com",
+        userDao.insertUser(new User("vuongthanh", "0364623646", "vuongthanh@gmail.com",
                 "Vương Thành", "admin@12345", ownerRole,
                 "https://cdn1.iconfinder.com/data/icons/user-pictures/101/malecostume-512.png"));
-        userDao.insertUser(new User("daohoang", "0865432110", "daohoang@gmail.com",
-                "Đào Hoàng Nam", "admin@12345", userRole,
+        userDao.insertUser(new User("daohoang", "0364623642", "daohoang@gmail.com",
+                "Đào Hoàng Nam", "admin@12345", employeeRole,
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIJxOLfDct_vEPdS-6OsRnS-kDl_HCv5nI2A&s"));
         userDao.insertUser(new User("ngoanguyen", "0854321099", "ngoanguyen@gmail.com",
-                "Ngô Anh Nguyễn", "admin@12345", userRole,
+                "Ngô Anh Nguyễn", "admin@12345", employeeRole,
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnTPndLSFHM9SS8t1wJYeBjfurdYsg8MVYsg&s"));
         userDao.insertUser(new User("phamquang", "0843210988", "phamquang@gmail.com",
                 "Phạm Quang Hưng", "admin@12345", userRole,

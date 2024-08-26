@@ -92,7 +92,42 @@ public class PaymentPendingDao extends BaseDao{
         }
 
         return paymentPendings;
+    }
 
+    public PaymentPending getPaymentPendingById(int paymentPendingId) {
+        Cursor cursor = null;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        PaymentPending paymentPending = null;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_PAYMENT_PENDING_NAME +
+                    " WHERE " + DatabaseHelper.ID_FIELD + " = ?", new String[]{String.valueOf(paymentPendingId)});
+            if (cursor.moveToFirst()) {
+                paymentPending = getPaymentPendingInfo(cursor);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+        return paymentPending;
+    }
+
+    public boolean changePaymentPendingStatus(int paymentPendingId, PaymentStatus status) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseHelper.PAYMENT_PENDING_STATUS, status.getStatus());
+        long update = db.update(DatabaseHelper.TABLE_PAYMENT_PENDING_NAME,
+                contentValues,
+                DatabaseHelper.ID_FIELD + " = ?",
+                new String[]{String.valueOf(paymentPendingId)});
+
+        if (update == -1) {
+            return false;
+        }
+        return true;
     }
 
     public PaymentPending getPaymentPendingInfo(Cursor cursor) {
