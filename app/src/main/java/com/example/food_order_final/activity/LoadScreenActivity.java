@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -14,6 +15,7 @@ import com.cloudinary.android.MediaManager;
 import com.example.food_order_final.R;
 import com.example.food_order_final.activity.admin.AdminMainActivity;
 import com.example.food_order_final.database.DatabaseHelper;
+import com.example.food_order_final.models.User;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,13 +39,19 @@ public class LoadScreenActivity extends AppCompatActivity {
         String password = sharedPreferences.getString("password", "Password");
         String currentUserRole = sharedPreferences.getString("currentUserRole", "None");
         prefs = getSharedPreferences("com.example.food_order_final", MODE_PRIVATE);
+        User user = dbHelper.userDao.getUserByUsername(username);
         if (dbHelper.userDao.isUserCredential(username, password)){
             if (!currentUserRole.equals("None")) {
                 if (currentUserRole.equals("Admin")) {
                     Intent intent = new Intent(LoadScreenActivity.this, AdminMainActivity.class);
                     startActivity(intent);
-                } else {
+                } else if (currentUserRole.equals("User") || currentUserRole.equals("Owner")) {
                     Intent intent = new Intent(LoadScreenActivity.this, MainActivity.class);
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(LoadScreenActivity.this, RestaurantManagerActivity.class);
+                    Toast.makeText(this, "" + user.getId(), Toast.LENGTH_LONG).show();
+                    intent.putExtra("employeeId", user.getId());
                     startActivity(intent);
                 }
             }

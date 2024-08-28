@@ -58,16 +58,24 @@ public class LoginActivity extends AppCompatActivity {
                     if (dbHelper.userDao.isUserCredential(username, password)){
                         Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                         User user = dbHelper.userDao.getUserByUsername(username);
-                        if (user.getRole().getName().equals("Admin")) {
-                            Intent intent = new Intent(LoginActivity.this, AdminMainActivity.class);
-                            startActivity(intent);
-                        } else if (user.getRole().getName().equals("User") || user.getRole().getName().equals("Owner")) {
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(intent);
-                        } else if (user.getRole().getName().equals("Employee")) {
+                        String roleName = user.getRole().getName();
+
+
+                        if (roleName.equals("Employee")) {
+                            Toast.makeText(LoginActivity.this, "" + roleName, Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(LoginActivity.this, RestaurantManagerActivity.class);
                             intent.putExtra("employeeId", user.getId());
                             startActivity(intent);
+                        }
+
+
+                        if (roleName.equals("Admin")) {
+                            Intent intent = new Intent(LoginActivity.this, AdminMainActivity.class);
+                            startActivity(intent);
+                        } else if (roleName.equals("User") || roleName.equals("Owner") || roleName.equals("Employee")) {
+//                            Intent intent;
+//                            intent = new Intent(LoginActivity.this, MainActivity.class);
+//                            startActivity(intent);
                         }
                         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();

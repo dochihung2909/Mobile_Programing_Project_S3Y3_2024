@@ -17,6 +17,7 @@ import com.example.food_order_final.util.DateUtil;
 
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class EmployeeDao extends BaseDao {
@@ -78,6 +79,9 @@ public class EmployeeDao extends BaseDao {
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues contentValuesEmployee = new ContentValues();
+        contentValuesEmployee.put(DatabaseHelper.ACTIVE_FIELD, employee.isActived());
+        contentValuesEmployee.put(DatabaseHelper.CREATED_DATE_FIELD, DateUtil.dateToTimestamp(employee.getCreatedDate()));
+        contentValuesEmployee.put(DatabaseHelper.UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(employee.getUpdatedDate()));
         contentValuesEmployee.put(DatabaseHelper.EMPLOYEE_USER_FILED, employee.getId());
         contentValuesEmployee.put(DatabaseHelper.EMPLOYEE_RESTAURANT_FIELD, employee.getRestaurant().getId());
         Log.d(TAG, "" +  employee.getId() + " " + employee.getRestaurant().getId());
@@ -100,7 +104,8 @@ public class EmployeeDao extends BaseDao {
         Employee employee = null;
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_EMPLOYEE_NAME +
-                    " WHERE " + DatabaseHelper.EMPLOYEE_USER_FILED + " = ?", new String[]{String.valueOf(userId)});
+                    " WHERE " + DatabaseHelper.EMPLOYEE_USER_FILED + " = ?" +
+                    " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(userId)});
 
             if (cursor.moveToFirst()) {
                 employee = getEmployeeInfo(cursor);
@@ -114,6 +119,43 @@ public class EmployeeDao extends BaseDao {
             db.close();
         }
         return employee;
+    }
+
+    public ArrayList<Employee> getAllEmployeeByRestaurantId(int resId) {
+        Cursor cursor = null;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        ArrayList<Employee> employees = new ArrayList<>();
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_EMPLOYEE_NAME +
+                    " WHERE " + DatabaseHelper.EMPLOYEE_RESTAURANT_FIELD + " = ?" +
+                    " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(resId)});
+
+            if (cursor.moveToFirst()) {
+                do {
+                    employees.add(getEmployeeInfo(cursor));
+                } while(cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+        return employees;
+    }
+
+    public boolean deleteEmployee(int employeeId, int resId) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseHelper.ACTIVE_FIELD, 0);
+        long update = db.update(DatabaseHelper.TABLE_EMPLOYEE_NAME, contentValues,
+                DatabaseHelper.EMPLOYEE_USER_FILED + " = ? AND " + DatabaseHelper.EMPLOYEE_RESTAURANT_FIELD + " = ?", new String[]{String.valueOf(employeeId), String.valueOf(resId)});
+        if (update == -1) {
+            return false;
+        }
+        return true;
     }
 
     private Employee getEmployeeInfo(Cursor cursor) {

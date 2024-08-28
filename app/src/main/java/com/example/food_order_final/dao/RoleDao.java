@@ -64,7 +64,8 @@ public class RoleDao extends BaseDao {
         boolean result = false;
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_ROLE_NAME
-                            + " WHERE " + DatabaseHelper.ROLE_NAME_FIELD + " = ?",
+                            + " WHERE " + DatabaseHelper.ROLE_NAME_FIELD + " = ?" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{roleName});
             if (cursor.moveToFirst())
                 result = true;
@@ -82,7 +83,7 @@ public class RoleDao extends BaseDao {
         Cursor cursor = null;
 
         try {
-            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_ROLE_NAME, null);
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_ROLE_NAME + " WHERE " + DatabaseHelper.ACTIVE_FIELD + " = 1", null);
             if (cursor != null && cursor.moveToFirst()) {
                 do {
                     roles.add(getRoleInfo(cursor));

@@ -81,7 +81,7 @@ public class ReviewRestaurantDao extends BaseDao{
         List<ReviewRestaurant> reviewRestaurants = new ArrayList<>();
 
         try {
-            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_REVIEW_RESTAURANT_NAME, null);
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_REVIEW_RESTAURANT_NAME + " WHERE " + DatabaseHelper.ACTIVE_FIELD + " = 1", null);
 
             if (cursor != null && cursor.moveToFirst()) {
                 do {
@@ -107,7 +107,8 @@ public class ReviewRestaurantDao extends BaseDao{
         ReviewRestaurant reviewRestaurant = null;
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_REVIEW_RESTAURANT_NAME
-                            + " WHERE " + DatabaseHelper.ID_FIELD + " = ?",
+                            + " WHERE " + DatabaseHelper.ID_FIELD + " = ?" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{String.valueOf(reviewId)});
 
             if (cursor != null && cursor.moveToFirst()) {
@@ -131,7 +132,8 @@ public class ReviewRestaurantDao extends BaseDao{
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_REVIEW_RESTAURANT_NAME
-                            + " WHERE " + DatabaseHelper.REVIEW_USER_FIELD + " = ?",
+                            + " WHERE " + DatabaseHelper.REVIEW_USER_FIELD + " = ?" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{String.valueOf(userId)});
             do {
                 ReviewRestaurant reviewRestaurant = getReviewResInfo(cursor);
@@ -153,7 +155,8 @@ public class ReviewRestaurantDao extends BaseDao{
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_REVIEW_RESTAURANT_NAME
-                            + " WHERE " + DatabaseHelper.REVIEW_RESTAURANT_FIELD + " = ?",
+                            + " WHERE " + DatabaseHelper.REVIEW_RESTAURANT_FIELD + " = ?" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{String.valueOf(restaurantId)});
             do {
                 ReviewRestaurant reviewRestaurant = getReviewResInfo(cursor);

@@ -318,6 +318,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String sqlEmployee = "CREATE TABLE " + TABLE_EMPLOYEE_NAME + " (" +
                 EMPLOYEE_USER_FILED + " INTEGER, " +
                 EMPLOYEE_RESTAURANT_FIELD  + " INTEGER, " +
+                ACTIVE_FIELD + " BOOL, " +
+                CREATED_DATE_FIELD + " TIMESTAMP, " +
+                UPDATED_DATE_FIELD + " TIMESTAMP, " +
                 "PRIMARY KEY (" + EMPLOYEE_USER_FILED + ", " + EMPLOYEE_RESTAURANT_FIELD + "), " +
                 "FOREIGN KEY (" + EMPLOYEE_USER_FILED + ") REFERENCES " + TABLE_USER_NAME + "(" + ID_FIELD + "), " +
                 "FOREIGN KEY (" + EMPLOYEE_RESTAURANT_FIELD + ") REFERENCES " + TABLE_RESTAURANT_NAME + "(" + ID_FIELD + "))";
@@ -502,10 +505,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Vương Thành", "admin@12345", ownerRole,
                 "https://cdn1.iconfinder.com/data/icons/user-pictures/101/malecostume-512.png"));
         userDao.insertUser(new User("daohoang", "0364623642", "daohoang@gmail.com",
-                "Đào Hoàng Nam", "admin@12345", employeeRole,
+                "Đào Hoàng Nam", "admin@12345", userRole,
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIJxOLfDct_vEPdS-6OsRnS-kDl_HCv5nI2A&s"));
         userDao.insertUser(new User("ngoanguyen", "0854321099", "ngoanguyen@gmail.com",
-                "Ngô Anh Nguyễn", "admin@12345", employeeRole,
+                "Ngô Anh Nguyễn", "admin@12345", userRole,
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnTPndLSFHM9SS8t1wJYeBjfurdYsg8MVYsg&s"));
         userDao.insertUser(new User("phamquang", "0843210988", "phamquang@gmail.com",
                 "Phạm Quang Hưng", "admin@12345", userRole,

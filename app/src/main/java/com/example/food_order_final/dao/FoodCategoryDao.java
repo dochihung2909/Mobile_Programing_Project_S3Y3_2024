@@ -57,7 +57,8 @@ public class FoodCategoryDao extends BaseDao{
         boolean result = false;
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_CATEGORY_NAME
-                            + " WHERE " + DatabaseHelper.FOOD_CATEGORY_NAME_FIELD + " = ?",
+                            + " WHERE " + DatabaseHelper.FOOD_CATEGORY_NAME_FIELD + " = ?" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{foodCateName});
             if (cursor.moveToFirst())
                 result = true;
@@ -75,7 +76,7 @@ public class FoodCategoryDao extends BaseDao{
         ArrayList<FoodCategory> foodCategories = new ArrayList<>();
 
         try {
-            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_CATEGORY_NAME,
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_CATEGORY_NAME + " WHERE " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     null);
             if (cursor != null && cursor.moveToFirst()) {
                 do {
@@ -98,7 +99,8 @@ public class FoodCategoryDao extends BaseDao{
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_CATEGORY_NAME
-                            + " WHERE " + DatabaseHelper.ID_FIELD + " = ?",
+                            + " WHERE " + DatabaseHelper.ID_FIELD + " = ?"+
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{String.valueOf(resCateId)});
             if (cursor != null && cursor.moveToFirst()) {
                 foodCate = getFoodCateInfo(cursor);
@@ -118,7 +120,8 @@ public class FoodCategoryDao extends BaseDao{
         Cursor cursor = null;
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_CATEGORY_NAME
-                            + " WHERE " + DatabaseHelper.FOOD_CATEGORY_NAME_FIELD + " = ?",
+                            + " WHERE " + DatabaseHelper.FOOD_CATEGORY_NAME_FIELD + " = ?"+
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{foodCateName});
             if (cursor != null && cursor.moveToFirst()) {
                 foodCategory = getFoodCateInfo(cursor);

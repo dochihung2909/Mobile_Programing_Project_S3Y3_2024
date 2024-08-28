@@ -1,6 +1,8 @@
 package com.example.food_order_final.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -8,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
@@ -31,7 +34,7 @@ public class RestaurantManagerActivity extends AppCompatActivity {
     private ImageView ivRestaurantAvatar;
     private TextView tvRestaurantName;
     private LinearLayout restaurantRatingContainer;
-    private Button btnRestaurantStatistical, btnEditRestaurantInfo, btnFoodManager, btnCheckOrder;
+    private Button btnRestaurantStatistical, btnEditRestaurantInfo, btnFoodManager, btnCheckOrder, btnEmployeeManager, btnLogout;
     private int REQUEST_EDIT_RESTAURANT_INFO = 202;
 
     private int ownerId;
@@ -61,55 +64,89 @@ public class RestaurantManagerActivity extends AppCompatActivity {
         });
         this.ownerId = getIntent().getIntExtra("restaurantOwnerId", -1);
         this.employeeId = getIntent().getIntExtra("employeeId", -1);
+        Toast.makeText(this, "" + employeeId, Toast.LENGTH_SHORT).show();
         currentUser = dbHelper.employeeDao.getEmployeeByUserId(employeeId);
         RestaurantDao restaurantDao = new RestaurantDao(dbHelper, new RestaurantCategoryDao(dbHelper));
         if (ownerId != -1 || employeeId != -1) {
             if (employeeId != -1) {
-                restaurant = restaurantDao.getRestaurantByUserId(employeeId);
+                Employee employee = dbHelper.employeeDao.getEmployeeByUserId(employeeId);
+                restaurant = employee.getRestaurant();
+                btnEmployeeManager.setVisibility(View.GONE);
+                btnEditRestaurantInfo.setVisibility(View.GONE);
+                btnFoodManager.setVisibility(View.GONE);
             } else {
                 restaurant = restaurantDao.getRestaurantByUserId(ownerId);
 
             }
             updateUI();
 
-            btnFoodManager.setOnClickListener(new View.OnClickListener() {
+            if (restaurant != null) {
+                btnEmployeeManager.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(RestaurantManagerActivity.this, RestaurantEmployeeManagementActivity.class);
+                        intent.putExtra("restaurantId", restaurant.getId());
+                        startActivity(intent);
+                    }
+                });
+
+                btnFoodManager.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(RestaurantManagerActivity.this, FoodManagerActivity.class);
+                        intent.putExtra("restaurantId", restaurant.getId());
+                        startActivity(intent);
+                    }
+                });
+
+                btnEditRestaurantInfo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(RestaurantManagerActivity.this, EditRestaurantActivity.class);
+                        intent.putExtra("restaurantId", restaurant.getId());
+                        startActivityForResult(intent, REQUEST_EDIT_RESTAURANT_INFO);
+
+                    }
+                });
+
+                // Render Restaurant Avatar
+                LoadImageUtil.loadImage(ivRestaurantAvatar, restaurant.getAvatar());
+
+                // Statis of restaurant
+                btnRestaurantStatistical.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+
+                btnCheckOrder.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(RestaurantManagerActivity.this, RestaurantOrderManagementActivity.class);
+                        intent.putExtra("restaurantId", restaurant.getId());
+                        startActivity(intent);
+                    }
+                });
+            }
+
+            btnLogout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(RestaurantManagerActivity.this, FoodManagerActivity.class);
-                    intent.putExtra("restaurantId", restaurant.getId());
+                    SharedPreferences pref = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit().clear();
+                    editor.apply();
+
+                    Toast.makeText(RestaurantManagerActivity.this, "Đăng xất", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
+                    finish();
                 }
             });
 
-            btnEditRestaurantInfo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(RestaurantManagerActivity.this, EditRestaurantActivity.class);
-                    intent.putExtra("restaurantId", restaurant.getId());
-                    startActivityForResult(intent, REQUEST_EDIT_RESTAURANT_INFO);
 
-                }
-            });
-
-            // Render Restaurant Avatar
-            LoadImageUtil.loadImage(ivRestaurantAvatar, restaurant.getAvatar());
-
-            // Statis of restaurant
-            btnRestaurantStatistical.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
-
-            btnCheckOrder.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(RestaurantManagerActivity.this, RestaurantOrderManagementActivity.class);
-                    intent.putExtra("restaurantId", restaurant.getId());
-                    startActivity(intent);
-                }
-            });
         }
     }
 
@@ -134,20 +171,27 @@ public class RestaurantManagerActivity extends AppCompatActivity {
         btnFoodManager = findViewById(R.id.btnFoodManager);
         btnBack = findViewById(R.id.btnBack);
         btnCheckOrder = findViewById(R.id.btnCheckOrder);
+        btnEmployeeManager = findViewById(R.id.btnEmployeeManager);
+        btnLogout = findViewById(R.id.btnLogout);
     }
 
     private void updateUI() {
-        if (restaurant.getAvatar() != null) {
-            LoadImageUtil.loadImage(ivRestaurantAvatar, restaurant.getAvatar());
-        }
-        tvRestaurantName.setText(restaurant.getName());
+        if (restaurant != null) {
+            if (restaurant.getAvatar() != null) {
+                LoadImageUtil.loadImage(ivRestaurantAvatar, restaurant.getAvatar());
+            }
 
-        double ratting = restaurant.getRating();
-        for (int i = 1; i<=ratting; i++ ) {
-            ImageView rattingStar = new ImageView(RestaurantManagerActivity.this);
-            rattingStar.setImageResource(R.drawable.baseline_star_24);
-            restaurantRatingContainer.addView(rattingStar);
+            tvRestaurantName.setText(restaurant.getName());
+            double ratting = restaurant.getRating();
+            for (int i = 1; i<=ratting; i++ ) {
+                ImageView rattingStar = new ImageView(RestaurantManagerActivity.this);
+                rattingStar.setImageResource(R.drawable.baseline_star_24);
+                restaurantRatingContainer.addView(rattingStar);
+            }
         }
+
+
+
 
     }
 }

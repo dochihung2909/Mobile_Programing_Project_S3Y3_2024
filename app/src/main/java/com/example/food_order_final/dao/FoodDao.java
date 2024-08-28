@@ -177,7 +177,8 @@ public class FoodDao extends BaseDao{
         try {
             cursor = db.rawQuery("SELECT AVG(" + DatabaseHelper.RATING_FIELD
                             + ") AS averageRating FROM " + DatabaseHelper.TABLE_REVIEW_FOOD_NAME
-                            + " WHERE " + DatabaseHelper.REVIEW_FOOD_FIELD + " = ?",
+                            + " WHERE " + DatabaseHelper.REVIEW_FOOD_FIELD + " = ?" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{String.valueOf(foodId)});
             if (cursor.moveToFirst()) {
                 ContentValues contentValues = new ContentValues();

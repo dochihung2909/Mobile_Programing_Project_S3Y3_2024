@@ -46,7 +46,8 @@ public class PaymentPendingDao extends BaseDao{
         try {
             cursor = db.rawQuery("SELECT p.* FROM " + DatabaseHelper.TABLE_PAYMENT_PENDING_NAME +
                     " p INNER JOIN " + DatabaseHelper.TABLE_CART_NAME + " c on c." + DatabaseHelper.ID_FIELD + " = p." + DatabaseHelper.PAYMENT_PENDING_CART +
-                    " WHERE " + DatabaseHelper.CART_USER_FIELD + " = ?", new String[]{String.valueOf(userId)});
+                    " WHERE " + DatabaseHelper.CART_USER_FIELD + " = ?" +
+                    " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(userId)});
 
             if (cursor != null && cursor.moveToFirst()) {
                 do {
@@ -75,7 +76,8 @@ public class PaymentPendingDao extends BaseDao{
         try {
             cursor = db.rawQuery("SELECT p.* from " + DatabaseHelper.TABLE_PAYMENT_PENDING_NAME + " p " +
                     "INNER JOIN " + DatabaseHelper.TABLE_CART_NAME + " c ON c." + DatabaseHelper.ID_FIELD + " = p." + DatabaseHelper.PAYMENT_PENDING_CART +
-                    " WHERE " + DatabaseHelper.CART_RESTAURANT_FIELD + " = ?", new String[]{String.valueOf(restaurantId)});
+                    " WHERE " + DatabaseHelper.CART_RESTAURANT_FIELD + " = ?" +
+                    " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(restaurantId)});
             if (cursor != null && cursor.moveToFirst()) {
                 do {
                     paymentPendings.add(getPaymentPendingInfo(cursor));
@@ -100,7 +102,8 @@ public class PaymentPendingDao extends BaseDao{
         PaymentPending paymentPending = null;
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_PAYMENT_PENDING_NAME +
-                    " WHERE " + DatabaseHelper.ID_FIELD + " = ?", new String[]{String.valueOf(paymentPendingId)});
+                    " WHERE " + DatabaseHelper.ID_FIELD + " = ?" +
+                    " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(paymentPendingId)});
             if (cursor.moveToFirst()) {
                 paymentPending = getPaymentPendingInfo(cursor);
             }
