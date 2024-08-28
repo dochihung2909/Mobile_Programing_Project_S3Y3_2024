@@ -61,8 +61,12 @@ public class LoginActivity extends AppCompatActivity {
                         if (user.getRole().getName().equals("Admin")) {
                             Intent intent = new Intent(LoginActivity.this, AdminMainActivity.class);
                             startActivity(intent);
-                        } else {
+                        } else if (user.getRole().getName().equals("User") || user.getRole().getName().equals("Owner")) {
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        } else if (user.getRole().getName().equals("Employee")) {
+                            Intent intent = new Intent(LoginActivity.this, RestaurantManagerActivity.class);
+                            intent.putExtra("employeeId", user.getId());
                             startActivity(intent);
                         }
                         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);

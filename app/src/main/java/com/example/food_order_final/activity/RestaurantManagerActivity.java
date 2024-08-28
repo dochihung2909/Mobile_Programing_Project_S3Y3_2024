@@ -20,7 +20,9 @@ import com.example.food_order_final.R;
 import com.example.food_order_final.dao.RestaurantCategoryDao;
 import com.example.food_order_final.dao.RestaurantDao;
 import com.example.food_order_final.database.DatabaseHelper;
+import com.example.food_order_final.models.Employee;
 import com.example.food_order_final.models.Restaurant;
+import com.example.food_order_final.models.User;
 import com.example.food_order_final.util.LoadImageUtil;
 
 public class RestaurantManagerActivity extends AppCompatActivity {
@@ -33,7 +35,9 @@ public class RestaurantManagerActivity extends AppCompatActivity {
     private int REQUEST_EDIT_RESTAURANT_INFO = 202;
 
     private int ownerId;
+    private int employeeId;
     private Restaurant restaurant;
+    private Employee currentUser;
     private DatabaseHelper dbHelper = new DatabaseHelper(RestaurantManagerActivity.this);
 
     @Override
@@ -56,9 +60,16 @@ public class RestaurantManagerActivity extends AppCompatActivity {
             }
         });
         this.ownerId = getIntent().getIntExtra("restaurantOwnerId", -1);
+        this.employeeId = getIntent().getIntExtra("employeeId", -1);
+        currentUser = dbHelper.employeeDao.getEmployeeByUserId(employeeId);
         RestaurantDao restaurantDao = new RestaurantDao(dbHelper, new RestaurantCategoryDao(dbHelper));
-        if (ownerId != -1 ) {
-            restaurant = restaurantDao.getRestaurantByUserId(ownerId);
+        if (ownerId != -1 || employeeId != -1) {
+            if (employeeId != -1) {
+                restaurant = restaurantDao.getRestaurantByUserId(employeeId);
+            } else {
+                restaurant = restaurantDao.getRestaurantByUserId(ownerId);
+
+            }
             updateUI();
 
             btnFoodManager.setOnClickListener(new View.OnClickListener() {

@@ -10,6 +10,7 @@ import android.util.Patterns;
 
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.database.DbBitmapUtility;
+import com.example.food_order_final.models.Employee;
 import com.example.food_order_final.models.Restaurant;
 import com.example.food_order_final.models.RestaurantCategory;
 import com.example.food_order_final.models.Role;
@@ -95,7 +96,7 @@ public class UserDao extends BaseDao{
             contentValues.put(DatabaseHelper.USER_PASSWORD_FIELD, hashedPassword);
 
             result = db.insert(DatabaseHelper.TABLE_USER_NAME, null, contentValues);
-            db.close();
+//            db.close();
         }
 
         if (result == -1) {
@@ -374,7 +375,7 @@ public class UserDao extends BaseDao{
         } finally {
             if (cursor != null)
                 cursor.close();
-            db.close();
+//            db.close();
         }
 
         return user;

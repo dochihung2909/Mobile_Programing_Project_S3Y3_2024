@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 
 import com.example.food_order_final.dao.CartDao;
 import com.example.food_order_final.dao.CartDetailDao;
+import com.example.food_order_final.dao.EmployeeDao;
 import com.example.food_order_final.dao.FoodCategoryDao;
 import com.example.food_order_final.dao.FoodDao;
 import com.example.food_order_final.dao.PaymentPendingDao;
@@ -23,6 +24,7 @@ import com.example.food_order_final.dao.RoleDao;
 import com.example.food_order_final.dao.UserDao;
 import com.example.food_order_final.models.Cart;
 import com.example.food_order_final.models.CartDetail;
+import com.example.food_order_final.models.Employee;
 import com.example.food_order_final.models.Food;
 import com.example.food_order_final.models.FoodCategory;
 import com.example.food_order_final.models.Restaurant;
@@ -53,6 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String TABLE_CART_DETAIL_NAME = "CartDetail";
     public static final String TABLE_PAYMENT_PENDING_NAME = "PaymentPending";
+    public static final String TABLE_EMPLOYEE_NAME = "Employee";
 
     // Commons columns
     public static final String CREATED_DATE_FIELD = "created_date";
@@ -127,6 +130,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //    public static final String RATING_FIELD = "rating";
     public static final String REVIEW_FOOD_FIELD = "food_id";
 
+    // Table Employee columns
+    public static final String EMPLOYEE_USER_FILED = "user_id";
+    public static final String EMPLOYEE_RESTAURANT_FIELD = "restaurant_id";
+
     public RoleDao roleDao;
     public UserDao userDao;
     public RestaurantCategoryDao resCateDao;
@@ -138,6 +145,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public PaymentPendingDao paymentPendingDao;
     public CartDetailDao cartDetailDao;
     public CartDao cartDao;
+    public EmployeeDao employeeDao;
 
     public DatabaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -152,6 +160,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         this.paymentPendingDao = new PaymentPendingDao(this);
         this.cartDetailDao = new CartDetailDao(this);
         this.cartDao = new CartDao(this);
+        this.employeeDao = new EmployeeDao(this);
     }
 
     @Override
@@ -305,6 +314,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 UPDATED_DATE_FIELD + " TIMESTAMP, " +
                 "FOREIGN KEY (" + PAYMENT_PENDING_CART + ") REFERENCES " + TABLE_CART_NAME + "(" + ID_FIELD + "))";
         db.execSQL(sqlPaymentPending);
+
+        String sqlEmployee = "CREATE TABLE " + TABLE_EMPLOYEE_NAME + " (" +
+                EMPLOYEE_USER_FILED + " INTEGER, " +
+                EMPLOYEE_RESTAURANT_FIELD  + " INTEGER, " +
+                "PRIMARY KEY (" + EMPLOYEE_USER_FILED + ", " + EMPLOYEE_RESTAURANT_FIELD + "), " +
+                "FOREIGN KEY (" + EMPLOYEE_USER_FILED + ") REFERENCES " + TABLE_USER_NAME + "(" + ID_FIELD + "), " +
+                "FOREIGN KEY (" + EMPLOYEE_RESTAURANT_FIELD + ") REFERENCES " + TABLE_RESTAURANT_NAME + "(" + ID_FIELD + "))";
+        db.execSQL(sqlEmployee);
     }
 
     @Override
@@ -558,6 +575,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Restaurant res3 = resDao.getRestaurantByName("Burgers King");
         Restaurant res4 = resDao.getRestaurantByName("Sakura Sushi");
         Restaurant res5 = resDao.getRestaurantByName("Taco Bell");
+
+        userDao.insertUser(new User("hungts", "0364452867", "hungts@gmail.com",
+                "Đỗ Chí Hưng", "admin@123", employeeRole,
+                "https://static.vecteezy.com/system/resources/previews/004/819/327/original/male-avatar-profile-icon-of-smiling-caucasian-man-vector.jpg"
+                ));
+
+        userDao.insertUser(new User("hungdo", "0364452867", "hungts@gmail.com",
+                "Đỗ Hưng", "admin@123", employeeRole,
+                "https://static.vecteezy.com/system/resources/previews/004/819/327/original/male-avatar-profile-icon-of-smiling-caucasian-man-vector.jpg"
+        ));
+
+        User user = userDao.getUserByUsername("hungts");
+        User user12 = userDao.getUserByUsername("hungdo");
+
+
+        employeeDao.insertEmployee(new Employee(user, res1));
+
+        employeeDao.insertEmployee(new Employee(user12, res2));
+
 
         //Food Category data
         foodCateDao.insertFoodCategory(new FoodCategory("Mì Ý"));
