@@ -60,7 +60,7 @@ public class CartDetailDao extends BaseDao {
             cursor = db.rawQuery("SELECT cd.* FROM " + DatabaseHelper.TABLE_CART_DETAIL_NAME + " cd "
                     + "INNER JOIN " + DatabaseHelper.TABLE_CART_NAME + " c ON c." + DatabaseHelper.ID_FIELD + " = cd." + DatabaseHelper.CART_DETAIL_CART_FIELD
                     + " WHERE c." + DatabaseHelper.ID_FIELD + " = ?" +
-                    " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(cartId)});
+                    " AND cd." + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(cartId)});
 
             if (cursor != null && cursor.moveToFirst()) {
                 do {

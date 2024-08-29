@@ -824,70 +824,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         reviewRestaurantDao.insertReview(new ReviewRestaurant("Tôi thích không gian và trang trí của quán, nhưng có vẻ hơi ồn ào và cần thêm sự riêng tư.", 4.0,
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
                 user5, res5));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ rất nhanh chóng và không gian thật sự dễ chịu.", 4.5,
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
-                user1, res1));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng có không gian sang trọng, nhưng giá cả hơi cao.", 3.5,
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
-                user2, res2));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Không gian đẹp, món ăn ngon, nhưng dịch vụ hơi chậm.", 4.0,
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
-                user3, res3));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Món ăn tuyệt vời, nhưng không gian quán khá ồn ào.", 3.5,
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
-                user4, res4));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Quán có dịch vụ rất tốt và không gian rất ấm cúng.", 5.0,
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
-                user5, res5));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng sạch sẽ nhưng trang trí có vẻ hơi đơn giản.", 3.0,
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
-                user1, res1));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ tốt nhưng không gian hơi nhỏ và không thoải mái lắm.", 3.5,
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
-                user2, res2));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Tôi rất thích món ăn, tuy nhiên không gian có phần ồn ào.", 4.0,
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
-                user3, res3));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng có không gian đẹp và phục vụ tận tình.", 4.5,
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
-                user4, res4));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Món ăn rất ngon nhưng giá cả hơi cao so với chất lượng.", 3.5,
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
-                user5, res5));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ và không gian đều rất tốt, mình sẽ quay lại.", 5.0,
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
-                user1, res1));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Không gian đẹp, nhưng món ăn và dịch vụ cần cải thiện.", 3.0,
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
-                user2, res2));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Quán có không gian thoải mái nhưng món ăn hơi nhạt.", 3.5,
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
-                user3, res3));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ rất chuyên nghiệp nhưng không gian hơi nhỏ.", 4.0,
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
-                user4, res4));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Tôi rất thích không gian quán, mặc dù món ăn còn cần cải thiện.", 4.0,
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
-                user5, res5));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng có không gian ấm cúng và dịch vụ nhanh chóng.", 4.5,
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
-                user1, res1));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ tốt nhưng không gian hơi chật chội.", 3.5,
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
-                user2, res2));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Không gian rất đẹp và món ăn rất ngon.", 4.0,
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
-                user3, res3));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Nhà hàng có phong cách trang trí đẹp nhưng món ăn hơi đắt.", 3.5,
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
-                user4, res4));
-        reviewRestaurantDao.insertReview(new ReviewRestaurant("Dịch vụ tuyệt vời và không gian thoải mái, nhưng món ăn chưa đặc sắc.", 3.5,
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSJ_5X-qEcnCYAJ_TrGfICezQSIBOTjcpNsA&s",
-                user5, res5));
 
-        reviewFoodDao.insertReview(new ReviewFood("Rất ngon, dịch vụ tuyệt vời!", 5.0,
-                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
-                user1, f1));
         reviewFoodDao.insertReview(new ReviewFood("Rất ngon, dịch vụ tuyệt vời!", 5.0,
                 "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
                 user1, f1));
@@ -916,66 +853,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
                 user9, f9));
         reviewFoodDao.insertReview(new ReviewFood("Súp Tom Yum có vị hơi chua, cần điều chỉnh.", 3.5,
-                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
-                user10, f10));
-        reviewFoodDao.insertReview(new ReviewFood("Món ăn tuyệt vời, sẽ quay lại lần nữa!", 4.5,
-                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
-                user1, f1));
-        reviewFoodDao.insertReview(new ReviewFood("Dịch vụ tốt, món ăn hơi nhạt.", 3.5,
-                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
-                user2, f2));
-        reviewFoodDao.insertReview(new ReviewFood("Thực phẩm tươi ngon, nhưng thời gian chờ hơi lâu.", 4.0,
-                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
-                user3, f3));
-        reviewFoodDao.insertReview(new ReviewFood("Không gian sạch sẽ, món ăn không như kỳ vọng.", 2.5,
-                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
-                user4, f4));
-        reviewFoodDao.insertReview(new ReviewFood("Chất lượng món ăn rất tốt, giá hơi cao.", 4.0,
-                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
-                user5, f5));
-        reviewFoodDao.insertReview(new ReviewFood("Dịch vụ không đạt yêu cầu, món ăn cũng bình thường.", 2.0,
-                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
-                user6, f6));
-        reviewFoodDao.insertReview(new ReviewFood("Món ăn rất ngon và phục vụ nhanh chóng.", 5.0,
-                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
-                user7, f7));
-        reviewFoodDao.insertReview(new ReviewFood("Nhà hàng có không gian đẹp, nhưng món ăn chỉ ở mức trung bình.", 3.0,
-                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
-                user8, f8));
-        reviewFoodDao.insertReview(new ReviewFood("Dịch vụ xuất sắc và món ăn rất ngon.", 4.5,
-                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
-                user9, f9));
-        reviewFoodDao.insertReview(new ReviewFood("Món ăn không đạt yêu cầu, nhưng không gian khá dễ chịu.", 2.5,
-                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
-                user10, f10));
-        reviewFoodDao.insertReview(new ReviewFood("Món ăn ngon tuyệt vời, dịch vụ rất thân thiện.", 5.0,
-                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
-                user1, f1));
-        reviewFoodDao.insertReview(new ReviewFood("Thực đơn đa dạng, nhưng món ăn hơi ngọt.", 3.5,
-                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
-                user2, f2));
-        reviewFoodDao.insertReview(new ReviewFood("Dịch vụ hơi chậm, món ăn không đồng đều.", 2.5,
-                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
-                user3, f3));
-        reviewFoodDao.insertReview(new ReviewFood("Chất lượng món ăn rất tốt, không gian hơi ồn ào.", 4.0,
-                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
-                user4, f4));
-        reviewFoodDao.insertReview(new ReviewFood("Món ăn rất ngon nhưng giá cả hơi cao.", 4.5,
-                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
-                user5, f5));
-        reviewFoodDao.insertReview(new ReviewFood("Nhà hàng sạch sẽ nhưng món ăn khá đơn giản.", 3.0,
-                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
-                user6, f6));
-        reviewFoodDao.insertReview(new ReviewFood("Dịch vụ tận tâm và món ăn rất sáng tạo.", 5.0,
-                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
-                user7, f7));
-        reviewFoodDao.insertReview(new ReviewFood("Món ăn được trình bày đẹp mắt, nhưng hương vị chưa thuyết phục.", 3.5,
-                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
-                user8, f8));
-        reviewFoodDao.insertReview(new ReviewFood("Món ăn rất ngon và phong phú, phục vụ chuyên nghiệp.", 4.5,
-                "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
-                user9, f9));
-        reviewFoodDao.insertReview(new ReviewFood("Chất lượng món ăn và dịch vụ không như mong đợi.", 2.0,
                 "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
                 user10, f10));
     }

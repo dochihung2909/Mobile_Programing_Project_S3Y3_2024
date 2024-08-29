@@ -82,6 +82,7 @@ public class OrderActivity extends AppCompatActivity implements LocationListener
     private boolean isShowAll = false;
     private int currentStatus = -1;
     private DatabaseHelper dbHelper = new DatabaseHelper(OrderActivity.this);
+    private boolean isOwner = true;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -98,6 +99,10 @@ public class OrderActivity extends AppCompatActivity implements LocationListener
 
         this.cartId = getIntent().getIntExtra("cartId", -1);
         paymentPendingId = getIntent().getIntExtra("paymentPendingId", -1);
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        String currentUserRole = sharedPreferences.getString("currentUserRole", "None");
+        Toast.makeText(this, "" + currentUserRole, Toast.LENGTH_SHORT).show();
+        String currentUsername = sharedPreferences.getString("username", "Guest");
 
         if (paymentPendingId != -1) {
             paymentPending = dbHelper.paymentPendingDao.getPaymentPendingById(paymentPendingId);
@@ -109,6 +114,18 @@ public class OrderActivity extends AppCompatActivity implements LocationListener
             tvPaymentMethod.setText(methodString[paymentPending.getPaymentMethod().getMethod()]);
             currentStatus = paymentPending.getPaymentStatus().getStatus();
             btnOrderSubmit.setText(statusString[currentStatus]);
+
+            if (currentUserRole.equals("User") || currentUserRole.equals("Owner")) {
+                User currentUser = dbHelper.userDao.getUserByUsername(currentUsername);
+                if (currentUser.getId() != paymentPending.getCart().getRestaurant().getOwner().getId()) {
+                    if (paymentPending.getPaymentStatus().getStatus() == 3) {
+                        btnOrderSubmit.setText("Đánh giá đơn hàng");
+                    } else {
+                        btnOrderSubmit.setText("Huỷ đơn");
+                    }
+                    isOwner = false;
+                }
+            }
         }
         if (cartId != -1) {
             if (paymentPendingId != -1) {
@@ -166,15 +183,51 @@ public class OrderActivity extends AppCompatActivity implements LocationListener
                             // change payment pending status to confirm
                             // if confirm change to delivery
                             // if delivery change to finish
-                            PaymentStatus status = paymentPending.getPaymentStatus();
-                            if (currentStatus < 3) {
-                                status = PaymentStatus.fromStatus(status.getStatus() + 1);
-                                boolean update = dbHelper.paymentPendingDao.changePaymentPendingStatus(paymentPendingId, status);
-                                if (update) {
+                            if (isOwner) {
+                                PaymentStatus status = paymentPending.getPaymentStatus();
+                                if (currentStatus < 3) {
+                                    status = PaymentStatus.fromStatus(status.getStatus() + 1);
+                                    boolean update = dbHelper.paymentPendingDao.changePaymentPendingStatus(paymentPendingId, status);
+                                    if (update) {
+                                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(OrderActivity.this);
+                                        alertDialog.setTitle(statusString[currentStatus] + " Thành công");
+                                        alertDialog.setMessage("Trở về trang đơn hàng");
+                                        alertDialog.setPositiveButton("Trở về", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Intent returnIntent = new Intent();
+                                                setResult(RESULT_OK, returnIntent);
+                                                finish();
+                                            }
+                                        }).show();
+                                    }
+                                }
+                            } else {
+                                if (paymentPending.getPaymentStatus().getStatus() != 3) {
                                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(OrderActivity.this);
-                                    alertDialog.setTitle(statusString[currentStatus] + " Thành công");
-                                    alertDialog.setMessage("Trở về trang đơn hàng");
-                                    alertDialog.setPositiveButton("Trở về", new DialogInterface.OnClickListener() {
+                                    alertDialog.setTitle("Huỷ đơn hàng");
+                                    alertDialog.setMessage("Bạn có chắc muốn huỷ đơn hàng này");
+                                    alertDialog.setPositiveButton("Huỷ", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            PaymentStatus status = PaymentStatus.fromStatus(4);
+                                            boolean update = dbHelper.paymentPendingDao.changePaymentPendingStatus(paymentPendingId, status);
+                                            if (update) {
+                                                AlertDialog.Builder alertDialog = new AlertDialog.Builder(OrderActivity.this);
+                                                alertDialog.setTitle("Huỷ Thành công");
+                                                alertDialog.setMessage("Trở về trang đơn hàng");
+                                                alertDialog.setPositiveButton("Trở về", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        Intent returnIntent = new Intent();
+                                                        setResult(RESULT_OK, returnIntent);
+                                                        finish();
+                                                    }
+                                                }).show();
+                                            }
+
+                                        }
+                                    }).setNegativeButton("Trở về", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             Intent returnIntent = new Intent();
@@ -182,8 +235,13 @@ public class OrderActivity extends AppCompatActivity implements LocationListener
                                             finish();
                                         }
                                     }).show();
+                                } else {
+                                    Intent intent = new Intent(OrderActivity.this, RatingActivity.class);
+                                    intent.putExtra("paymentPendingId", paymentPendingId);
+                                    startActivity(intent);
                                 }
                             }
+
                         }
                     });
                 } else {

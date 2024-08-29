@@ -32,6 +32,7 @@ public class PaymentPendingDao extends BaseDao{
         contentValues.put(DatabaseHelper.PAYMENT_PENDING_TOTAL, paymentPending.getTotal());
         contentValues.put(DatabaseHelper.PAYMENT_PENDING_METHOD, paymentPending.getPaymentMethod().getMethod());
         contentValues.put(DatabaseHelper.PAYMENT_PENDING_NOTE, paymentPending.getNote());
+        contentValues.put(DatabaseHelper.ACTIVE_FIELD, paymentPending.getActived());
         contentValues.put(DatabaseHelper.CREATED_DATE_FIELD, DateUtil.dateToTimestamp(paymentPending.getCreatedDate()));
         contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(paymentPending.getUpdatedDate()));
         db.insert(DatabaseHelper.TABLE_PAYMENT_PENDING_NAME, null, contentValues);
@@ -47,7 +48,7 @@ public class PaymentPendingDao extends BaseDao{
             cursor = db.rawQuery("SELECT p.* FROM " + DatabaseHelper.TABLE_PAYMENT_PENDING_NAME +
                     " p INNER JOIN " + DatabaseHelper.TABLE_CART_NAME + " c on c." + DatabaseHelper.ID_FIELD + " = p." + DatabaseHelper.PAYMENT_PENDING_CART +
                     " WHERE " + DatabaseHelper.CART_USER_FIELD + " = ?" +
-                    " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(userId)});
+                    " AND p." + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(userId)});
 
             if (cursor != null && cursor.moveToFirst()) {
                 do {
@@ -77,7 +78,7 @@ public class PaymentPendingDao extends BaseDao{
             cursor = db.rawQuery("SELECT p.* from " + DatabaseHelper.TABLE_PAYMENT_PENDING_NAME + " p " +
                     "INNER JOIN " + DatabaseHelper.TABLE_CART_NAME + " c ON c." + DatabaseHelper.ID_FIELD + " = p." + DatabaseHelper.PAYMENT_PENDING_CART +
                     " WHERE " + DatabaseHelper.CART_RESTAURANT_FIELD + " = ?" +
-                    " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(restaurantId)});
+                    " AND p." + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(restaurantId)});
             if (cursor != null && cursor.moveToFirst()) {
                 do {
                     paymentPendings.add(getPaymentPendingInfo(cursor));

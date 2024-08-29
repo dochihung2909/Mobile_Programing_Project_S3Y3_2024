@@ -1,6 +1,7 @@
 package com.example.food_order_final.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -11,8 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.food_order_final.R;
+import com.example.food_order_final.activity.OrderActivity;
+import com.example.food_order_final.activity.RestaurantOrderManagementActivity;
 import com.example.food_order_final.custom_activity.FoodOrderCardView;
 import com.example.food_order_final.custom_activity.PaymentHistoryView;
 import com.example.food_order_final.dao.CartDao;
@@ -32,6 +36,7 @@ import com.example.food_order_final.models.Restaurant;
 import com.example.food_order_final.models.User;
 import com.example.food_order_final.util.PriceUtil;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -51,6 +56,10 @@ public class OrderFragment extends Fragment {
     private String mParam2;
 
     private LinearLayout paymentsContainer;
+
+    private int REQUEST_CHANGE_STATUS_PAYMENT = 200;
+    private User currentUser = null;
+
 
     public OrderFragment() {
         // Required empty public constructor
@@ -95,45 +104,70 @@ public class OrderFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         init();
 
-        DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
-        PaymentPendingDao paymentPendingDao = new PaymentPendingDao(dbHelper);
         SharedPreferences pref = getActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         String username = pref.getString("username", "Guest");
-        if (!username.equals("Guest")) {
-            UserDao userDao = new UserDao(dbHelper, new RoleDao(dbHelper));
-            User currentUser = userDao.getUserByUsername(username);
-            List<PaymentPending> paymentPendings = paymentPendingDao.getPaymentHistoryByUserId(currentUser.getId());
-            CartDetailDao cartDetailDao = new CartDetailDao(dbHelper);
-            CartDao cartDao = new CartDao(dbHelper);
-            for (PaymentPending paymentPending: paymentPendings) {
-                PaymentHistoryView paymentHistoryView = new PaymentHistoryView(getActivity());
-                paymentHistoryView.setTvPaymentStatus(PaymentStatus.getNameFromStatus(paymentPending.getPaymentStatus().getStatus()));
-                Restaurant restaurant = paymentPending.getCart().getRestaurant();
-                LinearLayout foodsContainer = paymentHistoryView.findViewById(R.id.foodsContainer);
-                Cart cart = paymentPending.getCart();
-                List<CartDetail> cartDetails = cartDetailDao.getAllCartDetailInCart(cart.getId());
-                for (CartDetail cartDetail: cartDetails) {
-                    FoodOrderCardView foodOrderCardView = new FoodOrderCardView(getActivity());
-                    foodOrderCardView.setFoodQuantityOrder(cartDetail.getQuantity() + "x");
-                    Food food = cartDetail.getFood();
-                    foodOrderCardView.setTvFoodDescription(food.getDescription());
-                    foodOrderCardView.setTvFoodName(food.getName());
-                    foodOrderCardView.setTvFoodDiscountPrice(PriceUtil.formatNumber(food.getPrice()) + "đ");
-//                    foodOrderCardView.setIvFoodAvatar(cartDetail.getFood().getAvatar());
+        Toast.makeText(getActivity(), "" + username, Toast.LENGTH_SHORT).show();
+        DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
 
-                    foodsContainer.addView(foodOrderCardView);
-                }
-                paymentHistoryView.setTvRestaurantName(restaurant.getName());
-                paymentHistoryView.setTvPaymentTotal(PriceUtil.formatNumber(paymentPending.getTotal()) + "đ");
-                int totalDishes = cartDao.getTotalDishes(cart.getId());
-                paymentHistoryView.setTvPaymentFoodQuantity(totalDishes + " món");
-                paymentsContainer.addView(paymentHistoryView);
-            }
+        if (!username.equals("Guest")) {
+            currentUser = dbHelper.userDao.getUserByUsername(username);
+            updateUI();
         }
 
     }
 
     private void init() {
         paymentsContainer = getView().findViewById(R.id.paymentsContainer);
+    }
+
+    private void updateUI() {
+        DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
+        paymentsContainer.removeAllViews();
+        List<PaymentPending> paymentPendings = dbHelper.paymentPendingDao.getPaymentHistoryByUserId(currentUser.getId());
+        for (PaymentPending paymentPending: paymentPendings) {
+            PaymentHistoryView paymentHistoryView = new PaymentHistoryView(getActivity());
+            paymentHistoryView.setTvPaymentStatus(PaymentStatus.getNameFromStatus(paymentPending.getPaymentStatus().getStatus()));
+            Restaurant restaurant = paymentPending.getCart().getRestaurant();
+            LinearLayout foodsContainer = paymentHistoryView.findViewById(R.id.foodsContainer);
+            Cart cart = paymentPending.getCart();
+            List<CartDetail> cartDetails = dbHelper.cartDetailDao.getAllCartDetailInCart(cart.getId());
+            for (CartDetail cartDetail: cartDetails) {
+                FoodOrderCardView foodOrderCardView = new FoodOrderCardView(getActivity());
+                foodOrderCardView.setFoodQuantityOrder(cartDetail.getQuantity() + "x");
+                Food food = cartDetail.getFood();
+                foodOrderCardView.setTvFoodDescription(food.getDescription());
+                foodOrderCardView.setTvFoodName(food.getName());
+                foodOrderCardView.setTvFoodDiscountPrice(PriceUtil.formatNumber(food.getPrice()) + "đ");
+                foodOrderCardView.setIvFoodAvatar(cartDetail.getFood().getAvatar());
+
+                foodsContainer.addView(foodOrderCardView);
+            }
+            paymentHistoryView.setTvRestaurantName(restaurant.getName());
+            paymentHistoryView.setTvPaymentTotal(PriceUtil.formatNumber(paymentPending.getTotal()) + "đ");
+            int totalDishes = dbHelper.cartDao.getTotalDishes(cart.getId());
+            paymentHistoryView.setTvPaymentFoodQuantity(totalDishes + " món");
+
+            paymentHistoryView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), OrderActivity.class);
+                    intent.putExtra("paymentPendingId", paymentPending.getId());
+                    startActivityForResult(intent, REQUEST_CHANGE_STATUS_PAYMENT);
+                }
+            });
+
+            paymentsContainer.addView(paymentHistoryView);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CHANGE_STATUS_PAYMENT) {
+            if (resultCode == getActivity().RESULT_OK) {
+                updateUI();
+            }
+        }
     }
 }

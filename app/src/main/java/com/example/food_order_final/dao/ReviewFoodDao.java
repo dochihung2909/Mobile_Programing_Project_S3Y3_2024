@@ -154,10 +154,11 @@ public class ReviewFoodDao extends BaseDao{
                             + " WHERE " + DatabaseHelper.REVIEW_FOOD_FIELD + " = ?" +
                             " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{String.valueOf(foodId)});
-            do {
-                ReviewFood reviewFood = getReviewFoodInfo(cursor);
-                reviewFoods.add(reviewFood);
-            } while (cursor.moveToNext());
+            if (cursor.moveToFirst()) {
+                do {
+                    reviewFoods.add(getReviewFoodInfo(cursor));
+                } while (cursor.moveToNext());
+            }
         } finally {
             if (cursor != null)
                 cursor.close();
