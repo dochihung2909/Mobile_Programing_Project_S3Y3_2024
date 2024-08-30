@@ -1,7 +1,7 @@
 package com.example.food_order_final.dao;
 
 import static com.android.volley.VolleyLog.TAG;
-import android.annotation.SuppressLint;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,9 +9,6 @@ import android.util.Log;
 import android.util.Patterns;
 
 import com.example.food_order_final.database.DatabaseHelper;
-import com.example.food_order_final.database.DbBitmapUtility;
-import com.example.food_order_final.models.Restaurant;
-import com.example.food_order_final.models.RestaurantCategory;
 import com.example.food_order_final.models.Role;
 import com.example.food_order_final.models.User;
 import com.example.food_order_final.util.DateUtil;
@@ -43,7 +40,6 @@ public class UserDao extends BaseDao{
         boolean isFullname = user.getFullName() != null || !user.getFullName().trim().isEmpty();
         boolean isPassword = user.getPassword().matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$");
         boolean isUserExist = dbHelper.userDao.checkUsername(user.getUsername());
-//        boolean isUserExist = dbHelper.userDao.checkUsernameExcludeUserId(user.getUsername(), user.getId());
 
         if (!isUsername || !isEmail || !isPhoneNumber || !isFullname || !isPassword) {
             if (isUserExist) {
@@ -124,7 +120,7 @@ public class UserDao extends BaseDao{
             contentValues.put(DatabaseHelper.USER_PASSWORD_FIELD, hashedPassword);
 
             result = db.insert(DatabaseHelper.TABLE_USER_NAME, null, contentValues);
-            db.close();
+//            db.close();
         }
 
         if (result == -1) {
@@ -209,13 +205,18 @@ public class UserDao extends BaseDao{
         return rowAffected;
     }
 
-    public void deleteUser(int userId) {
+    public boolean deleteUser(int userId) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String whereClause = DatabaseHelper.ID_FIELD + " = ?";
         String[] whereArgs = new String[]{String.valueOf(userId)};
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseHelper.ACTIVE_FIELD, 0);
 
-        db.delete(DatabaseHelper.TABLE_USER_NAME, whereClause, whereArgs);
+        long update = db.update(DatabaseHelper.TABLE_USER_NAME, contentValues, whereClause, whereArgs);
         db.close();
+        if (update == -1) {
+            return false;
+        } return true;
     }
 
     public boolean hasRestaurant(int userId) {
@@ -224,7 +225,8 @@ public class UserDao extends BaseDao{
         boolean result = false;
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_NAME
-                    + " WHERE " + DatabaseHelper.RESTAURANT_USER_FIELD + " = ?",
+                    + " WHERE " + DatabaseHelper.RESTAURANT_USER_FIELD + " = ?" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{String.valueOf(userId)});
             if (cursor.moveToFirst()) {
                 result = cursor.getCount() > 1;
@@ -244,7 +246,8 @@ public class UserDao extends BaseDao{
 
         try {
             cursor = db.rawQuery("SELECT 1 FROM " + DatabaseHelper.TABLE_USER_NAME
-                            + " WHERE " + DatabaseHelper.USER_USERNAME_FIELD + " = ? ",
+                            + " WHERE " + DatabaseHelper.USER_USERNAME_FIELD + " = ? " +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{username});
             if (cursor.moveToFirst()){
                 exists = true;
@@ -290,7 +293,8 @@ public class UserDao extends BaseDao{
         Cursor cursor = null;
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_USER_NAME
-                            + " WHERE " + DatabaseHelper.USER_USERNAME_FIELD + " = ? ",
+                            + " WHERE " + DatabaseHelper.USER_USERNAME_FIELD + " = ? " +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{username});
 
             if (cursor != null && cursor.moveToFirst()) {
@@ -346,7 +350,7 @@ public class UserDao extends BaseDao{
         List<User> users = new ArrayList<>();
 
         try {
-            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_USER_NAME,
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_USER_NAME + " WHERE " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     null);
             if (cursor != null && cursor.moveToFirst()) {
                 do {
@@ -370,7 +374,8 @@ public class UserDao extends BaseDao{
  
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_USER_NAME
-                    + " WHERE " + DatabaseHelper.USER_USERNAME_FIELD + " LIKE ?",
+                    + " WHERE " + DatabaseHelper.USER_USERNAME_FIELD + " LIKE ?" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{"%" + name + "%"});
 
             if(cursor != null && cursor.moveToFirst()) {
@@ -394,7 +399,8 @@ public class UserDao extends BaseDao{
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_USER_NAME
-                            + " WHERE " + DatabaseHelper.USER_FULL_NAME_FIELD + " LIKE ?",
+                            + " WHERE " + DatabaseHelper.USER_FULL_NAME_FIELD + " LIKE ?" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{"%" + name + "%"});
 
             if(cursor != null && cursor.moveToFirst()) {
@@ -418,7 +424,8 @@ public class UserDao extends BaseDao{
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_USER_NAME
-                            + " WHERE " + DatabaseHelper.USER_USERNAME_FIELD + " = ?",
+                            + " WHERE " + DatabaseHelper.USER_USERNAME_FIELD + " = ?" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{userUsername});
 
             if (cursor != null && cursor.moveToFirst()) {
@@ -427,7 +434,7 @@ public class UserDao extends BaseDao{
         } finally {
             if (cursor != null)
                 cursor.close();
-            db.close();
+//            db.close();
         }
 
         return user;
@@ -440,7 +447,8 @@ public class UserDao extends BaseDao{
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_USER_NAME
-                            + " WHERE " + DatabaseHelper.ID_FIELD + " = ?",
+                            + " WHERE " + DatabaseHelper.ID_FIELD + " = ?" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{String.valueOf(userId)});
 
             if (cursor != null && cursor.moveToFirst()) {

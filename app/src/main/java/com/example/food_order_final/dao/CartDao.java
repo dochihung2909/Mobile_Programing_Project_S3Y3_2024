@@ -213,7 +213,8 @@ public class CartDao extends BaseDao {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_CART_NAME +
                             " WHERE " + DatabaseHelper.CART_USER_FIELD + " = ?"
                     +" AND " + DatabaseHelper.CART_RESTAURANT_FIELD + " = ?"
-                    +" AND " + DatabaseHelper.CART_STATUS + " = 0"
+                    +" AND " + DatabaseHelper.CART_STATUS + " = 0" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1"
                     , new String[]{String.valueOf(userId), String.valueOf(restaurantId)});
             if (cursor != null && cursor.moveToFirst()) {
                 int id = getInt(cursor, DatabaseHelper.ID_FIELD);
@@ -244,7 +245,8 @@ public class CartDao extends BaseDao {
         restaurantDao = new RestaurantDao(dbHelper, new RestaurantCategoryDao(dbHelper));
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_CART_NAME +
-                            " WHERE " + DatabaseHelper.ID_FIELD + " = ?",
+                            " WHERE " + DatabaseHelper.ID_FIELD + " = ?" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{String.valueOf(cartId)});
             if (cursor != null && cursor.moveToFirst()) {
                 int id = getInt(cursor, DatabaseHelper.ID_FIELD);
@@ -276,7 +278,8 @@ public class CartDao extends BaseDao {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_CART_NAME
                             + " WHERE " + DatabaseHelper.CART_USER_FIELD + " = ?"
                             + " AND " + DatabaseHelper.CART_RESTAURANT_FIELD + " = ?"
-                            + " AND " + DatabaseHelper.CART_STATUS + " = 0"
+                            + " AND " + DatabaseHelper.CART_STATUS + " = 0" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1"
                     , new String[]{String.valueOf(userId), String.valueOf(restaurantId)});
             if(cursor.getCount() > 0){
                 return true;
@@ -301,7 +304,8 @@ public class CartDao extends BaseDao {
             cursor = db.rawQuery("SELECT SUM("+ DatabaseHelper.CART_DETAIL_QUANTITY_FIELD +") FROM "
                     + DatabaseHelper.TABLE_CART_DETAIL_NAME
                     + " WHERE " + DatabaseHelper.CART_DETAIL_CART_FIELD
-                    + " = ?", new String[]{String.valueOf(cartId)});
+                    + " = ?" +
+                    " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(cartId)});
             if (cursor.moveToFirst() && cursor != null) {
                 totalDishes = cursor.getInt(0);
             }
@@ -324,7 +328,8 @@ public class CartDao extends BaseDao {
         try {
             cursor = db.rawQuery("SELECT SUM(" + DatabaseHelper.CART_DETAIL_PRICE_FIELD + "*" + DatabaseHelper.CART_DETAIL_QUANTITY_FIELD
                     +" ) FROM " + DatabaseHelper.TABLE_CART_DETAIL_NAME
-                    + " WHERE " + DatabaseHelper.CART_DETAIL_CART_FIELD + " = ?", new String[]{String.valueOf(cartId)});
+                    + " WHERE " + DatabaseHelper.CART_DETAIL_CART_FIELD + " = ?" +
+                    " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(cartId)});
             if (cursor.moveToFirst() && cursor != null) {
                 totalAmount = cursor.getDouble(0);
             }
@@ -350,7 +355,8 @@ public class CartDao extends BaseDao {
         Cursor cursor = null;
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_CART_DETAIL_NAME
-                    + " WHERE " + DatabaseHelper.CART_DETAIL_CART_FIELD + " = ?", new String[]{String.valueOf(cartId)});
+                    + " WHERE " + DatabaseHelper.CART_DETAIL_CART_FIELD + " = ?" +
+                    " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(cartId)});
             if (cursor.getCount() <= 0) {
                 return true;
             }

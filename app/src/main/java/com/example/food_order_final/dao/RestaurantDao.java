@@ -120,7 +120,8 @@ public class RestaurantDao extends BaseDao{
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursor = null;
         boolean result = false;
-        Cursor restaurantCursor = db.rawQuery("SELECT " + DatabaseHelper.ID_FIELD + " FROM " + DatabaseHelper.TABLE_RESTAURANT_NAME, null);
+        Cursor restaurantCursor = db.rawQuery("SELECT " + DatabaseHelper.ID_FIELD + " FROM " + DatabaseHelper.TABLE_RESTAURANT_NAME +
+                " WHERE " + DatabaseHelper.ACTIVE_FIELD + " = 1", null);
 
         if (restaurantCursor.moveToFirst()) {
             do {
@@ -160,7 +161,8 @@ public class RestaurantDao extends BaseDao{
         try {
             cursor = db.rawQuery("SELECT AVG(" + DatabaseHelper.RATING_FIELD
                             + ") AS averageRating FROM " + DatabaseHelper.TABLE_REVIEW_RESTAURANT_NAME
-                            + " WHERE " + DatabaseHelper.REVIEW_RESTAURANT_FIELD + " = ?",
+                            + " WHERE " + DatabaseHelper.REVIEW_RESTAURANT_FIELD + " = ?" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{String.valueOf(restaurantId)});
             if (cursor.moveToFirst()) {
                 ContentValues contentValues = new ContentValues();
@@ -247,7 +249,8 @@ public class RestaurantDao extends BaseDao{
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_NAME
-                            + " WHERE " + DatabaseHelper.ID_FIELD + " = ?",
+                            + " WHERE " + DatabaseHelper.ID_FIELD + " = ?" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{String.valueOf(resId)});
             if (cursor != null && cursor.moveToFirst()) {
                 restaurant = getRestaurantInfo(cursor);
@@ -268,7 +271,8 @@ public class RestaurantDao extends BaseDao{
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_NAME
-                    + " WHERE " + DatabaseHelper.RESTAURANT_USER_FIELD + " = ? ", new String[]{String.valueOf(ownerId)});
+                    + " WHERE " + DatabaseHelper.RESTAURANT_USER_FIELD + " = ? " +
+                    " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(ownerId)});
 
             if (cursor != null && cursor.moveToFirst()) {
                 restaurant = getRestaurantInfo(cursor);
@@ -293,7 +297,8 @@ public class RestaurantDao extends BaseDao{
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_NAME
-                            + " WHERE " + DatabaseHelper.ID_FIELD + " LIKE ?",
+                            + " WHERE " + DatabaseHelper.ID_FIELD + " LIKE ?" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{"%" + resName + "%"});
             if (cursor != null && cursor.moveToFirst()) {
                 do {
@@ -317,7 +322,8 @@ public class RestaurantDao extends BaseDao{
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_NAME
-                            + " WHERE " + DatabaseHelper.RESTAURANT_NAME_FIELD + " = ?",
+                            + " WHERE " + DatabaseHelper.RESTAURANT_NAME_FIELD + " = ?" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{restaurantName});
 
             if (cursor != null && cursor.moveToFirst()) {
@@ -340,7 +346,8 @@ public class RestaurantDao extends BaseDao{
         try {
             cursor = db.rawQuery("SELECT r.* FROM " + DatabaseHelper.TABLE_FOOD_NAME + " f " +
                     " INNER JOIN " + DatabaseHelper.TABLE_RESTAURANT_NAME + " r on r." + DatabaseHelper.ID_FIELD + " = f." + DatabaseHelper.FOOD_RESTAURANT_FIELD +
-                    "  WHERE f." + DatabaseHelper.FOOD_RESTAURANT_FIELD + " = ?", new String[]{String.valueOf(foodId)});
+                    "  WHERE f." + DatabaseHelper.FOOD_RESTAURANT_FIELD + " = ?" +
+                    " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(foodId)});
 
             if (cursor != null && cursor.moveToFirst()) {
                 restaurant = getRestaurantInfo(cursor);

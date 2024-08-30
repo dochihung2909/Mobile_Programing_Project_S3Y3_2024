@@ -81,9 +81,11 @@ public class RegisterActivity extends AppCompatActivity {
     protected Boolean isValidate(){
         awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
 
-        awesomeValidation.addValidation(this, R.id.etUsername, RegexTemplate.NOT_EMPTY, R.string.invalid_username);
+        awesomeValidation.addValidation(this, R.id.etUsername, "^[\\S]{3,}$", R.string.invalid_username_length);
 
-        awesomeValidation.addValidation(this, R.id.etPhoneNumber, "(84|0[3|5|7|8|9])+([0-9]{8})\\b", R.string.invalid_phone);
+        awesomeValidation.addValidation(this, R.id.etUsername, RegexTemplate.NOT_EMPTY, R.string.invalid_username);
+        
+        awesomeValidation.addValidation(this, R.id.etPhoneNumber, "^(\\+84|84|0)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5|8|9]|9[0-4|6-9])[0-9]{7}$", R.string.invalid_phone);
 
         awesomeValidation.addValidation(this, R.id.etEmail, Patterns.EMAIL_ADDRESS, R.string.invalid_email);
 

@@ -2,6 +2,7 @@ package com.example.food_order_final.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.example.food_order_final.dao.RestaurantDao;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.hideSoftKeyboard;
 import com.example.food_order_final.models.Food;
+import com.example.food_order_final.util.PriceUtil;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.List;
@@ -67,7 +69,14 @@ public class SearchActivity extends AppCompatActivity {
 
                             foodCardView.setTvFoodName(food.getName());
                             foodCardView.setFood(food);
-                            foodCardView.setTvFoodDiscountPrice(food.getPrice());
+                            if (food.getDiscount() > 0) {
+                                TextView defaulPrice = foodCardView.findViewById(R.id.tvFoodDefaultPrice);
+                                defaulPrice.setVisibility(View.VISIBLE);
+                                defaulPrice.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+                                foodCardView.setTvFoodDefaultPrice(PriceUtil.formatNumber(food.getPrice()));
+                            }
+                            foodCardView.setTvFoodDiscountPrice(PriceUtil.formatNumber(food.getPrice() - food.getDiscount()));
+
                             foodCardView.findViewById(R.id.btnAddToCart).setVisibility(View.GONE);
 
                             foodCardView.setOnClickListener(new View.OnClickListener() {

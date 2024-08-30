@@ -16,7 +16,8 @@ import com.example.food_order_final.R;
 
 public class PaymentSuccess extends AppCompatActivity {
 
-    private ImageButton btnBackToMain;
+    private ImageButton btnBack;
+    private Button btnBackToMain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,16 +32,29 @@ public class PaymentSuccess extends AppCompatActivity {
 
         init();
 
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            }
+        });
+
         btnBackToMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(PaymentSuccess.this, MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
+                finish();
             }
         });
     }
 
     private void init() {
         btnBackToMain = findViewById(R.id.btnBackToMain);
+        btnBack = findViewById(R.id.btnBack);
     }
 }

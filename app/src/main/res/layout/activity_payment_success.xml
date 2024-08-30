@@ -25,7 +25,7 @@
             android:src="@drawable/baseline_arrow_back_24"
             android:background="@drawable/circle_button"
             android:padding="5dp"
-            android:id="@+id/btnBackToMain"
+            android:id="@+id/btnBack"
             />
     </LinearLayout>
 
@@ -39,6 +39,22 @@
         android:drawablePadding="10dp"
         android:textStyle="bold"
         android:drawableLeft="@drawable/baseline_check_24"/>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        >
+        
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Về trang chủ"
+            android:backgroundTint="@color/primaryColor"
+            android:id="@+id/btnBackToMain"
+            />
+        
+    </LinearLayout>
 
 
 </LinearLayout>

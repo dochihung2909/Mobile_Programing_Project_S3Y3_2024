@@ -1,11 +1,13 @@
 package com.example.food_order_final.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -34,6 +36,7 @@ public class RestaurantOrderManagementActivity extends AppCompatActivity {
     private LinearLayout paymentsContainer;
     private DatabaseHelper dbHelper = new DatabaseHelper(RestaurantOrderManagementActivity.this);
     private int restaurantId = -1;
+    private int REQUEST_CHANGE_STATUS_PAYMENT = 204;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +57,28 @@ public class RestaurantOrderManagementActivity extends AppCompatActivity {
                 finish();
             }
         });
+        updateUI();
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CHANGE_STATUS_PAYMENT) {
+            if (resultCode == RESULT_OK) {
+                updateUI();
+            }
+        }
+    }
+
+    private void init() {
+        btnBack = findViewById(R.id.btnBack);
+        paymentsContainer = findViewById(R.id.paymentsContainer);
+    }
+
+    private void updateUI() {
+        paymentsContainer.removeAllViews();
         ArrayList<PaymentPending> paymentPendings = dbHelper.paymentPendingDao.getAllPaymentByRestaurantId(restaurantId);
         for (PaymentPending paymentPending: paymentPendings) {
             PaymentHistoryView paymentHistoryView = new PaymentHistoryView(RestaurantOrderManagementActivity.this);
@@ -78,13 +102,20 @@ public class RestaurantOrderManagementActivity extends AppCompatActivity {
             paymentHistoryView.setTvPaymentTotal(PriceUtil.formatNumber(paymentPending.getTotal()) + "đ");
             int totalDishes = dbHelper.cartDao.getTotalDishes(cart.getId());
             paymentHistoryView.setTvPaymentFoodQuantity(totalDishes + " món");
+            paymentHistoryView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(RestaurantOrderManagementActivity.this, OrderActivity.class);
+                    intent.putExtra("paymentPendingId", paymentPending.getId());
+                    startActivityForResult(intent, REQUEST_CHANGE_STATUS_PAYMENT);
+                }
+            });
+
+
+
             paymentsContainer.addView(paymentHistoryView);
+
+
         }
-
-    }
-
-    private void init() {
-        btnBack = findViewById(R.id.btnBack);
-        paymentsContainer = findViewById(R.id.paymentsContainer);
     }
 }

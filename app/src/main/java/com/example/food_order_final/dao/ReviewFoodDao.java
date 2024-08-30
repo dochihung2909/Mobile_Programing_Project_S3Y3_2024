@@ -81,7 +81,7 @@ public class ReviewFoodDao extends BaseDao{
         List<ReviewFood> reviewFoods = new ArrayList<>();
 
         try {
-            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_REVIEW_FOOD_NAME, null);
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_REVIEW_FOOD_NAME + " WHERE " + DatabaseHelper.ACTIVE_FIELD + " = 1", null);
             if (cursor != null && cursor.moveToFirst()) {
                 do {
                     reviewFoods.add(getReviewFoodInfo(cursor));
@@ -103,7 +103,8 @@ public class ReviewFoodDao extends BaseDao{
         ReviewFood reviewFood = null;
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_REVIEW_FOOD_NAME
-                            + " WHERE " + DatabaseHelper.ID_FIELD + " = ?",
+                            + " WHERE " + DatabaseHelper.ID_FIELD + " = ?" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{String.valueOf(reviewId)});
 
             if (cursor != null && cursor.moveToFirst()) {
@@ -127,7 +128,8 @@ public class ReviewFoodDao extends BaseDao{
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_REVIEW_FOOD_NAME
-                            + " WHERE " + DatabaseHelper.REVIEW_USER_FIELD + " = ?",
+                            + " WHERE " + DatabaseHelper.REVIEW_USER_FIELD + " = ?" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{String.valueOf(userId)});
             do {
                 ReviewFood reviewFood = getReviewFoodInfo(cursor);
@@ -149,12 +151,14 @@ public class ReviewFoodDao extends BaseDao{
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_REVIEW_FOOD_NAME
-                            + " WHERE " + DatabaseHelper.REVIEW_FOOD_FIELD + " = ?",
+                            + " WHERE " + DatabaseHelper.REVIEW_FOOD_FIELD + " = ?" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{String.valueOf(foodId)});
-            do {
-                ReviewFood reviewFood = getReviewFoodInfo(cursor);
-                reviewFoods.add(reviewFood);
-            } while (cursor.moveToNext());
+            if (cursor.moveToFirst()) {
+                do {
+                    reviewFoods.add(getReviewFoodInfo(cursor));
+                } while (cursor.moveToNext());
+            }
         } finally {
             if (cursor != null)
                 cursor.close();

@@ -62,13 +62,24 @@ public class LoginActivity extends AppCompatActivity {
                     if (dbHelper.userDao.isUserCredential(username, password)){
                         Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                         User user = dbHelper.userDao.getUserByUsername(username);
-                        if (user.getRole().getName().equals("Admin")) {
+                        String roleName = user.getRole().getName();
+                        if (roleName.equals("Admin")) {
                             Intent intent = new Intent(LoginActivity.this, AdminMainActivity.class);
                             startActivity(intent);
-                        } else {
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        } else if (roleName.equals("User") || roleName.equals("Owner")) {
+                            Intent intent;
+                            intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
                         }
+
+
+                        if (roleName.equals("Employee")) {
+                            Toast.makeText(LoginActivity.this, "" + roleName, Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(LoginActivity.this, RestaurantManagerActivity.class);
+                            intent.putExtra("employeeId", user.getId());
+                            startActivity(intent);
+                        }
+
                         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString("username", username);

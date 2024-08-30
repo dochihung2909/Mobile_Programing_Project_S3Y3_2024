@@ -145,7 +145,7 @@ public class UserFragment extends Fragment {
                     SharedPreferences.Editor editor = pref.edit().clear();
                     editor.apply();
 
-                    Intent intent = new Intent(getActivity().getApplicationContext(), LoginActivity.class);
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     getActivity().finish();

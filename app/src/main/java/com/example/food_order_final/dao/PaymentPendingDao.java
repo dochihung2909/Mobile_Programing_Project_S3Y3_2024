@@ -32,6 +32,7 @@ public class PaymentPendingDao extends BaseDao{
         contentValues.put(DatabaseHelper.PAYMENT_PENDING_TOTAL, paymentPending.getTotal());
         contentValues.put(DatabaseHelper.PAYMENT_PENDING_METHOD, paymentPending.getPaymentMethod().getMethod());
         contentValues.put(DatabaseHelper.PAYMENT_PENDING_NOTE, paymentPending.getNote());
+        contentValues.put(DatabaseHelper.ACTIVE_FIELD, paymentPending.getActived());
         contentValues.put(DatabaseHelper.CREATED_DATE_FIELD, DateUtil.dateToTimestamp(paymentPending.getCreatedDate()));
         contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD,DateUtil.dateToTimestamp(paymentPending.getUpdatedDate()));
         db.insert(DatabaseHelper.TABLE_PAYMENT_PENDING_NAME, null, contentValues);
@@ -46,7 +47,8 @@ public class PaymentPendingDao extends BaseDao{
         try {
             cursor = db.rawQuery("SELECT p.* FROM " + DatabaseHelper.TABLE_PAYMENT_PENDING_NAME +
                     " p INNER JOIN " + DatabaseHelper.TABLE_CART_NAME + " c on c." + DatabaseHelper.ID_FIELD + " = p." + DatabaseHelper.PAYMENT_PENDING_CART +
-                    " WHERE " + DatabaseHelper.CART_USER_FIELD + " = ?", new String[]{String.valueOf(userId)});
+                    " WHERE " + DatabaseHelper.CART_USER_FIELD + " = ?" +
+                    " AND p." + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(userId)});
 
             if (cursor != null && cursor.moveToFirst()) {
                 do {
@@ -75,7 +77,8 @@ public class PaymentPendingDao extends BaseDao{
         try {
             cursor = db.rawQuery("SELECT p.* from " + DatabaseHelper.TABLE_PAYMENT_PENDING_NAME + " p " +
                     "INNER JOIN " + DatabaseHelper.TABLE_CART_NAME + " c ON c." + DatabaseHelper.ID_FIELD + " = p." + DatabaseHelper.PAYMENT_PENDING_CART +
-                    " WHERE " + DatabaseHelper.CART_RESTAURANT_FIELD + " = ?", new String[]{String.valueOf(restaurantId)});
+                    " WHERE " + DatabaseHelper.CART_RESTAURANT_FIELD + " = ?" +
+                    " AND p." + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(restaurantId)});
             if (cursor != null && cursor.moveToFirst()) {
                 do {
                     paymentPendings.add(getPaymentPendingInfo(cursor));
@@ -92,7 +95,43 @@ public class PaymentPendingDao extends BaseDao{
         }
 
         return paymentPendings;
+    }
 
+    public PaymentPending getPaymentPendingById(int paymentPendingId) {
+        Cursor cursor = null;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        PaymentPending paymentPending = null;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_PAYMENT_PENDING_NAME +
+                    " WHERE " + DatabaseHelper.ID_FIELD + " = ?" +
+                    " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(paymentPendingId)});
+            if (cursor.moveToFirst()) {
+                paymentPending = getPaymentPendingInfo(cursor);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+        return paymentPending;
+    }
+
+    public boolean changePaymentPendingStatus(int paymentPendingId, PaymentStatus status) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseHelper.PAYMENT_PENDING_STATUS, status.getStatus());
+        long update = db.update(DatabaseHelper.TABLE_PAYMENT_PENDING_NAME,
+                contentValues,
+                DatabaseHelper.ID_FIELD + " = ?",
+                new String[]{String.valueOf(paymentPendingId)});
+
+        if (update == -1) {
+            return false;
+        }
+        return true;
     }
 
     public PaymentPending getPaymentPendingInfo(Cursor cursor) {

@@ -3,6 +3,7 @@ package com.example.food_order_final.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -151,7 +152,14 @@ public class RestaurantActivity extends AppCompatActivity {
                 FoodCardView foodCardView = new FoodCardView(RestaurantActivity.this);
                 foodCardView.setFood(food);
                 foodCardView.setTvFoodName(food.getName());
-                foodCardView.setTvFoodDiscountPrice(food.getPrice());
+                if (food.getDiscount() > 0) {
+                    TextView defaulPrice = foodCardView.findViewById(R.id.tvFoodDefaultPrice);
+                    defaulPrice.setVisibility(View.VISIBLE);
+                    defaulPrice.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+                    foodCardView.setTvFoodDefaultPrice(PriceUtil.formatNumber(food.getPrice()));
+                }
+                foodCardView.setTvFoodDiscountPrice(PriceUtil.formatNumber(food.getPrice() - food.getDiscount()));
+
                 foodCardView.setIvFoodAvatar(food.getAvatar());
                 TextView btnAddToCart = foodCardView.findViewById(R.id.btnAddToCart);
 

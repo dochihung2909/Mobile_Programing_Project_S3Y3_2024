@@ -38,8 +38,11 @@ import com.example.food_order_final.dao.UserDao;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.database.DbBitmapUtility;
 import com.example.food_order_final.hideSoftKeyboard;
+import com.example.food_order_final.models.Employee;
+import com.example.food_order_final.models.Restaurant;
 import com.example.food_order_final.models.User;
 import com.example.food_order_final.util.LoadImageUtil;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -52,7 +55,9 @@ import java.util.Objects;
 
 public class UserSettingActivity extends AppCompatActivity {
 
-    private EditText etUserFullName, etPhoneNumber;
+    private EditText etUserFullName, etPhoneNumber, etUsername;
+    private TextInputEditText etPassword, etRepeatPassword;
+    private TextInputLayout etRepeatPasswordContainer, etPasswordContainer;
     private static final String TAG = "UserSettingActivity Upload ###";
     private Button btnEditUserAvatar, btnSubmitEdit;
     private ImageButton btnBack;
@@ -71,8 +76,11 @@ public class UserSettingActivity extends AppCompatActivity {
     private Uri imagePath;
     private String cloudinaryPath;
     private boolean isUpload = false;
-    private UserDao userDao;
     private User currentUser;
+    private int restaurantId = -1;
+    private int employeeId = -1;
+
+    DatabaseHelper dbHelper = new DatabaseHelper(UserSettingActivity.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,27 +98,36 @@ public class UserSettingActivity extends AppCompatActivity {
 
         SharedPreferences pref = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         String username = pref.getString("username", "Guest");
-
+        restaurantId = getIntent().getIntExtra("restaurantId", -1);
+        employeeId = getIntent().getIntExtra("employeeId", -1);
 
         if (!username.equals("Guest")) {
-            DatabaseHelper dbHelper = new DatabaseHelper(UserSettingActivity.this);
-            userDao = new UserDao(dbHelper, new RoleDao(dbHelper));
-            currentUser = userDao.getUserByUsername(username);
-            String email = currentUser.getEmail();
-            etUserFullName.setText(currentUser.getFullName());
-            etPhoneNumber.setText(currentUser.getPhoneNumber());
 
-//            Picasso.get().load((currentUser.getAvatar())).into(ivUserAvatar);
-//            Picasso.get().load(currentUser.getAvatar()).placeholder(R.drawable.ic_launcher_background).into(ivUserAvatar);
 
-            LoadImageUtil.loadImage(ivUserAvatar, currentUser.getAvatar());
-            if (!Objects.equals(email, "")) {
-                etEmail.setText(email);
+            if (restaurantId == -1 || employeeId != -1) {
+
+                if (employeeId != -1) {
+                    currentUser = dbHelper.userDao.getUserById(employeeId);
+                } else {
+                    currentUser = dbHelper.userDao.getUserByUsername(username);
+                }
+                String email = currentUser.getEmail();
+                etUserFullName.setText(currentUser.getFullName());
+                etPhoneNumber.setText(currentUser.getPhoneNumber());
+                if (currentUser.getAvatar() != null) {
+                    LoadImageUtil.loadImage(ivUserAvatar, currentUser.getAvatar());
+                }
+
+                if (!Objects.equals(email, "")) {
+                    etEmail.setText(email);
+                } else {
+                    etEmail.setText("Thiết lập Email");
+                }
             } else {
-                etEmail.setText("Thiết lập Email");
+                etUsername.setVisibility(View.VISIBLE);
+                etRepeatPasswordContainer.setVisibility(View.VISIBLE);
+                etPasswordContainer.setVisibility(View.VISIBLE);
             }
-//            imageSelected = DbBitmapUtility.getImage(currentUser.getAvatar());
-//            ivUserAvatar.setImageBitmap(imageSelected);
 
             btnSubmitEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -118,9 +135,15 @@ public class UserSettingActivity extends AppCompatActivity {
                     String newFullName = String.valueOf(etUserFullName.getText());
                     String newPhoneNumber = String.valueOf(etPhoneNumber.getText());
                     String newEmail = String.valueOf((etEmail.getText()));
-                    currentUser.setEmail(newEmail);
-                    currentUser.setFullName(newFullName);
-                    currentUser.setPhoneNumber(newPhoneNumber);
+                    if (restaurantId != -1) {
+                        String password = String.valueOf(etPassword.getText());
+                        String username = String.valueOf(etUsername.getText());
+                        currentUser = new User(username, newPhoneNumber, newEmail, newFullName, password, dbHelper.roleDao.getRoleByName("Employee"), cloudinaryPath);
+                    } else {
+                        currentUser.setEmail(newEmail);
+                        currentUser.setFullName(newFullName);
+                        currentUser.setPhoneNumber(newPhoneNumber);
+                    }
 
                     if (isUpload) {
                         MediaManager.get().upload(imagePath).callback(new UploadCallback() {
@@ -138,7 +161,11 @@ public class UserSettingActivity extends AppCompatActivity {
                             public void onSuccess(String requestId, Map resultData) {
                                 cloudinaryPath = (String) resultData.get("url");
                                 currentUser.setAvatar(cloudinaryPath);
-                                updateUserInfo(currentUser);
+                                if (restaurantId != -1) {
+                                    createEmployee(currentUser);
+                                } else {
+                                    updateUserInfo(currentUser);
+                                }
                                 Log.d(TAG, "onSuccess: " + resultData.get("url"));
                             }
 
@@ -153,7 +180,12 @@ public class UserSettingActivity extends AppCompatActivity {
                             }
                         }).dispatch();
                     } else {
-                        updateUserInfo(currentUser);
+                        if (restaurantId != -1) {
+                            createEmployee(currentUser);
+                        } else {
+                            updateUserInfo(currentUser);
+
+                        }
                     }
 
                 }
@@ -197,6 +229,13 @@ public class UserSettingActivity extends AppCompatActivity {
         btnSubmitEdit = findViewById(R.id.btnSubmitEdit);
         ivUserAvatar = findViewById(R.id.ivUserAvatar);
         btnBack = findViewById(R.id.btnBack);
+
+        // Create User
+        etUsername = findViewById(R.id.etUsername);
+        etPassword = findViewById(R.id.etPassword);
+        etRepeatPassword = findViewById(R.id.etRepeatPassword);
+        etPasswordContainer = findViewById(R.id.etPasswordContainer);
+        etRepeatPasswordContainer = findViewById(R.id.etRepeatPasswordContainer);
     }
 
     @Override
@@ -206,11 +245,7 @@ public class UserSettingActivity extends AppCompatActivity {
 
         if (resultCode == RESULT_OK && reqCode == SELECT_PICTURE && data != null && data.getData() != null) {
             imagePath = data.getData();
-//                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-//                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
             Picasso.get().load(imagePath).into(ivUserAvatar);
-
-//                imageSelected = selectedImage;
 
         }else {
             Toast.makeText(UserSettingActivity.this, "You haven't picked Image",Toast.LENGTH_LONG).show();
@@ -243,7 +278,7 @@ public class UserSettingActivity extends AppCompatActivity {
 
     private void updateUserInfo(User user) {
         if (isValidate()) {
-            int statusCode = userDao.updateUserInfo(user);
+            int statusCode = dbHelper.userDao.updateUserInfo(user);
             if (statusCode != -1) {
                 Toast.makeText(UserSettingActivity.this,  " Update Success", Toast.LENGTH_SHORT).show();
                 Intent returnIntent = new Intent();
@@ -252,6 +287,40 @@ public class UserSettingActivity extends AppCompatActivity {
             } else {
 
                 Toast.makeText(UserSettingActivity.this, "Update Fail", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    protected Boolean isCreateValidate(){
+        awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
+
+        awesomeValidation.addValidation(this, R.id.etUsername, RegexTemplate.NOT_EMPTY, R.string.invalid_username);
+
+        awesomeValidation.addValidation(this, R.id.etPhoneNumber, "^(\\+84|84|0)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5|8|9]|9[0-4|6-9])[0-9]{7}$", R.string.invalid_phone);
+
+        awesomeValidation.addValidation(this, R.id.etEmail, Patterns.EMAIL_ADDRESS, R.string.invalid_email);
+
+        awesomeValidation.addValidation(this, R.id.etFullname, RegexTemplate.NOT_EMPTY, R.string.invalid_fullname);
+
+        awesomeValidation.addValidation(this, R.id.etPassword, "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$", R.string.invalid_password);
+
+        awesomeValidation.addValidation(this, R.id.etRepeatPassword, R.id.etPassword, R.string.invalid_repeat_password);
+
+        return awesomeValidation.validate();
+    }
+
+    private void createEmployee(User user) {
+        if (isCreateValidate()) {
+            long statusCode = dbHelper.userDao.insertUser(user);
+            if (statusCode != -1) {
+                User u = dbHelper.userDao.getUserByUsername(user.getUsername());
+                Restaurant restaurant = dbHelper.resDao.getRestaurantById(restaurantId);
+                long employeeStatusCode = dbHelper.employeeDao.insertEmployee(new Employee(u, restaurant));
+                if (employeeStatusCode != -1) {
+                    Intent returnIntent = new Intent();
+                    setResult(RESULT_OK, returnIntent);
+                    finish();
+                }
             }
         }
     }

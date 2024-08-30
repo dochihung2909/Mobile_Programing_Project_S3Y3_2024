@@ -23,4 +23,9 @@ public enum PaymentMethod {
         }
         throw new IllegalArgumentException("No enum constant with method " + method);
     }
+
+    public static String getNameFromMethod(int method) {
+        PaymentMethod paymentMethod = fromMethod(method);
+        return paymentMethod.name();
+    }
 }

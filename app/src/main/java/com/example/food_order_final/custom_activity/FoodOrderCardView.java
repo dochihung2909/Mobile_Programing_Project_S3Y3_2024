@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.example.food_order_final.R;
+import com.example.food_order_final.util.LoadImageUtil;
 
 public class FoodOrderCardView extends LinearLayout {
 
@@ -69,7 +70,7 @@ public class FoodOrderCardView extends LinearLayout {
         this.tvFoodDefaultPrice.setText(tvFoodDefaultPrice);
     }
 
-    public void setIvFoodAvatar(int ivFoodAvatar) {
-        this.ivFoodAvatar.setImageResource(ivFoodAvatar);
+    public void setIvFoodAvatar(String avatar) {
+        LoadImageUtil.loadImage(ivFoodAvatar, avatar);
     }
 }

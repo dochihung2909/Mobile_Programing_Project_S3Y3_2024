@@ -141,27 +141,16 @@ public class FoodCardView extends LinearLayout {
         return (tvFoodDiscountPrice.getText().toString());
     }
 
-    @SuppressLint("SetTextI18n")
-    public void setTvFoodDiscountPrice(double tvFoodDiscountPrice) {
-        DecimalFormat decimalFormat = new DecimalFormat("#,###");
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
-        symbols.setGroupingSeparator('.');
-        decimalFormat.setDecimalFormatSymbols(symbols);
-        String formattedNumber = decimalFormat.format(tvFoodDiscountPrice);
-        this.tvFoodDiscountPrice.setText(formattedNumber + "đ");
+    public void setTvFoodDiscountPrice(String tvFoodDiscountPrice) {
+        this.tvFoodDiscountPrice.setText(tvFoodDiscountPrice + "đ");
     }
 
     public String getTvFoodDefaultPrice() {
         return tvFoodDefaultPrice.getText().toString();
     }
 
-    public void setTvFoodDefaultPrice(int tvFoodDefaultPrice) {
-        DecimalFormat decimalFormat = new DecimalFormat("#,###");
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
-        symbols.setGroupingSeparator('.');
-        decimalFormat.setDecimalFormatSymbols(symbols);
-        String formattedNumber = decimalFormat.format(tvFoodDefaultPrice);
-        this.tvFoodDefaultPrice.setText(formattedNumber);
+    public void setTvFoodDefaultPrice(String tvFoodDefaultPrice) {
+        this.tvFoodDefaultPrice.setText(tvFoodDefaultPrice);
     }
 
     public String getTvFoodDescription() {

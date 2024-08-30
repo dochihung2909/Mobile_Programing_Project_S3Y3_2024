@@ -142,24 +142,6 @@
                 android:hint="Ý kiến của bạn về quán..."
                 android:background="@android:drawable/edit_text"
                 android:padding="8dp"/>
-
-            <!-- Feedback Image Upload -->
-            <ImageView
-                android:id="@+id/ivUploadedRestaurant"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="16dp"
-                android:scaleType="centerCrop"
-                android:background="@android:color/darker_gray"
-                android:visibility="gone"/>
-
-            <Button
-                android:id="@+id/btnUploadImageRestaurant"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-                android:text="Đăng ảnh"/>
         </LinearLayout>
     </ScrollView>
 

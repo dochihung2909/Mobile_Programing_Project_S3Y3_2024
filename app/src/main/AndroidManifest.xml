@@ -20,7 +20,7 @@
         android:theme="@style/Theme.Food_Order_Final"
         tools:targetApi="31">
         <activity
-            android:name=".activity.admin.AdminCartDetailEdit"
+            android:name=".activity.RestaurantEmployeeManagementActivity"
             android:exported="false" />
         <activity
             android:name=".activity.admin.AdminCartDetail"
@@ -36,9 +36,6 @@
             android:exported="false" />
         <activity
             android:name=".activity.EditRestaurantActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activity.CreateRestaurantActivity"
             android:exported="false" />
         <activity
             android:name=".activity.PaymentSuccess"

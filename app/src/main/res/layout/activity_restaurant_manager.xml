@@ -119,6 +119,20 @@
                 android:id="@+id/btnCheckOrder"
                 android:backgroundTint="@android:color/holo_blue_light"/>
 
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quản lý nhân viên"
+                android:id="@+id/btnEmployeeManager"
+                android:backgroundTint="@android:color/holo_blue_light"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đăng xuất"
+                android:id="@+id/btnLogout"
+                android:backgroundTint="@android:color/holo_blue_light"/>
+
         </LinearLayout>
     </ScrollView>
 

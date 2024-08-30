@@ -59,7 +59,8 @@ public class CartDetailDao extends BaseDao {
 
             cursor = db.rawQuery("SELECT cd.* FROM " + DatabaseHelper.TABLE_CART_DETAIL_NAME + " cd "
                     + "INNER JOIN " + DatabaseHelper.TABLE_CART_NAME + " c ON c." + DatabaseHelper.ID_FIELD + " = cd." + DatabaseHelper.CART_DETAIL_CART_FIELD
-                    + " WHERE c." + DatabaseHelper.ID_FIELD + " = ?", new String[]{String.valueOf(cartId)});
+                    + " WHERE c." + DatabaseHelper.ID_FIELD + " = ?" +
+                    " AND cd." + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(cartId)});
 
             if (cursor != null && cursor.moveToFirst()) {
                 do {
@@ -99,7 +100,8 @@ public class CartDetailDao extends BaseDao {
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_CART_DETAIL_NAME
                     + " WHERE " + DatabaseHelper.CART_DETAIL_CART_FIELD + " = ?"
-                    + " AND " + DatabaseHelper.CART_DETAIL_FOOD_FIELD + " = ?", new String[]{String.valueOf(cartId), String.valueOf(foodId)});
+                    + " AND " + DatabaseHelper.CART_DETAIL_FOOD_FIELD + " = ?" +
+                    " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(cartId), String.valueOf(foodId)});
 
             if (cursor.getCount() > 0) {
                 return true;
@@ -124,7 +126,8 @@ public class CartDetailDao extends BaseDao {
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_CART_DETAIL_NAME
                     + " WHERE " + DatabaseHelper.CART_DETAIL_CART_FIELD + " = ?"
-                    + " AND " + DatabaseHelper.CART_DETAIL_FOOD_FIELD + " = ?", new String[]{String.valueOf(cartId), String.valueOf(foodId)});
+                    + " AND " + DatabaseHelper.CART_DETAIL_FOOD_FIELD + " = ?" +
+                    " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(cartId), String.valueOf(foodId)});
 
             if (cursor != null && cursor.moveToFirst()) {
                 cartDetail = getCartDetailInfo(cursor);

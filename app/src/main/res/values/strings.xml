@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Food_Order_Final</string>
     <string name="invalid_username">Tên đăng nhập không được để trống</string>
+    <string name="invalid_username_length">Tên đăng nhập quá ngắn</string>
     <string name="invalid_phone">Số điện thoại không hợp lệ</string>
     <string name="invalid_email">Email không hợp lệ</string>
     <string name="invalid_fullname">Họ và Tên không được để trống</string>

@@ -63,7 +63,8 @@ public class RestaurantCategoryDao extends BaseDao{
         boolean result = false;
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_CATEGORY_NAME
-                            + " WHERE " + DatabaseHelper.RESTAURANT_CATEGORY_NAME_FIELD + " = ?",
+                            + " WHERE " + DatabaseHelper.RESTAURANT_CATEGORY_NAME_FIELD + " = ?" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{resCateName});
             if (cursor.moveToFirst())
                 result = true;
@@ -81,7 +82,7 @@ public class RestaurantCategoryDao extends BaseDao{
         ArrayList<RestaurantCategory> resCategories = new ArrayList<>();
 
         try {
-            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_CATEGORY_NAME,
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_CATEGORY_NAME + " WHERE " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     null);
             if (cursor != null && cursor.moveToFirst()) {
                 do {
@@ -103,7 +104,8 @@ public class RestaurantCategoryDao extends BaseDao{
         Cursor cursor = null;
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_CATEGORY_NAME
-                            + " WHERE " + DatabaseHelper.ID_FIELD + " = ?",
+                            + " WHERE " + DatabaseHelper.ID_FIELD + " = ?" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{String.valueOf(resCateId)});
             if (cursor != null && cursor.moveToFirst()) {
                 resCate = getResCateInfo(cursor);
@@ -124,7 +126,8 @@ public class RestaurantCategoryDao extends BaseDao{
         Cursor cursor = null;
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_RESTAURANT_CATEGORY_NAME
-                            + " WHERE " + DatabaseHelper.RESTAURANT_CATEGORY_NAME_FIELD + " = ?",
+                            + " WHERE " + DatabaseHelper.RESTAURANT_CATEGORY_NAME_FIELD + " = ?" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{resCateName});
             if (cursor != null && cursor.moveToFirst()) {
                 resCate = getResCateInfo(cursor);

@@ -88,10 +88,12 @@ public class FoodDao extends BaseDao{
 
     public void deleteFood(int foodId) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseHelper.ACTIVE_FIELD, false);
         String whereClause = DatabaseHelper.ID_FIELD + " = ?";
         String[] whereArgs = new String[]{String.valueOf(foodId)};
 
-        db.delete(DatabaseHelper.TABLE_FOOD_NAME, whereClause, whereArgs);
+        db.update(DatabaseHelper.TABLE_FOOD_NAME, contentValues, whereClause, whereArgs);
         db.close();
     }
 
@@ -102,7 +104,8 @@ public class FoodDao extends BaseDao{
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_NAME
                             + " WHERE " + DatabaseHelper.FOOD_NAME_FIELD + " = ? "
-                            + " AND " + DatabaseHelper.FOOD_RESTAURANT_FIELD + " = ? ",
+                            + " AND " + DatabaseHelper.FOOD_RESTAURANT_FIELD + " = ? "
+                            + " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1 ",
                     new String[]{foodName, String.valueOf(res.getId())});
             if (cursor.moveToFirst()) {
                 result = true;
@@ -120,7 +123,8 @@ public class FoodDao extends BaseDao{
         Cursor cursor = null;
         List<Food> foods = new ArrayList<>();
         try {
-            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_NAME, null);
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_NAME +
+                    " WHERE " + DatabaseHelper.ACTIVE_FIELD + " = 1", null);
             if (cursor.moveToFirst()) {
                 do {
                     foods.add(getFoodInfo(cursor));
@@ -211,7 +215,8 @@ public class FoodDao extends BaseDao{
         try {
             cursor = db.rawQuery("SELECT AVG(" + DatabaseHelper.RATING_FIELD
                             + ") AS averageRating FROM " + DatabaseHelper.TABLE_REVIEW_FOOD_NAME
-                            + " WHERE " + DatabaseHelper.REVIEW_FOOD_FIELD + " = ?",
+                            + " WHERE " + DatabaseHelper.REVIEW_FOOD_FIELD + " = ?" +
+                            " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{String.valueOf(foodId)});
             if (cursor.moveToFirst()) {
                 ContentValues contentValues = new ContentValues();
@@ -239,7 +244,8 @@ public class FoodDao extends BaseDao{
         Cursor cursor = null;
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_NAME
-                    + " WHERE " + DatabaseHelper.ID_FIELD + " = ?", new String[]{String.valueOf(foodId)});
+                    + " WHERE " + DatabaseHelper.ID_FIELD + " = ?"
+                    + " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(foodId)});
 
             if (cursor != null && cursor.moveToFirst()) {
                 food = getFoodInfo(cursor);
@@ -263,7 +269,9 @@ public class FoodDao extends BaseDao{
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_NAME
-                            + " WHERE " + DatabaseHelper.FOOD_NAME_FIELD + " LIKE ?",
+                            + " WHERE " + DatabaseHelper.FOOD_NAME_FIELD + " LIKE ?"
+                            + " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
+
                     new String[]{"%" + foodName + "%"});
 
             if (cursor != null && cursor.moveToFirst()) {
@@ -288,7 +296,8 @@ public class FoodDao extends BaseDao{
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_NAME
-                            + " WHERE " + DatabaseHelper.FOOD_NAME_FIELD + " = ?",
+                            + " WHERE " + DatabaseHelper.FOOD_NAME_FIELD + " = ?"
+                            + " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{foodName});
 
             if (cursor != null && cursor.moveToFirst()) {
@@ -310,7 +319,8 @@ public class FoodDao extends BaseDao{
 
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_NAME +
-                            " WHERE " + DatabaseHelper.FOOD_RESTAURANT_FIELD + " = ?",
+                            " WHERE " + DatabaseHelper.FOOD_RESTAURANT_FIELD + " = ?"
+                            + " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1",
                     new String[]{String.valueOf(resId)});
 
             if (cursor != null && cursor.moveToFirst()) {
@@ -336,7 +346,8 @@ public class FoodDao extends BaseDao{
             cursor = db.rawQuery("SELECT f.* FROM " + DatabaseHelper.TABLE_CART_NAME + " c " +
                     "INNER JOIN " + DatabaseHelper.TABLE_CART_DETAIL_NAME + " cd ON c." + DatabaseHelper.ID_FIELD + " = cd." + DatabaseHelper.CART_DETAIL_CART_FIELD + " " +
                     "INNER JOIN " + DatabaseHelper.TABLE_FOOD_NAME + " f ON cd." + DatabaseHelper.CART_DETAIL_FOOD_FIELD + " = f." + DatabaseHelper.ID_FIELD + " " +
-                    "WHERE c." + DatabaseHelper.ID_FIELD + " = ?", new String[]{String.valueOf(cartId)});
+                    "WHERE c." + DatabaseHelper.ID_FIELD + " = ?"
+                    + " AND f." + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(cartId)});
 
             if (cursor != null && cursor.moveToFirst()) {
                 do {

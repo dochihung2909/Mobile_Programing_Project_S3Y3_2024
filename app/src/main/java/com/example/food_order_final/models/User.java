@@ -79,6 +79,20 @@ public class User extends Base{
         this.avatar = avatar;
     }
 
+    public User(User user) {
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.phoneNumber = user.getPhoneNumber();
+        this.email = user.getEmail();
+        this.fullName = user.getFullName();
+        this.password = user.getPassword();
+        this.role = user.getRole();
+        this.avatar = user.getAvatar();
+        this.setActived(user.getActived());
+        this.setCreatedDate(user.getCreatedDate());
+        this.setUpdatedDate(user.getUpdatedDate());
+    }
+
 
     public int getId() {
         return id;
