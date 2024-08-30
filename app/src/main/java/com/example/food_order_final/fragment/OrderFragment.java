@@ -115,7 +115,7 @@ public class OrderFragment extends Fragment {
         DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
 
         ArrayList<String> paymentStatuses = new ArrayList<>();
-
+        paymentStatuses.add("Tất cả");
         for (PaymentStatus paymentStatus : PaymentStatus.values()) {
             paymentStatuses.add(paymentStatus.name());
         }
@@ -127,7 +127,11 @@ public class OrderFragment extends Fragment {
         spOrderStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                updateUI(PaymentStatus.fromStatus(position));
+                if (position == 0) {
+                    updateUI();
+                } else {
+                    updateUI(PaymentStatus.fromStatus(position - 1));
+                }
             }
 
             @Override
@@ -187,6 +191,48 @@ public class OrderFragment extends Fragment {
 
                 paymentsContainer.addView(paymentHistoryView);
             }
+        }
+    }
+
+    private void updateUI() {
+        DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
+        paymentsContainer.removeAllViews();
+        List<PaymentPending> paymentPendings = dbHelper.paymentPendingDao.getPaymentHistoryByUserId(currentUser.getId());
+        for (PaymentPending paymentPending: paymentPendings) {
+            PaymentHistoryView paymentHistoryView = new PaymentHistoryView(getActivity());
+            paymentHistoryView.setTvPaymentStatus(PaymentStatus.getNameFromStatus(paymentPending.getPaymentStatus().getStatus()));
+            Restaurant restaurant = paymentPending.getCart().getRestaurant();
+            LinearLayout foodsContainer = paymentHistoryView.findViewById(R.id.foodsContainer);
+            Cart cart = paymentPending.getCart();
+            Toast.makeText(getActivity(), "" + cart.getId(), Toast.LENGTH_SHORT).show();
+            List<CartDetail> cartDetails = dbHelper.cartDetailDao.getAllCartDetailInCart(cart.getId());
+            Toast.makeText(getActivity(), "" + cartDetails.size(), Toast.LENGTH_SHORT).show();
+            for (CartDetail cartDetail: cartDetails) {
+                FoodOrderCardView foodOrderCardView = new FoodOrderCardView(getActivity());
+                foodOrderCardView.setFoodQuantityOrder(cartDetail.getQuantity() + "x");
+                Food food = cartDetail.getFood();
+                foodOrderCardView.setTvFoodDescription(food.getDescription());
+                foodOrderCardView.setTvFoodName(food.getName());
+                foodOrderCardView.setTvFoodDiscountPrice(PriceUtil.formatNumber(food.getPrice()) + "đ");
+                foodOrderCardView.setIvFoodAvatar(cartDetail.getFood().getAvatar());
+
+                foodsContainer.addView(foodOrderCardView);
+            }
+            paymentHistoryView.setTvRestaurantName(restaurant.getName());
+            paymentHistoryView.setTvPaymentTotal(PriceUtil.formatNumber(paymentPending.getTotal()) + "đ");
+            int totalDishes = dbHelper.cartDao.getTotalDishes(cart.getId());
+            paymentHistoryView.setTvPaymentFoodQuantity(totalDishes + " món");
+
+            paymentHistoryView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), OrderActivity.class);
+                    intent.putExtra("paymentPendingId", paymentPending.getId());
+                    startActivityForResult(intent, REQUEST_CHANGE_STATUS_PAYMENT);
+                }
+            });
+
+            paymentsContainer.addView(paymentHistoryView);
         }
     }
 

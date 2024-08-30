@@ -267,8 +267,7 @@ public class FoodDao extends BaseDao{
         Cursor cursor = null;
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_NAME
-                    + " WHERE " + DatabaseHelper.ID_FIELD + " = ?"
-                    + " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(foodId)});
+                    + " WHERE " + DatabaseHelper.ID_FIELD + " = ?", new String[]{String.valueOf(foodId)});
 
             if (cursor != null && cursor.moveToFirst()) {
                 food = getFoodInfo(cursor);
