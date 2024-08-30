@@ -92,7 +92,6 @@ public class AdminReviewFoodAdapter extends ArrayAdapter<ReviewFood> {
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         dbHelper.reviewFoodDao.deleteReview(reviewFood.getId());
         ((AdminReviewFoodManagement) context).loadAllReviews();
-        Toast.makeText(context, "Review deleted", Toast.LENGTH_SHORT).show();
     }
 
 }

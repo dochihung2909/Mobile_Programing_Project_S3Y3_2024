@@ -98,7 +98,6 @@ public class RestaurantActivity extends AppCompatActivity {
 
         restaurantId = getIntent().getIntExtra("restaurant", 0);
 
-        Toast.makeText(this, "" + restaurantId, Toast.LENGTH_SHORT).show();
 //
         if (restaurantId != 0) {
             dbhelper = new DatabaseHelper(RestaurantActivity.this);

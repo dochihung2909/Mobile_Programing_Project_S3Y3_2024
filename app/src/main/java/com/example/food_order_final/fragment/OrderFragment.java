@@ -111,7 +111,6 @@ public class OrderFragment extends Fragment {
 
         SharedPreferences pref = getActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         String username = pref.getString("username", "Guest");
-        Toast.makeText(getActivity(), "" + username, Toast.LENGTH_SHORT).show();
         DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
 
         ArrayList<String> paymentStatuses = new ArrayList<>();

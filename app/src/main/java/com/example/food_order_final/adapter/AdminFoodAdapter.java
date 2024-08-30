@@ -75,7 +75,6 @@ public class AdminFoodAdapter extends ArrayAdapter<Food> {
     private void deleteFood(Food food) {
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         dbHelper.foodDao.deleteFood(food.getId());
-        ((AdminFoodManagement) context).loadFoods();
-        Toast.makeText(context, "Food deleted", Toast.LENGTH_SHORT).show();
+        ((AdminFoodManagement) context).loadFoods(); 
     }
 }

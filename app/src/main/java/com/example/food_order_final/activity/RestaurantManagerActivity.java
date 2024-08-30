@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,8 +35,9 @@ import com.example.food_order_final.util.PriceUtil;
 public class RestaurantManagerActivity extends AppCompatActivity {
 
     private ImageButton btnBack;
+    private RatingBar ratingBar;
     private ImageView ivRestaurantAvatar;
-    private TextView tvRestaurantName;
+    private TextView tvRestaurantName, tvRestaurantTime;
     private LinearLayout restaurantRatingContainer;
     private Button btnRestaurantStatistical, btnEditRestaurantInfo, btnFoodManager, btnCheckOrder, btnEmployeeManager, btnLogout;
     private int REQUEST_EDIT_RESTAURANT_INFO = 202;
@@ -66,7 +69,6 @@ public class RestaurantManagerActivity extends AppCompatActivity {
         });
         this.ownerId = getIntent().getIntExtra("restaurantOwnerId", -1);
         this.employeeId = getIntent().getIntExtra("employeeId", -1);
-        Toast.makeText(this, "" + employeeId, Toast.LENGTH_SHORT).show();
         currentUser = dbHelper.employeeDao.getEmployeeByUserId(employeeId);
         RestaurantDao restaurantDao = new RestaurantDao(dbHelper, new RestaurantCategoryDao(dbHelper));
         if (ownerId != -1 || employeeId != -1) {
@@ -83,6 +85,14 @@ public class RestaurantManagerActivity extends AppCompatActivity {
             updateUI();
 
             if (restaurant != null) {
+                if (restaurant.getRating() > 0) {
+                    ratingBar.setRating((float) restaurant.getRating());
+                } else {
+                    ratingBar.setVisibility(View.GONE);
+                }
+
+                tvRestaurantTime.setText(restaurant.getAddress());
+
                 btnEmployeeManager.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -178,6 +188,9 @@ public class RestaurantManagerActivity extends AppCompatActivity {
         btnCheckOrder = findViewById(R.id.btnCheckOrder);
         btnEmployeeManager = findViewById(R.id.btnEmployeeManager);
         btnLogout = findViewById(R.id.btnLogout);
+        tvRestaurantTime = findViewById(R.id.tvRestaurantTime);
+        ratingBar = findViewById(R.id.ratingBar);
+
     }
 
     private void updateUI() {

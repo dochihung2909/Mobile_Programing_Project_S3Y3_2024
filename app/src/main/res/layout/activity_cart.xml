@@ -62,7 +62,8 @@
                 android:text="75.000đ"
                 android:layout_gravity="right"
                 android:textColor="@color/textSecondaryColor"
-                android:id="@+id/tvFoodDefaultPrice"/>
+                android:id="@+id/tvFoodDefaultPrice"
+                android:visibility="gone"/>
 
             <TextView
                 android:layout_width="wrap_content"

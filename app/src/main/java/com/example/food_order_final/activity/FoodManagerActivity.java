@@ -100,7 +100,6 @@ public class FoodManagerActivity extends AppCompatActivity {
 
     private void loadUI() {
         List<Food> foods = dbHelper.foodDao.getFoodsByRestaurantId(restaurantId);
-        Toast.makeText(this, "" + foods.size(), Toast.LENGTH_SHORT).show();
         if (foods.size() > 0) {
             foodsContainer.removeAllViews();
             for (Food food: foods) {

@@ -68,6 +68,5 @@ public class AdminResCateAdapter extends ArrayAdapter<RestaurantCategory> {
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         dbHelper.resCateDao.deleteRestaurantCategory(resCate.getId());
         ((AdminResCateManagement) context).loadCategories();
-        Toast.makeText(context, "Category deleted", Toast.LENGTH_SHORT).show();
     }
 }

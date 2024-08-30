@@ -48,6 +48,7 @@ public class CartActivity extends AppCompatActivity {
     private Button btnOrderSubmit;
     private ImageButton btnBackToMain;
     private DatabaseHelper dbHelper;
+    private double discount;
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +67,6 @@ public class CartActivity extends AppCompatActivity {
 
 
         if (cartId != 0) {
-            Toast.makeText(CartActivity.this, "" + cartId, Toast.LENGTH_LONG).show();
             CartDetailDao cartDetailDao = new CartDetailDao(dbHelper);
             List<CartDetail> cartDetails = cartDetailDao.getAllCartDetailInCart(cartId);
             CartDao cartDao = new CartDao(dbHelper);
@@ -78,6 +78,7 @@ public class CartActivity extends AppCompatActivity {
                 foodCardView.findViewById(R.id.layoutInCart).setVisibility(FoodCardView.VISIBLE);
                 foodCardView.findViewById(R.id.btnAddToCart).setVisibility(FoodCardView.GONE);
                 if (food.getDiscount() > 0) {
+                    discount += food.getDiscount();
                     TextView defaulPrice = foodCardView.findViewById(R.id.tvFoodDefaultPrice);
                     defaulPrice.setVisibility(View.VISIBLE);
                     defaulPrice.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
@@ -90,11 +91,17 @@ public class CartActivity extends AppCompatActivity {
                 foodCardView.setQuantity(cartDetail.getQuantity());
                 TextView btnMinusQuantity = foodCardView.findViewById(R.id.btnMinus);
 
-                totalAmount = cartDao.getTotalAmountByCartId(cartId);
-                tvFoodDiscountPrice.setText(formatNumber(totalAmount) + "đ");
+                int numberSold = dbHelper.foodDao.getNumberSold(food.getId());
+                foodCardView.setIvFoodAvatar(food.getAvatar());
+                foodCardView.setTvFoodSold(numberSold + " đã bán");
+                double foodRating = food.getRating();
 
 
-                Toast.makeText(CartActivity.this, "" + foodCardView.getQuantity(), Toast.LENGTH_SHORT).show();
+
+                DecimalFormat df = new DecimalFormat("#.#");
+                foodCardView.setTvFoodLiked( df.format(foodRating));
+
+
                 btnMinusQuantity.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -143,23 +150,31 @@ public class CartActivity extends AppCompatActivity {
 
                 foodsContainer.addView(foodCardView);
 
-                btnBackToMain.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        finish();
-                    }
-                });
-
-                btnOrderSubmit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(CartActivity.this, OrderActivity.class);
-                        intent.putExtra("cartId", cartId);
-                        startActivity(intent);
-                    }
-                });
             }
 
+            btnOrderSubmit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(CartActivity.this, OrderActivity.class);
+                    intent.putExtra("cartId", cartId);
+                    startActivity(intent);
+                }
+            });
+
+            btnBackToMain.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+
+            totalAmount = cartDao.getTotalAmountByCartId(cartId);
+            tvFoodDiscountPrice.setText(formatNumber(totalAmount) + "đ");
+            if (discount > 0) {
+                tvFoodDefaultPrice.setVisibility(View.VISIBLE);
+                tvFoodDefaultPrice.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+                tvFoodDefaultPrice.setText(formatNumber(totalAmount - discount) + "đ");
+            }
         }
     }
 

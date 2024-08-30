@@ -69,6 +69,5 @@ public class AdminUserAdapter extends ArrayAdapter<User> {
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         dbHelper.userDao.deleteUser(user.getId());
         ((AdminUserManagement) context).loadAllUsers();
-        Toast.makeText(context, "User deleted", Toast.LENGTH_SHORT).show();
     }
 }

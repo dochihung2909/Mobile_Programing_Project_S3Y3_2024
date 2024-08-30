@@ -68,6 +68,5 @@ public class AdminFoodCateAdapter extends ArrayAdapter<FoodCategory> {
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         dbHelper.foodCateDao.deleteFoodCategory(foodCate.getId());
         ((AdminFoodCateManagement) context).loadCategories();
-        Toast.makeText(context, "Category deleted", Toast.LENGTH_SHORT).show();
     }
 }

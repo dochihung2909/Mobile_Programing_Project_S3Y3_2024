@@ -101,7 +101,6 @@ public class OrderActivity extends AppCompatActivity implements LocationListener
         paymentPendingId = getIntent().getIntExtra("paymentPendingId", -1);
         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         String currentUserRole = sharedPreferences.getString("currentUserRole", "None");
-        Toast.makeText(this, "" + currentUserRole, Toast.LENGTH_SHORT).show();
         String currentUsername = sharedPreferences.getString("username", "Guest");
 
         if (paymentPendingId != -1) {
@@ -153,7 +152,6 @@ public class OrderActivity extends AppCompatActivity implements LocationListener
             tvRestaurantName.setText(restaurant.getName());
             finalTotalPrice = totalDishAmount + shipPrice;
             tvFinalTotalPrice.setText(PriceUtil.formatNumber(finalTotalPrice) + "đ");
-            Toast.makeText(this, "" + cartDetails.size(), Toast.LENGTH_SHORT).show();
             if (cartDetails.size() > 1) {
                 btnShowAllFood.setVisibility(View.VISIBLE);
             }

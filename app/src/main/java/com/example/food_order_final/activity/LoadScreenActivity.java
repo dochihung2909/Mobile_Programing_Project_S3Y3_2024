@@ -50,7 +50,6 @@ public class LoadScreenActivity extends AppCompatActivity {
                     startActivity(intent);
                 } else {
                     Intent intent = new Intent(LoadScreenActivity.this, RestaurantManagerActivity.class);
-                    Toast.makeText(this, "" + user.getId(), Toast.LENGTH_LONG).show();
                     intent.putExtra("employeeId", user.getId());
                     startActivity(intent);
                 }

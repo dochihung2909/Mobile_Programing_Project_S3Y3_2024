@@ -286,7 +286,6 @@ public class EditRestaurantActivity extends AppCompatActivity {
                 setResult(RESULT_OK, returnIntent);
                 finish();
             } else {
-
                 Toast.makeText(EditRestaurantActivity.this, "Update Fail", Toast.LENGTH_SHORT).show();
             }
         }
