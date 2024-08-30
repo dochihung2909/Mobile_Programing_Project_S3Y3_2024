@@ -169,7 +169,7 @@ public class AdminUserDetail extends AppCompatActivity {
                 .setTitle("Xác nhận xóa")
                 .setMessage("Bạn có chắc muốn xóa người dùng này?")
                 .setPositiveButton("Xóa", (dialog, which) -> {
-                    dbHelper.userDao.deleteUser(selectedUser.getId());
+                    dbHelper.userDao.deleteUserHard(selectedUser.getId());
                     Toast.makeText(AdminUserDetail.this, "Xóa thành công", Toast.LENGTH_SHORT).show();
                     finish();
                 })

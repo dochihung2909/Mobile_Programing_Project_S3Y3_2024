@@ -219,6 +219,17 @@ public class UserDao extends BaseDao{
         } return true;
     }
 
+    public boolean deleteUserHard(int userId) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String whereClause = DatabaseHelper.ID_FIELD + " = ?";
+        String[] whereArgs = new String[]{String.valueOf(userId)};
+        long update = db.delete(DatabaseHelper.TABLE_USER_NAME, whereClause, whereArgs);
+        db.close();
+        if (update == -1) {
+            return false;
+        } return true;
+    }
+
     public boolean hasRestaurant(int userId) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = null;

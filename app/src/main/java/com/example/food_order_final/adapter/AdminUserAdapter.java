@@ -67,7 +67,7 @@ public class AdminUserAdapter extends ArrayAdapter<User> {
 
     private void deleteUser(User user) {
         DatabaseHelper dbHelper = new DatabaseHelper(context);
-        dbHelper.userDao.deleteUser(user.getId());
+        dbHelper.userDao.deleteUserHard(user.getId());
         ((AdminUserManagement) context).loadAllUsers();
     }
 }
