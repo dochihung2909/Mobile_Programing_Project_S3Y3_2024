@@ -134,6 +134,31 @@ public class PaymentPendingDao extends BaseDao{
         return true;
     }
 
+    public double getTotalRevenueOfRestaurantId(int restaurantId) {
+        Cursor cursor = null;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        double totalRevenue = 0;
+        try {
+            cursor = db.rawQuery("SELECT SUM(cd." + DatabaseHelper.CART_DETAIL_QUANTITY_FIELD +" * cd."+ DatabaseHelper.CART_DETAIL_PRICE_FIELD +")  FROM " + DatabaseHelper.TABLE_PAYMENT_PENDING_NAME
+                    + " p inner join " + DatabaseHelper.TABLE_CART_NAME + " c on c." + DatabaseHelper.ID_FIELD + " = p." + DatabaseHelper.PAYMENT_PENDING_CART
+                    + " inner join " + DatabaseHelper.TABLE_CART_DETAIL_NAME + " cd on cd." + DatabaseHelper.CART_DETAIL_CART_FIELD + " = c." + DatabaseHelper.ID_FIELD
+                    + " WHERE p." + DatabaseHelper.PAYMENT_PENDING_STATUS + " in (4,6)"
+                    + " AND c." + DatabaseHelper.CART_RESTAURANT_FIELD + " = ?", new String[]{String.valueOf(restaurantId)});
+            if (cursor.moveToFirst()) {
+                totalRevenue = cursor.getDouble(0);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return totalRevenue;
+    }
+
     public PaymentPending getPaymentPendingInfo(Cursor cursor) {
         int id = getInt(cursor, DatabaseHelper.ID_FIELD);
         int methodId = getInt(cursor, DatabaseHelper.PAYMENT_PENDING_METHOD);
