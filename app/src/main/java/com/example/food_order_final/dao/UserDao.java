@@ -367,6 +367,29 @@ public class UserDao extends BaseDao{
         return users;
     }
 
+    public List<User> getAllUsersAdmin() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        List<User> users = new ArrayList<>();
+
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_USER_NAME,
+                    null);
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+
+                    users.add(getUserInfo(cursor));
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+
+        return users;
+    }
+
     public List<User> getUsersByUsername(String name) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = null; 

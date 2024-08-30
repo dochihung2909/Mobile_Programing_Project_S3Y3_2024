@@ -97,7 +97,9 @@ public class CartDao extends BaseDao {
         Cursor cursor = null;
         long total = 0;
         try {
-            cursor = db.rawQuery("SELECT COUNT(*) AS total FROM " + DatabaseHelper.TABLE_CART_NAME, null);
+            cursor = db.rawQuery("SELECT COUNT(*) AS total FROM " + DatabaseHelper.TABLE_CART_NAME +
+                    " WHERE " + DatabaseHelper.ACTIVE_FIELD + " = 1",
+                    null);
             if (cursor.moveToFirst()) {
                 total = getLong(cursor, "total");
             }
@@ -114,7 +116,10 @@ public class CartDao extends BaseDao {
         Cursor cursor = null;
         double total = 0;
         try {
-            cursor = db.rawQuery("SELECT *  FROM " + DatabaseHelper.TABLE_CART_NAME, null);
+            cursor = db.rawQuery("SELECT *  FROM " + DatabaseHelper.TABLE_CART_NAME +
+                    " WHERE " + DatabaseHelper.ACTIVE_FIELD + " = 1" +
+                    " AND " + DatabaseHelper.CART_STATUS + " = 1", null);
+
             if (cursor.moveToFirst()) {
                 do {
                     int cartId = getInt(cursor, DatabaseHelper.ID_FIELD);

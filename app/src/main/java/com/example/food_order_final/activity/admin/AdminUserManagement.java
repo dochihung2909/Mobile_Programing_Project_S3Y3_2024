@@ -107,7 +107,7 @@ public class AdminUserManagement extends AppCompatActivity {
 
     public void loadAllUsers() {
         dbHelper = new DatabaseHelper(this);
-        List<User> users = dbHelper.userDao.getAllUsers();
+        List<User> users = dbHelper.userDao.getAllUsersAdmin();
         AdminUserAdapter adapter = new AdminUserAdapter(this, users);
         lvAdminUser.setAdapter(adapter);
     }

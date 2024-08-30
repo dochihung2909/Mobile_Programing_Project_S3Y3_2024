@@ -133,7 +133,8 @@
                     android:hint="Password"
                     android:layout_marginTop="16dp"
                     app:startIconDrawable="@drawable/baseline_password_24"
-                    android:visibility="visible">
+                    android:visibility="visible"
+                    app:passwordToggleEnabled="true">
 
                     <EditText
                         android:id="@+id/edtEditUserPassword"
