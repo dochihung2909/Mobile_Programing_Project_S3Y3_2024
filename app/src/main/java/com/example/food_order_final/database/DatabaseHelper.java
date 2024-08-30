@@ -241,7 +241,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String sqlCart = "CREATE TABLE " + TABLE_CART_NAME + " (" +
                 ID_FIELD + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-//                CART_ORDER_DATE + " TIMESTAMP, " +
                 CART_USER_FIELD + " INTEGER, " +
                 CART_RESTAURANT_FIELD + " INTEGER, " +
                 CART_STATUS + " INTEGER, " +
@@ -481,10 +480,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         userDao.insertUser(new User("phanvanq", "0898765433", "phanvanq@gmail.com",
                 "Phan Văn Quân", "admin@12345", ownerRole,
                 "https://img.freepik.com/free-photo/androgynous-avatar-non-binary-queer-person_23-2151100270.jpg?size=338&ext=jpg&ga=GA1.1.2008272138.1724630400&semt=ais_hybrid"));
-        userDao.insertUser(new User("vuongthanh", "0876543211", "vuongthanh@gmail.com",
+        userDao.insertUser(new User("vuongthanh", "0943745285", "vuongthanh@gmail.com",
                 "Vương Thành", "admin@12345", ownerRole,
                 "https://cdn1.iconfinder.com/data/icons/user-pictures/101/malecostume-512.png"));
-        userDao.insertUser(new User("daohoang", "0865432110", "daohoang@gmail.com",
+        userDao.insertUser(new User("daohoang", "0357462857", "daohoang@gmail.com",
                 "Đào Hoàng Nam", "admin@12345", userRole,
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIJxOLfDct_vEPdS-6OsRnS-kDl_HCv5nI2A&s"));
         userDao.insertUser(new User("ngoanguyen", "0854321099", "ngoanguyen@gmail.com",

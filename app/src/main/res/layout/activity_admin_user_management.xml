@@ -32,28 +32,48 @@
             android:textSize="28dp"
             android:textColor="@color/black"
             android:layout_gravity="center"/>
-
-        <Button
-            android:id="@+id/btnAdminAddUser"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="+"
-            android:textSize="32dp"
-            android:textColor="@color/black"
-            android:backgroundTint="@color/primaryColor"
-            android:layout_gravity="end"/>
     </Toolbar>
 
-    <Spinner
-        android:id="@+id/spnAdminUserRole"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <ListView
-        android:id="@+id/lvAdminUser"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:dividerHeight="2dp"
-        android:divider="@color/quantum_grey300"/>
+        android:orientation="vertical"
+        android:layout_marginTop="8dp">
+        <Spinner
+            android:id="@+id/spnAdminUserRole"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginHorizontal="16dp">
+            <LinearLayout
+                android:id="@+id/btnAdminAddUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_gravity="end"
+                android:paddingVertical="4dp">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_add"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Thêm người dùng"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/lvAdminUser"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@color/quantum_grey300"
+            android:dividerHeight="2dp"/>
+    </LinearLayout>
 
 </LinearLayout>

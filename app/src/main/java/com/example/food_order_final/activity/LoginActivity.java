@@ -3,6 +3,7 @@ package com.example.food_order_final.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -54,6 +55,9 @@ public class LoginActivity extends AppCompatActivity {
 
                     String username = String.valueOf(etUsername.getText());
                     String password = String.valueOf(etPassword.getText());
+                    Log.d("LOGIN ACTIVITY", "Username: " + username);
+                    Log.d("LOGIN ACTIVITY", "Password: " + password);
+                    Log.d("LOGIN ACTIVITY", "Check: " + dbHelper.userDao.isUserCredential(username, password));
 
                     if (dbHelper.userDao.isUserCredential(username, password)){
                         Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();

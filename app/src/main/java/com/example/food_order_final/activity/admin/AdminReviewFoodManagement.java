@@ -61,7 +61,7 @@ public class AdminReviewFoodManagement extends AppCompatActivity {
         lvAdminReviewFood = findViewById(R.id.lvAdminReviewFood);
     }
 
-    private void loadAllReviews() {
+    public void loadAllReviews() {
         List<ReviewFood> reviewFoodList = dbHelper.reviewFoodDao.getAllReviews();
         AdminReviewFoodAdapter adapter = new AdminReviewFoodAdapter(this, reviewFoodList);
         lvAdminReviewFood.setAdapter(adapter);

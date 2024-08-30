@@ -2,9 +2,13 @@ package com.example.food_order_final.activity.admin;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,13 +20,16 @@ import com.example.food_order_final.R;
 import com.example.food_order_final.adapter.AdminFoodAdapter;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Food;
+import com.example.food_order_final.models.FoodCategory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdminFoodManagement extends AppCompatActivity {
     private ImageButton btnBackToMain;
     private Button btnAdminAddFood;
     private ListView lvAdminFood;
+    private Spinner spnAdminFoodCate;
     private DatabaseHelper dbHelper;
 
     @Override
@@ -33,6 +40,7 @@ public class AdminFoodManagement extends AppCompatActivity {
 
         dbHelper = new DatabaseHelper(this);
         initWidgets();
+        loadCategories();
         loadFoods();
         setOnClickListener();
 
@@ -56,19 +64,56 @@ public class AdminFoodManagement extends AppCompatActivity {
             startActivity(intent);
         });
 
+        spnAdminFoodCate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedCategory = (String) parent.getItemAtPosition(position);
+                if (selectedCategory.equals("All Categories")) {
+                    loadFoods();
+                } else {
+                    loadFoodsByCategory(selectedCategory);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         btnBackToMain.setOnClickListener(v -> finish());
     }
 
-    private void loadFoods() {
+    public void loadFoods() {
         List<Food> foods = dbHelper.foodDao.getAllFoods();
         AdminFoodAdapter adapter = new AdminFoodAdapter(this, foods);
         lvAdminFood.setAdapter(adapter);
+    }
+
+    private void loadFoodsByCategory(String categoryName) {
+        dbHelper = new DatabaseHelper(this);
+        List<Food> foods = dbHelper.foodDao.getFoodsByCategory(categoryName);
+        AdminFoodAdapter adapter = new AdminFoodAdapter(this, foods);
+        lvAdminFood.setAdapter(adapter);
+    }
+
+    private void loadCategories() {
+        List<FoodCategory> foodCategories = dbHelper.foodCateDao.getAllFoodCategories();
+        List<String> foodCateNames = new ArrayList<>();
+        foodCateNames.add("All Categories");
+        for(FoodCategory foodCategory:foodCategories){
+            foodCateNames.add(foodCategory.getName());
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, foodCateNames);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnAdminFoodCate.setAdapter(adapter);
     }
 
     private void initWidgets() {
         btnBackToMain = findViewById(R.id.btnBackToMain);
         btnAdminAddFood = findViewById(R.id.btnAdminAddFood);
         lvAdminFood = findViewById(R.id.lvAdminFood);
+        spnAdminFoodCate = findViewById(R.id.spnAdminFoodCate);
 
         if (btnBackToMain == null || btnAdminAddFood == null || lvAdminFood == null) {
             throw new NullPointerException("One or more views were not found. Check your layout XML.");

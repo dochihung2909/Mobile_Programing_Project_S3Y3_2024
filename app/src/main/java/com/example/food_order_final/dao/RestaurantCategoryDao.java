@@ -30,18 +30,22 @@ public class RestaurantCategoryDao extends BaseDao{
     }
 
     public int updateRestaurantCategory(RestaurantCategory resCate){
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        boolean isCateExists = dbHelper.resCateDao.isCategoryNameExists(resCate.getName());
+        if (!isCateExists) {
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseHelper.RESTAURANT_CATEGORY_NAME_FIELD, resCate.getName());
-        contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(DatabaseHelper.RESTAURANT_CATEGORY_NAME_FIELD, resCate.getName());
+            contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
 
-        String whereClause = DatabaseHelper.ID_FIELD + " = ? ";
-        String[] whereArgs = new String[]{String.valueOf(resCate.getId())};
-        int rowAffected = db.update(DatabaseHelper.TABLE_RESTAURANT_CATEGORY_NAME, contentValues, whereClause, whereArgs);
+            String whereClause = DatabaseHelper.ID_FIELD + " = ? ";
+            String[] whereArgs = new String[]{String.valueOf(resCate.getId())};
+            int rowAffected = db.update(DatabaseHelper.TABLE_RESTAURANT_CATEGORY_NAME, contentValues, whereClause, whereArgs);
 
-        db.close();
-        return rowAffected;
+            db.close();
+            return rowAffected;
+        }
+        return -1;
     }
 
     public void deleteRestaurantCategory(int resCateId) {

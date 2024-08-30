@@ -61,7 +61,7 @@ public class AdminReviewResManagement extends AppCompatActivity {
         lvAdminReviewRes = findViewById(R.id.lvAdminReviewRes);
     }
 
-    private void loadAllReviews() {
+    public void loadAllReviews() {
         List<ReviewRestaurant> reviewRestaurantList = dbHelper.reviewRestaurantDao.getAllReviews();
         AdminReviewResAdapter adapter = new AdminReviewResAdapter(this, reviewRestaurantList);
         lvAdminReviewRes.setAdapter(adapter);

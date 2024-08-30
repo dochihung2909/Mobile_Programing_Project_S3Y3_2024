@@ -12,6 +12,7 @@ import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Food;
 import com.example.food_order_final.models.FoodCategory;
 import com.example.food_order_final.models.Restaurant;
+import com.example.food_order_final.models.User;
 import com.example.food_order_final.util.DateUtil;
 
 import java.util.ArrayList;
@@ -62,23 +63,27 @@ public class FoodDao extends BaseDao{
     }
 
     public int updateFood(Food food) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        boolean isFoodExists = dbHelper.foodDao.isFoodExists(food.getName(), food.getRestaurant());
+        if (!isFoodExists) {
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseHelper.FOOD_NAME_FIELD, food.getName());
-        contentValues.put(DatabaseHelper.FOOD_PRICE_FIELD, food.getPrice());
-        contentValues.put(DatabaseHelper.FOOD_DISCOUNT_FIELD, food.getDiscount());
-        contentValues.put(DatabaseHelper.FOOD_DESCRIPTION_FIELD, food.getDescription());
-        contentValues.put(DatabaseHelper.FOOD_AVATAR_FIELD, food.getAvatar());
-        contentValues.put(DatabaseHelper.FOOD_CATEGORY_FIELD, food.getCategory().getId());
-        contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(DatabaseHelper.FOOD_NAME_FIELD, food.getName());
+            contentValues.put(DatabaseHelper.FOOD_PRICE_FIELD, food.getPrice());
+            contentValues.put(DatabaseHelper.FOOD_DISCOUNT_FIELD, food.getDiscount());
+            contentValues.put(DatabaseHelper.FOOD_DESCRIPTION_FIELD, food.getDescription());
+            contentValues.put(DatabaseHelper.FOOD_AVATAR_FIELD, food.getAvatar());
+            contentValues.put(DatabaseHelper.FOOD_CATEGORY_FIELD, food.getCategory().getId());
+            contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
 
-        String whereClause = DatabaseHelper.ID_FIELD + " = ? ";
-        String[] whereArgs = new String[]{String.valueOf(food.getId())};
+            String whereClause = DatabaseHelper.ID_FIELD + " = ? ";
+            String[] whereArgs = new String[]{String.valueOf(food.getId())};
 
-        int rowAffected = db.update(DatabaseHelper.TABLE_FOOD_NAME, contentValues, whereClause, whereArgs);
-        db.close();
-        return rowAffected;
+            int rowAffected = db.update(DatabaseHelper.TABLE_FOOD_NAME, contentValues, whereClause, whereArgs);
+            db.close();
+            return rowAffected;
+        }
+        return -1;
     }
 
     public void deleteFood(int foodId) {
@@ -125,6 +130,39 @@ public class FoodDao extends BaseDao{
             if (cursor != null)
                 cursor.close();
             db.close();
+        }
+        return foods;
+    }
+
+    public List<Food> getFoodsByCategory(String categoryName) {
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        List<Food> foods = new ArrayList<>();
+
+        try {
+            db = dbHelper.getReadableDatabase();
+
+            String query = "SELECT * FROM " + DatabaseHelper.TABLE_FOOD_NAME +
+                    " INNER JOIN " + DatabaseHelper.TABLE_FOOD_CATEGORY_NAME +
+                    " ON " + DatabaseHelper.TABLE_FOOD_NAME + ".category = " + DatabaseHelper.TABLE_FOOD_CATEGORY_NAME + ".id" +
+                    " WHERE " + DatabaseHelper.TABLE_FOOD_CATEGORY_NAME + ".name = ?";
+            cursor = db.rawQuery(query, new String[]{categoryName});
+
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    Food food = getFoodInfo(cursor);
+                    foods.add(food);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null && db.isOpen()) {
+                db.close();
+            }
         }
         return foods;
     }

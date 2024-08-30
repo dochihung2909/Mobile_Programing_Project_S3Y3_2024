@@ -20,6 +20,18 @@
         android:theme="@style/Theme.Food_Order_Final"
         tools:targetApi="31">
         <activity
+            android:name=".activity.admin.AdminCartDetailEdit"
+            android:exported="false" />
+        <activity
+            android:name=".activity.admin.AdminCartDetail"
+            android:exported="false" />
+        <activity
+            android:name=".activity.admin.AdminCartManagement"
+            android:exported="false" />
+        <activity
+            android:name=".activity.admin.AdminReviewManagement"
+            android:exported="false" />
+        <activity
             android:name=".activity.RestaurantOrderManagementActivity"
             android:exported="false" />
         <activity

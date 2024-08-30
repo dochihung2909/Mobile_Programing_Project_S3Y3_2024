@@ -43,31 +43,60 @@ public class UserDao extends BaseDao{
         boolean isFullname = user.getFullName() != null || !user.getFullName().trim().isEmpty();
         boolean isPassword = user.getPassword().matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$");
         boolean isUserExist = dbHelper.userDao.checkUsername(user.getUsername());
+//        boolean isUserExist = dbHelper.userDao.checkUsernameExcludeUserId(user.getUsername(), user.getId());
 
         if (!isUsername || !isEmail || !isPhoneNumber || !isFullname || !isPassword) {
             if (isUserExist) {
                 Log.d(TAG, "Username " + user.getUsername() + " already exist!");
-//            throw new IllegalArgumentException("Invalid username: Username already exists.");
             }
-            if (!isUsername) {
+            else if (!isUsername) {
                 Log.d(TAG, "Username too short!");
-//            throw new IllegalArgumentException("Invalid username: Must be at least 3 non-whitespace characters.");
             }
-            if (!isEmail) {
+            else if (!isEmail) {
                 Log.d(TAG, "Email not valid!");
-//            throw new IllegalArgumentException("Invalid email address.");
             }
-            if (!isPhoneNumber) {
+            else if (!isPhoneNumber) {
                 Log.d(TAG, "Phone number not available!");
-//            throw new IllegalArgumentException("Invalid phone number format.");
             }
-            if (!isFullname) {
+            else if (!isFullname) {
                 Log.d(TAG, "Full name can not be null or contain only spaces!");
-//            throw new IllegalArgumentException("Full name can not be null or contain only spaces!");
             }
-            if (!isPassword) {
+            else {
                 Log.d(TAG, "Invalid password: Must be at least 8 characters, including letters, numbers, and special characters.");
-//            throw new IllegalArgumentException("Invalid password: Must be at least 8 characters, including letters, numbers, and special characters.");
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean validateUserNoPass(User user) {
+        if (user == null) {
+            Log.d(TAG, "User can not be null");
+            return false;
+        }
+        boolean isUsername = user.getUsername().matches("^[\\S]{3,}$");
+        boolean isEmail = user.getEmail().matches(String.valueOf(Patterns.EMAIL_ADDRESS));
+        boolean isPhoneNumber = user.getPhoneNumber().matches("^(\\+84|84|0)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5|8|9]|9[0-4|6-9])[0-9]{7}$");
+        boolean isFullname = user.getFullName() != null || !user.getFullName().trim().isEmpty();
+        boolean isUserExist = dbHelper.userDao.checkUsername(user.getUsername());
+
+        if (!isUsername || !isEmail || !isPhoneNumber || !isFullname) {
+            if (isUserExist) {
+                Log.d(TAG, "Username " + user.getUsername() + " already exist!");
+            }
+            else if (!isUsername) {
+                Log.d(TAG, "Username too short!");
+            }
+            else if (!isEmail) {
+                Log.d(TAG, "Email not valid!");
+            }
+            else if (!isPhoneNumber) {
+                Log.d(TAG, "Phone number not available!");
+            }
+            else if (!isFullname) {
+                Log.d(TAG, "Full name can not be null or contain only spaces!");
             }
 
             return false;
@@ -100,24 +129,11 @@ public class UserDao extends BaseDao{
 
         if (result == -1) {
             Log.e(TAG, "Failed to insert user into the database.");
-//            throw new IllegalArgumentException("Failed to insert user into the database.");
         } else {
             Log.d(TAG, "User inserted successfully with ID: " + result);
         }
 
         return result;
-    }
-
-    public boolean updateUserRole(int userId, int roleId) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseHelper.USER_ROLE_FIELD, roleId);
-        long update = db.update(DatabaseHelper.TABLE_USER_NAME, contentValues, DatabaseHelper.ID_FIELD + " = ?", new String[]{String.valueOf(userId)});
-        if (update == -1) {
-            return false;
-        }
-        return true;
     }
 
     public int updateUserInfo(User user){
@@ -140,42 +156,42 @@ public class UserDao extends BaseDao{
     }
 
     public int updateUser(User user){
+        if (dbHelper.userDao.checkUsernameExcludeUserId(user.getUsername(), user.getId())){
+            Log.e(TAG, "EXISTS USERNAME");
+            return -1;
+        }
+        if (dbHelper.userDao.validateUserNoPass(user)) {
+            Log.e(TAG, "VALIDATE SUCCESSFUL");
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(DatabaseHelper.USER_USERNAME_FIELD, user.getUsername());
+            contentValues.put(DatabaseHelper.USER_PHONE_NUMBER_FIELD, user.getPhoneNumber());
+            contentValues.put(DatabaseHelper.USER_EMAIL_FIELD, user.getEmail());
+            contentValues.put(DatabaseHelper.USER_FULL_NAME_FIELD, user.getFullName());
+            contentValues.put(DatabaseHelper.USER_ROLE_FIELD, user.getRole().getId());
+            contentValues.put(DatabaseHelper.ACTIVE_FIELD, user.isActived());
+            contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
+            contentValues.put(DatabaseHelper.USER_AVATAR_FIELD, (user.getAvatar()));
+            String whereClause = DatabaseHelper.ID_FIELD + " = ? ";
+            String[] whereArgs = new String[]{String.valueOf(user.getId())};
+            int rowAffected = db.update(DatabaseHelper.TABLE_USER_NAME, contentValues, whereClause, whereArgs);
+            db.close();
+            return rowAffected;
+        }
+        Log.e(TAG, "UPDATE FAILED");
+        return -1;
+    }
+
+    public boolean updateUserRole(int userId, int roleId) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseHelper.USER_USERNAME_FIELD, user.getUsername());
-        contentValues.put(DatabaseHelper.USER_PHONE_NUMBER_FIELD, user.getPhoneNumber());
-        contentValues.put(DatabaseHelper.USER_EMAIL_FIELD, user.getEmail());
-        contentValues.put(DatabaseHelper.USER_FULL_NAME_FIELD, user.getFullName());
-        contentValues.put(DatabaseHelper.USER_ROLE_FIELD, user.getRole().getId());
-        contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
-        contentValues.put(DatabaseHelper.USER_AVATAR_FIELD, (user.getAvatar()));
-
-        String whereClause = DatabaseHelper.ID_FIELD + " = ? ";
-        String[] whereArgs = new String[]{String.valueOf(user.getId())};
-
-        int rowAffected = db.update(DatabaseHelper.TABLE_USER_NAME, contentValues, whereClause, whereArgs);
-
-        db.close();
-        return rowAffected;
-    }
-
-    public int authorizeEmployee(User user) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Role employeeRole = dbHelper.roleDao.getRoleByName("Employee");
-        ContentValues values = dbHelper.getUserContentValues(user);
-        values.put(DatabaseHelper.USER_ROLE_FIELD, employeeRole.getId());
-        String whereClause = DatabaseHelper.ID_FIELD + " = ?";
-        String[] whereArgs = new String[]{String.valueOf(user.getId())};
-        int result = db.update(DatabaseHelper.TABLE_USER_NAME, values, whereClause, whereArgs);
-        db.close();
-
-        if (result != -1)
-            Log.d(TAG, "Authorize user " + user.getUsername() + " to employee successful");
-        else
-            Log.d(TAG, "Authorize user " + user.getUsername() + " to employee failed !");
-
-        return result;
+        contentValues.put(DatabaseHelper.USER_ROLE_FIELD, roleId);
+        long update = db.update(DatabaseHelper.TABLE_USER_NAME, contentValues, DatabaseHelper.ID_FIELD + " = ?", new String[]{String.valueOf(userId)});
+        if (update == -1) {
+            return false;
+        }
+        return true;
     }
 
     public int updateUserPassword(int userId, String password) {
@@ -242,6 +258,32 @@ public class UserDao extends BaseDao{
         return exists;
     }
 
+    public boolean checkUsernameExcludeUserId(String username, int excludeUserId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        boolean exists = false;
+        Cursor cursor = null;
+
+        try {
+            String query = "SELECT COUNT(*) FROM " + DatabaseHelper.TABLE_USER_NAME +
+                    " WHERE " + DatabaseHelper.USER_USERNAME_FIELD + " = ? " +
+                    "AND " + DatabaseHelper.ID_FIELD + " <> ?";
+            cursor = db.rawQuery(query, new String[]{username, String.valueOf(excludeUserId)});
+
+            if (cursor != null && cursor.moveToFirst()) {
+                int count = cursor.getInt(0);
+                exists = count > 0;
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return exists;
+    }
+
+
     public boolean isUserCredential(String username, String password) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         boolean isValid = false;
@@ -252,11 +294,8 @@ public class UserDao extends BaseDao{
                     new String[]{username});
 
             if (cursor != null && cursor.moveToFirst()) {
-                int passwordColumnIndex = cursor.getColumnIndex(DatabaseHelper.USER_PASSWORD_FIELD);
-                if (passwordColumnIndex != -1) {
-                    String hashedPassword = cursor.getString(passwordColumnIndex);
-                    isValid = BCrypt.checkpw(password, hashedPassword);
-                }
+                String pass = getString(cursor, DatabaseHelper.USER_PASSWORD_FIELD);
+                isValid = BCrypt.checkpw(password, pass);
             }
         } finally {
             if (cursor != null)
@@ -266,23 +305,37 @@ public class UserDao extends BaseDao{
         return isValid;
     }
 
-    public boolean isAdmin(String username) {
+    public long countUser() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = null;
-        boolean result = false;
-
+        long total = 0;
         try {
-            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_USER_NAME
-                            + " WHERE " + DatabaseHelper.ID_FIELD + " = ?",
-                    new String[]{username});
-            if (cursor.moveToNext()) {
-
+            cursor = db.rawQuery("SELECT COUNT(*) AS total FROM " + DatabaseHelper.TABLE_USER_NAME, null);
+            if (cursor.moveToFirst()) {
+                total = getLong(cursor, "total");
             }
         } finally {
             if (cursor != null)
                 cursor.close();
             db.close();
         }
+        return total;
+    }
+
+    public int authorizeEmployee(User user) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Role employeeRole = dbHelper.roleDao.getRoleByName("Employee");
+        ContentValues values = dbHelper.getUserContentValues(user);
+        values.put(DatabaseHelper.USER_ROLE_FIELD, employeeRole.getId());
+        String whereClause = DatabaseHelper.ID_FIELD + " = ?";
+        String[] whereArgs = new String[]{String.valueOf(user.getId())};
+        int result = db.update(DatabaseHelper.TABLE_USER_NAME, values, whereClause, whereArgs);
+        db.close();
+
+        if (result != -1)
+            Log.d(TAG, "Authorize user " + user.getUsername() + " to employee successful");
+        else
+            Log.d(TAG, "Authorize user " + user.getUsername() + " to employee failed !");
 
         return result;
     }
@@ -404,26 +457,34 @@ public class UserDao extends BaseDao{
     }
 
     public List<User> getUsersByRole(String roleName) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        SQLiteDatabase db = null;
         Cursor cursor = null;
         List<User> users = new ArrayList<>();
 
-        Role role = roleDao.getRoleByName(roleName);
-
         try {
-            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_USER_NAME +
+            db = dbHelper.getReadableDatabase();
+
+            String query = "SELECT * FROM " + DatabaseHelper.TABLE_USER_NAME +
                     " INNER JOIN " + DatabaseHelper.TABLE_ROLE_NAME +
                     " ON " + DatabaseHelper.TABLE_USER_NAME + ".role_id = " + DatabaseHelper.TABLE_ROLE_NAME + ".id" +
-                    " WHERE " + DatabaseHelper.TABLE_ROLE_NAME + ".name = ?", new String[]{roleName});
+                    " WHERE " + DatabaseHelper.TABLE_ROLE_NAME + ".name = ?";
+            cursor = db.rawQuery(query, new String[]{roleName});
+
             if (cursor != null && cursor.moveToFirst()) {
                 do {
-                    users.add(getUserInfo(cursor));
+                    User user = getUserInfo(cursor);
+                    users.add(user);
                 } while (cursor.moveToNext());
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
-            if (cursor != null)
+            if (cursor != null) {
                 cursor.close();
-            db.close();
+            }
+            if (db != null && db.isOpen()) {
+                db.close();
+            }
         }
         return users;
     }

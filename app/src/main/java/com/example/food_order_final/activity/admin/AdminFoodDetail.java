@@ -2,6 +2,7 @@ package com.example.food_order_final.activity.admin;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -117,7 +118,8 @@ public class AdminFoodDetail extends AppCompatActivity {
         Intent previousIntent = getIntent();
         int FoodId = previousIntent.getIntExtra("food_id", -1);
         selectedFood = dbHelper.foodDao.getFoodById(FoodId);
-
+        int restaurantId = previousIntent.getIntExtra("restaurant_id_fromResDetail", -1);
+        Restaurant selectedRestaurant = dbHelper.resDao.getRestaurantById(restaurantId);
         if (selectedFood != null) {
             inputLayoutEditFoodId.setVisibility(View.VISIBLE);
             inputLayoutEditFoodRating.setVisibility(View.VISIBLE);
@@ -133,12 +135,27 @@ public class AdminFoodDetail extends AppCompatActivity {
                 int position = adapter.getPosition(selectedFood.getCategory().getName());
                 spnEditFoodCate.setSelection(position);
             }
-
             LoadImageUtil.loadImage(imgEditFoodAvatar, selectedFood.getAvatar());
 
         } else {
-            btnEditFoodDelete.setVisibility(View.GONE);
-            inputLayoutEditFoodId.setVisibility(View.GONE);
+            if (restaurantId != -1) {
+                List<Restaurant> restaurants = dbHelper.resDao.getAllRestaurants();
+                List<String> restaurantNames = new ArrayList<>();
+                for(Restaurant restaurant:restaurants){
+                    restaurantNames.add(restaurant.getName());
+                }
+                String restaurantName = selectedRestaurant.getName();
+                int position = restaurantNames.indexOf(restaurantName);
+                if(position != -1){
+                    spnEditFoodRes.setSelection(position);
+                } else {
+                    spnEditFoodRes.setSelection(0);
+                }
+
+            } else {
+                btnEditFoodDelete.setVisibility(View.GONE);
+                inputLayoutEditFoodId.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -169,9 +186,23 @@ public class AdminFoodDetail extends AppCompatActivity {
             String FoodResName = spnEditFoodRes.getSelectedItem().toString();
             Restaurant FoodRes = dbHelper.resDao.getRestaurantByName(FoodResName);
 
+            Intent previousIntent = getIntent();
+            int restaurantIdPreviousIntent = previousIntent.getIntExtra("restaurant_id_fromResDetail", -1);
+
             if (selectedFood == null) {
                 if (!dbHelper.foodDao.isFoodExists(FoodName, FoodRes)) {
                     Food newFood = new Food(FoodName, FoodPrice, "", FoodCategory, FoodRes);
+                    newFood.setDiscount(FoodDiscount);
+                    dbHelper.foodDao.insertFood(newFood);
+                    Toast.makeText(AdminFoodDetail.this, "Tạo Món ăn mới thành công", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(AdminFoodDetail.this, "Tên Món ăn trong nhà hàng đã tồn tại", Toast.LENGTH_SHORT).show();
+                }
+            } else if (restaurantIdPreviousIntent != -1) {
+                Restaurant restaurant = dbHelper.resDao.getRestaurantById(restaurantIdPreviousIntent);
+                if (!dbHelper.foodDao.isFoodExists(FoodName, restaurant)) {
+                    Food newFood = new Food(FoodName, FoodPrice, "", FoodCategory, restaurant);
                     newFood.setDiscount(FoodDiscount);
                     dbHelper.foodDao.insertFood(newFood);
                     Toast.makeText(AdminFoodDetail.this, "Tạo Món ăn mới thành công", Toast.LENGTH_SHORT).show();

@@ -56,6 +56,19 @@ public class User extends Base{
         this.setUpdatedDate(new Date());
     }
 
+    public User(String username, String phoneNumber, String email, String fullName, String password, Role role, String avatar, boolean isActived) {
+        this.username = username;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.fullName = fullName;
+        this.password = password;
+        this.role = role;
+        this.avatar = avatar;
+        this.setActived(isActived);
+        this.setCreatedDate(new Date());
+        this.setUpdatedDate(new Date());
+    }
+
     public User(int id, String username, String phoneNumber, String email, String fullName, Role role, String avatar) {
         this.id = id;
         this.username = username;

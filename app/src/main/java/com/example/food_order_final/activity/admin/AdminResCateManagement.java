@@ -58,7 +58,7 @@ public class AdminResCateManagement extends AppCompatActivity {
         btnBackToMain.setOnClickListener(v -> finish());
     }
 
-    private void loadCategories() {
+    public void loadCategories() {
         dbHelper = new DatabaseHelper(this);
         List<RestaurantCategory> categories = dbHelper.resCateDao.getAllRestaurantCategories();
         AdminResCateAdapter adapter = new AdminResCateAdapter(this, categories);

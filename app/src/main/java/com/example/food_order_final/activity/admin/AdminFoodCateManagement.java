@@ -58,7 +58,7 @@ public class AdminFoodCateManagement extends AppCompatActivity {
         btnBackToMain.setOnClickListener(v -> finish());
     }
 
-    private void loadCategories() {
+    public void loadCategories() {
         dbHelper = new DatabaseHelper(this);
         List<FoodCategory> categories = dbHelper.foodCateDao.getAllFoodCategories();
         AdminFoodCateAdapter adapter = new AdminFoodCateAdapter(this, categories);

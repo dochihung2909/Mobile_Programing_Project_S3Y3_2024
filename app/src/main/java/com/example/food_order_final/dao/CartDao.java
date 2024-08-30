@@ -14,6 +14,11 @@ import com.example.food_order_final.models.CartDetail;
 import com.example.food_order_final.models.Food;
 import com.example.food_order_final.models.Restaurant;
 import com.example.food_order_final.models.User;
+import com.example.food_order_final.util.DateUtil;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class CartDao extends BaseDao {
 
@@ -70,6 +75,61 @@ public class CartDao extends BaseDao {
     }
 
 
+    public int updateCart(Cart cart) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.CART_USER_FIELD, cart.getUser().getId());
+        values.put(DatabaseHelper.CART_RESTAURANT_FIELD, cart.getRestaurant().getId());
+        values.put(DatabaseHelper.CART_STATUS, cart.getStatus());
+
+        String whereClause = DatabaseHelper.ID_FIELD + " = ?";
+        String[] whereArgs = new String[]{String.valueOf(cart.getId())};
+
+        int rowAffected = db.update(DatabaseHelper.TABLE_CART_NAME, values, whereClause, whereArgs);
+        db.close();
+
+        return rowAffected;
+    }
+
+    public long countCart() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        long total = 0;
+        try {
+            cursor = db.rawQuery("SELECT COUNT(*) AS total FROM " + DatabaseHelper.TABLE_CART_NAME, null);
+            if (cursor.moveToFirst()) {
+                total = getLong(cursor, "total");
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+        return total;
+    }
+
+    public double getTotalRevenue() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        double total = 0;
+        try {
+            cursor = db.rawQuery("SELECT *  FROM " + DatabaseHelper.TABLE_CART_NAME, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    int cartId = getInt(cursor, DatabaseHelper.ID_FIELD);
+                    double amountACart = getTotalAmountByCartId(cartId);
+                    total += amountACart;
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+        return total;
+    }
+
     public Cart addToCard(User user, Restaurant restaurant, Food food, int quantity) {
         Cart cart = null;
         if (!isUserHasCart(user.getId(), restaurant.getId())) {
@@ -90,6 +150,56 @@ public class CartDao extends BaseDao {
         }
 
         return cart;
+    }
+
+    public List<Cart> getAllCarts() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        List<Cart> carts = new ArrayList<>();
+
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_CART_NAME,
+                    null);
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    carts.add(getCartInfo(cursor));
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+        return carts;
+    }
+
+    public List<Cart> getCartsByUsername(String username) {
+        Log.d("CartDAO", "Username: " + username);
+        List<Cart> carts = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_CART_NAME +
+                    " INNER JOIN " + DatabaseHelper.TABLE_USER_NAME +
+                    " ON " + DatabaseHelper.TABLE_CART_NAME + ".user_id = " + DatabaseHelper.TABLE_USER_NAME + ".id " +
+                    " WHERE " + DatabaseHelper.TABLE_USER_NAME + ".username = ?",
+                    new String[]{username});
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    Cart cart = getCartInfo(cursor);
+                    Log.d("CartDao", "Cart Info: " + cart.getId() + " - User: " + cart.getUser().getId());
+                    carts.add(cart);
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null && db.isOpen()) {
+                db.close();
+            }
+        }
+        return carts;
     }
 
 
@@ -254,5 +364,21 @@ public class CartDao extends BaseDao {
         }
 
         return false;
+    }
+
+    private Cart getCartInfo(Cursor cursor) {
+        int id = getInt(cursor, DatabaseHelper.ID_FIELD);
+        int userId = getInt(cursor, DatabaseHelper.CART_USER_FIELD);
+        User user = dbHelper.userDao.getUserById(userId);
+        int restaurantId = getInt(cursor, DatabaseHelper.CART_RESTAURANT_FIELD);
+        Restaurant restaurant = dbHelper.resDao.getRestaurantById(restaurantId);
+        int status = getInt(cursor, DatabaseHelper.CART_STATUS);
+        boolean actived = getBoolean(cursor, DatabaseHelper.ACTIVE_FIELD);
+        String createdDateString = getString(cursor, DatabaseHelper.CREATED_DATE_FIELD);
+        Date createdDate = DateUtil.timestampToDate(createdDateString);
+        String updatedDateString = getString(cursor, DatabaseHelper.UPDATED_DATE_FIELD);
+        Date updatedDate = DateUtil.timestampToDate(updatedDateString);
+
+        return (new Cart(id, user, restaurant, status, actived, createdDate, updatedDate));
     }
 }

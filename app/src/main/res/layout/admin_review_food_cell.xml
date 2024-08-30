@@ -3,49 +3,59 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="?attr/selectableItemBackground"
-    android:layout_marginBottom="8dp">
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:layout_marginVertical="4dp"
+    android:layout_marginHorizontal="8dp"
+    android:background="@color/white">
 
-    <!-- Review ID -->
-    <TextView
-        android:id="@+id/tvAdminReviewFoodId"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Review ID: 12345"
-        android:textColor="@android:color/black"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        android:orientation="vertical"
+        android:layout_weight="1">
+        <TextView
+            android:id="@+id/tvAdminReviewFoodId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Review ID: 12345"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
-    <!-- User ID -->
-    <TextView
-        android:id="@+id/tvAdminReviewFoodUserId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="User ID: 67890"
-        android:textColor="@android:color/black"
-        android:textSize="14sp"
-        android:layout_marginTop="4dp"/>
+        <TextView
+            android:id="@+id/tvAdminReviewFoodUserId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User ID: 67890"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"/>
 
-    <!-- Food ID -->
-    <TextView
-        android:id="@+id/tvAdminReviewFoodFoodId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Food ID: 54321"
-        android:textColor="@android:color/black"
-        android:textSize="14sp"
-        android:layout_marginTop="4dp"/>
+        <TextView
+            android:id="@+id/tvAdminReviewFoodFoodId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Food ID: 54321"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"/>
 
-    <!-- Comment -->
-    <TextView
-        android:id="@+id/tvAdminReviewFoodComment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="This is a sample comment. It should be descriptive and provide feedback about the food."
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
-        android:layout_marginTop="8dp"/>
+        <TextView
+            android:id="@+id/tvAdminReviewFoodComment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="This is a sample comment. It should be descriptive and provide feedback about the food."
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:layout_marginTop="8dp"/>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/btnDelete"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_delete"
+        android:layout_gravity="center"/>
 
 </LinearLayout>
