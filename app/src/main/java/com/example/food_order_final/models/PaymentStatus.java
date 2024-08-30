@@ -6,7 +6,8 @@ public enum PaymentStatus {
     DELIVERING(2),
     COMPLETED(3),
     FAILED(4),
-    REFUNDED(5);
+    REFUNDED(5),
+    RATED(6);
 
     private final int status;
 

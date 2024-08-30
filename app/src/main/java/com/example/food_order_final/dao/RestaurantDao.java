@@ -346,8 +346,8 @@ public class RestaurantDao extends BaseDao{
         try {
             cursor = db.rawQuery("SELECT r.* FROM " + DatabaseHelper.TABLE_FOOD_NAME + " f " +
                     " INNER JOIN " + DatabaseHelper.TABLE_RESTAURANT_NAME + " r on r." + DatabaseHelper.ID_FIELD + " = f." + DatabaseHelper.FOOD_RESTAURANT_FIELD +
-                    "  WHERE f." + DatabaseHelper.FOOD_RESTAURANT_FIELD + " = ?" +
-                    " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(foodId)});
+                    "  WHERE f." + DatabaseHelper.ID_FIELD + " = ?" +
+                    " AND r." + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(foodId)});
 
             if (cursor != null && cursor.moveToFirst()) {
                 restaurant = getRestaurantInfo(cursor);

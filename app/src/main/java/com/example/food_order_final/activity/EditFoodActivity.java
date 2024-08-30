@@ -108,6 +108,7 @@ public class EditFoodActivity extends AppCompatActivity {
             etFoodPrice.setText(String.valueOf(food.getPrice()));
             etFoodDiscount.setText(String.valueOf((food.getDiscount())));
             etFoodDiscription.setText(food.getDescription());
+            LoadImageUtil.loadImage(ivFoodAvatar, food.getAvatar());
 
             for (int i = 0;i < foodCategories.size();i++) {
                 if (food.getCategory().getId() == foodCategories.get(i).getId()) {

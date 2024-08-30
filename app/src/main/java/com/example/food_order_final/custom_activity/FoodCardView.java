@@ -145,8 +145,8 @@ public class FoodCardView extends LinearLayout {
         this.tvFoodDiscountPrice.setText(tvFoodDiscountPrice + "đ");
     }
 
-    public String getTvFoodDefaultPrice() {
-        return tvFoodDefaultPrice.getText().toString();
+    public TextView getTvFoodDefaultPrice() {
+        return this.tvFoodDefaultPrice;
     }
 
     public void setTvFoodDefaultPrice(String tvFoodDefaultPrice) {

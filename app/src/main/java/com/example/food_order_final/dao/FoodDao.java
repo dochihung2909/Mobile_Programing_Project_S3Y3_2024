@@ -89,7 +89,7 @@ public class FoodDao extends BaseDao{
     public void deleteFood(int foodId) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseHelper.ACTIVE_FIELD, false);
+        contentValues.put(DatabaseHelper.ACTIVE_FIELD, 0);
         String whereClause = DatabaseHelper.ID_FIELD + " = ?";
         String[] whereArgs = new String[]{String.valueOf(foodId)};
 
@@ -124,7 +124,30 @@ public class FoodDao extends BaseDao{
         List<Food> foods = new ArrayList<>();
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_NAME +
-                    " WHERE " + DatabaseHelper.ACTIVE_FIELD + " = 1", null);
+                    " WHERE " + DatabaseHelper.ACTIVE_FIELD + " = 1" +
+                    " ORDER BY " + DatabaseHelper.RATING_FIELD + " DESC", null);
+            if (cursor.moveToFirst()) {
+                do {
+                    foods.add(getFoodInfo(cursor));
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+        return foods;
+    }
+
+    public List<Food> getAllFoodsByCategory(int foodCategoryId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        List<Food> foods = new ArrayList<>();
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_NAME +
+                    " WHERE " + DatabaseHelper.ACTIVE_FIELD + " = 1" +
+                    " AND " + DatabaseHelper.FOOD_CATEGORY_FIELD + " = ?" +
+                    " ORDER BY " + DatabaseHelper.RATING_FIELD + " DESC", new String[]{String.valueOf(foodCategoryId)});
             if (cursor.moveToFirst()) {
                 do {
                     foods.add(getFoodInfo(cursor));
@@ -244,8 +267,7 @@ public class FoodDao extends BaseDao{
         Cursor cursor = null;
         try {
             cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_NAME
-                    + " WHERE " + DatabaseHelper.ID_FIELD + " = ?"
-                    + " AND " + DatabaseHelper.ACTIVE_FIELD + " = 1", new String[]{String.valueOf(foodId)});
+                    + " WHERE " + DatabaseHelper.ID_FIELD + " = ?", new String[]{String.valueOf(foodId)});
 
             if (cursor != null && cursor.moveToFirst()) {
                 food = getFoodInfo(cursor);
@@ -364,6 +386,32 @@ public class FoodDao extends BaseDao{
         }
 
         return foods;
+    }
+
+    public int getNumberSold(int foodId) {
+        Cursor cursor = null;
+        int numberSold = 0;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_CART_DETAIL_NAME
+                    + " cd inner join " + DatabaseHelper.TABLE_CART_NAME
+                    + " c on c." + DatabaseHelper.ID_FIELD + " = cd." + DatabaseHelper.CART_DETAIL_CART_FIELD
+                    + " WHERE cd." + DatabaseHelper.CART_DETAIL_FOOD_FIELD + " = ?"
+                    + " AND c." + DatabaseHelper.ACTIVE_FIELD + " = 1"
+                    + " AND c." + DatabaseHelper.CART_STATUS + " = 1", new String[]{String.valueOf(foodId)});
+            if (cursor != null && cursor.moveToFirst()) {
+                numberSold = cursor.getCount();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+        return numberSold;
     }
 
     public Food getFoodInfo(Cursor cursor) {

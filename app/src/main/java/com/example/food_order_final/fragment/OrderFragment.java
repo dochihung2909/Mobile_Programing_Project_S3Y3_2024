@@ -11,7 +11,10 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.food_order_final.R;
@@ -36,6 +39,7 @@ import com.example.food_order_final.models.Restaurant;
 import com.example.food_order_final.models.User;
 import com.example.food_order_final.util.PriceUtil;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -56,6 +60,7 @@ public class OrderFragment extends Fragment {
     private String mParam2;
 
     private LinearLayout paymentsContainer;
+    private Spinner spOrderStatus;
 
     private int REQUEST_CHANGE_STATUS_PAYMENT = 200;
     private User currentUser = null;
@@ -109,15 +114,84 @@ public class OrderFragment extends Fragment {
         Toast.makeText(getActivity(), "" + username, Toast.LENGTH_SHORT).show();
         DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
 
+        ArrayList<String> paymentStatuses = new ArrayList<>();
+        paymentStatuses.add("Tất cả");
+        for (PaymentStatus paymentStatus : PaymentStatus.values()) {
+            paymentStatuses.add(paymentStatus.name());
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, paymentStatuses);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spOrderStatus.setAdapter(adapter);
+
+        spOrderStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    updateUI();
+                } else {
+                    updateUI(PaymentStatus.fromStatus(position - 1));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         if (!username.equals("Guest")) {
             currentUser = dbHelper.userDao.getUserByUsername(username);
-            updateUI();
+            updateUI(PaymentStatus.PENDING);
         }
 
     }
 
     private void init() {
         paymentsContainer = getView().findViewById(R.id.paymentsContainer);
+        spOrderStatus = getView().findViewById(R.id.spOrderStatus);
+    }
+
+    private void updateUI(PaymentStatus paymentStatus) {
+        DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
+        paymentsContainer.removeAllViews();
+        List<PaymentPending> paymentPendings = dbHelper.paymentPendingDao.getPaymentHistoryByUserId(currentUser.getId());
+        for (PaymentPending paymentPending: paymentPendings) {
+            if (paymentPending.getPaymentStatus().getStatus() == paymentStatus.getStatus()) {
+                PaymentHistoryView paymentHistoryView = new PaymentHistoryView(getActivity());
+                paymentHistoryView.setTvPaymentStatus(PaymentStatus.getNameFromStatus(paymentPending.getPaymentStatus().getStatus()));
+                Restaurant restaurant = paymentPending.getCart().getRestaurant();
+                LinearLayout foodsContainer = paymentHistoryView.findViewById(R.id.foodsContainer);
+                Cart cart = paymentPending.getCart();
+                List<CartDetail> cartDetails = dbHelper.cartDetailDao.getAllCartDetailInCart(cart.getId());
+                for (CartDetail cartDetail: cartDetails) {
+                    FoodOrderCardView foodOrderCardView = new FoodOrderCardView(getActivity());
+                    foodOrderCardView.setFoodQuantityOrder(cartDetail.getQuantity() + "x");
+                    Food food = cartDetail.getFood();
+                    foodOrderCardView.setTvFoodDescription(food.getDescription());
+                    foodOrderCardView.setTvFoodName(food.getName());
+                    foodOrderCardView.setTvFoodDiscountPrice(PriceUtil.formatNumber(food.getPrice()) + "đ");
+                    foodOrderCardView.setIvFoodAvatar(cartDetail.getFood().getAvatar());
+
+                    foodsContainer.addView(foodOrderCardView);
+                }
+                paymentHistoryView.setTvRestaurantName(restaurant.getName());
+                paymentHistoryView.setTvPaymentTotal(PriceUtil.formatNumber(paymentPending.getTotal()) + "đ");
+                int totalDishes = dbHelper.cartDao.getTotalDishes(cart.getId());
+                paymentHistoryView.setTvPaymentFoodQuantity(totalDishes + " món");
+
+                paymentHistoryView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getActivity(), OrderActivity.class);
+                        intent.putExtra("paymentPendingId", paymentPending.getId());
+                        startActivityForResult(intent, REQUEST_CHANGE_STATUS_PAYMENT);
+                    }
+                });
+
+                paymentsContainer.addView(paymentHistoryView);
+            }
+        }
     }
 
     private void updateUI() {
@@ -130,7 +204,9 @@ public class OrderFragment extends Fragment {
             Restaurant restaurant = paymentPending.getCart().getRestaurant();
             LinearLayout foodsContainer = paymentHistoryView.findViewById(R.id.foodsContainer);
             Cart cart = paymentPending.getCart();
+            Toast.makeText(getActivity(), "" + cart.getId(), Toast.LENGTH_SHORT).show();
             List<CartDetail> cartDetails = dbHelper.cartDetailDao.getAllCartDetailInCart(cart.getId());
+            Toast.makeText(getActivity(), "" + cartDetails.size(), Toast.LENGTH_SHORT).show();
             for (CartDetail cartDetail: cartDetails) {
                 FoodOrderCardView foodOrderCardView = new FoodOrderCardView(getActivity());
                 foodOrderCardView.setFoodQuantityOrder(cartDetail.getQuantity() + "x");
@@ -166,7 +242,7 @@ public class OrderFragment extends Fragment {
 
         if (requestCode == REQUEST_CHANGE_STATUS_PAYMENT) {
             if (resultCode == getActivity().RESULT_OK) {
-                updateUI();
+                updateUI(PaymentStatus.PENDING);
             }
         }
     }

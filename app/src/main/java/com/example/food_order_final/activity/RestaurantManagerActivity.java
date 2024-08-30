@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -27,6 +28,7 @@ import com.example.food_order_final.models.Employee;
 import com.example.food_order_final.models.Restaurant;
 import com.example.food_order_final.models.User;
 import com.example.food_order_final.util.LoadImageUtil;
+import com.example.food_order_final.util.PriceUtil;
 
 public class RestaurantManagerActivity extends AppCompatActivity {
 
@@ -116,7 +118,10 @@ public class RestaurantManagerActivity extends AppCompatActivity {
                 btnRestaurantStatistical.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(RestaurantManagerActivity.this);
+                        alertDialog.setTitle("Thống kê")
+                                .setMessage("Tổng doanh thu của cửa hàng là: " + PriceUtil.formatNumber(dbHelper.paymentPendingDao.getTotalRevenueOfRestaurantId(restaurant.getId())) + " đ")
+                                .setPositiveButton("Ok", null).show();
                     }
                 });
 

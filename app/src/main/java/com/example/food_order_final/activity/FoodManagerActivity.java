@@ -143,9 +143,9 @@ public class FoodManagerActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                dbHelper.foodDao.deleteFood(food.getId());
-                                // Soft Delete
+                                loadUI();
                             }
-                        }).setNegativeButton("Huỷ", null);
+                        }).setNegativeButton("Huỷ", null).show();
 
                     }
                 });

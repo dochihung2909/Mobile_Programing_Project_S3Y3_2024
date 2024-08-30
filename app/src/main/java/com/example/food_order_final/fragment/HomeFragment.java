@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Paint;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -23,15 +24,20 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.food_order_final.R;
+import com.example.food_order_final.activity.FoodDetailActivity;
 import com.example.food_order_final.activity.MainActivity;
 import com.example.food_order_final.activity.RestaurantActivity;
 import com.example.food_order_final.activity.SearchActivity;
+import com.example.food_order_final.custom_activity.FoodCardView;
 import com.example.food_order_final.custom_activity.RestaurantCardView;
 import com.example.food_order_final.dao.FoodCategoryDao;
 import com.example.food_order_final.dao.FoodDao;
@@ -39,8 +45,10 @@ import com.example.food_order_final.dao.RestaurantCategoryDao;
 import com.example.food_order_final.dao.RestaurantDao;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Food;
+import com.example.food_order_final.models.FoodCategory;
 import com.example.food_order_final.models.Restaurant;
 import com.example.food_order_final.util.LocationUtil;
+import com.example.food_order_final.util.PriceUtil;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.sql.Array;
@@ -71,7 +79,9 @@ public class HomeFragment extends Fragment {
 
     private TextView tvCurrentLocation;
     private LocationManager locationManager;
+    private LinearLayout lnHomeFoodContainer;
     private TextInputEditText etSearch;
+    private Spinner spFoodCate;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -121,6 +131,8 @@ public class HomeFragment extends Fragment {
 
         tvCurrentLocation = getView().findViewById(R.id.tvCurrentLocation);
         etSearch = getView().findViewById(R.id.etSearch);
+        lnHomeFoodContainer = getView().findViewById(R.id.lnHomeFoodContainer);
+        spFoodCate = getView().findViewById(R.id.spFoodCate);
 
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{
@@ -128,8 +140,44 @@ public class HomeFragment extends Fragment {
             }, 100);
         }
 
+
+
         LinearLayout lnHomeContainer = getView().findViewById(R.id.lnHomeContainer);
         DatabaseHelper databaseHelper = new DatabaseHelper(getActivity());
+
+
+
+        ArrayList<FoodCategory> foodCategories = databaseHelper.foodCateDao.getAllFoodCategories();
+        ArrayList<String> foodCategoriesName = new ArrayList<>();
+        foodCategoriesName.add("Tất cả");
+        for (FoodCategory foodCategory: foodCategories) {
+            foodCategoriesName.add(foodCategory.getName());
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, foodCategoriesName);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spFoodCate.setAdapter(adapter);
+        spFoodCate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getActivity(), "" + position, Toast.LENGTH_SHORT).show();
+                if (position == 0) {
+                    List<Food> foods = databaseHelper.foodDao.getAllFoods();
+                    updateUI(foods);
+                } else {
+                    FoodCategory foodCategory = foodCategories.get(position - 1);
+                    List<Food> foods = databaseHelper.foodDao.getAllFoodsByCategory(foodCategory.getId());
+                    updateUI(foods);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+
         RestaurantCategoryDao restaurantCategoryDao = new RestaurantCategoryDao(databaseHelper);
         RestaurantDao restaurantDao = new RestaurantDao(databaseHelper, restaurantCategoryDao);
         List<Restaurant> restaurants = restaurantDao.getAllRestaurants();
@@ -171,8 +219,55 @@ public class HomeFragment extends Fragment {
                 startActivity(intent);
             }
         });
+    }
 
+    private void updateUI(List<Food> foods) {
+        DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
+        dbHelper.foodDao.getAllFoods();
+        lnHomeFoodContainer.removeAllViews();
 
+        for (Food food: foods) {
+            FoodCardView foodCardView = new FoodCardView(getActivity());
+            double discount = food.getDiscount();
+            double defaultPrice = food.getPrice();
+            if (food.getDiscount() > 0) {
+                TextView defaulPrice = foodCardView.getTvFoodDefaultPrice();
+                defaulPrice.setText(PriceUtil.formatNumber(defaultPrice) + "đ");
+                defaulPrice.setVisibility(View.VISIBLE);
+                defaulPrice.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+                foodCardView.setTvFoodDiscountPrice(PriceUtil.formatNumber(defaultPrice - discount));
+
+            } else {
+                foodCardView.setTvFoodDiscountPrice(PriceUtil.formatNumber(defaultPrice));
+            }
+
+            int numberSold = dbHelper.foodDao.getNumberSold(food.getId());
+            foodCardView.setTvFoodName(food.getName());
+            foodCardView.setTvFoodSold(numberSold + " đã bán");
+            foodCardView.setIvFoodAvatar(food.getAvatar());
+            DecimalFormat df = new DecimalFormat("#.#");
+            foodCardView.setTvFoodLiked( df.format(food.getRating()));
+
+            foodCardView.findViewById(R.id.btnAddToCart).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), RestaurantActivity.class);
+                    Restaurant restaurant = dbHelper.resDao.getRestaurantByFoodId(food.getId());
+                    intent.putExtra("restaurant", restaurant.getId());
+                    startActivity(intent);
+                }
+            });
+
+            foodCardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), FoodDetailActivity.class);
+                    intent.putExtra("foodId", food.getId());
+                    startActivity(intent);
+                }
+            });
+            lnHomeFoodContainer.addView(foodCardView);
+        }
     }
 
 //    @SuppressLint("MissingPermission")

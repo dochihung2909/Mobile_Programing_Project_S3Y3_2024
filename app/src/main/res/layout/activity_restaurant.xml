@@ -7,12 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".activity.RestaurantActivity">
 
-    <ImageView
-        android:id="@+id/ivRestaurantAvatar"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:src="@drawable/ic_launcher_background"/>
-
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,6 +16,14 @@
         android:layout_margin="20dp"
         android:id="@+id/btnBackToMain"
         />
+
+    <ImageView
+        android:id="@+id/ivRestaurantAvatar"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:src="@drawable/ic_launcher_background"
+        android:layout_below="@+id/btnBackToMain"/>
+
 
     <ScrollView
         android:layout_width="match_parent"
@@ -63,21 +65,20 @@
 
                     </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="10dp"
-                        android:text="|" />
-
-                    <TextView
-                        android:id="@+id/tvRestaurantTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Restaurant time"
-
-                        />
                 </LinearLayout>
             </LinearLayout>
+
+            <RatingBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="0.1"
+                android:rating="3"
+                android:id="@+id/ratingBar"
+                style="?android:attr/ratingBarStyleSmall"
+                android:progressTint="@color/yellow"
+                android:layout_marginLeft="10dp"
+                />
 
             <TextView
                 android:id="@+id/tvRestaurantAddress"
@@ -87,6 +88,8 @@
                 android:paddingBottom="10dp"
                 android:text="Restaurant Address"
                 android:textColor="@color/textSecondaryColor" />
+
+
 
             <View
                 android:layout_width="match_parent"

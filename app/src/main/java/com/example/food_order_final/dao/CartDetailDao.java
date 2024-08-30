@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Cart;
@@ -64,9 +65,7 @@ public class CartDetailDao extends BaseDao {
 
             if (cursor != null && cursor.moveToFirst()) {
                 do {
-
                     cartDetails.add(getCartDetailInfo(cursor));
-
                 } while(cursor.moveToNext());
             }
 

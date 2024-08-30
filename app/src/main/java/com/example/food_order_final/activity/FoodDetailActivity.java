@@ -1,10 +1,12 @@
 package com.example.food_order_final.activity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -23,6 +25,7 @@ import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Food;
 import com.example.food_order_final.models.ReviewFood;
 import com.example.food_order_final.models.User;
+import com.example.food_order_final.util.LoadImageUtil;
 import com.example.food_order_final.util.PriceUtil;
 
 import java.text.DateFormat;
@@ -36,7 +39,9 @@ public class FoodDetailActivity extends AppCompatActivity {
     private int foodId;
     private LinearLayout commentLayout;
     private ImageButton btnBack;
+    private RatingBar ratingBar;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,25 +62,53 @@ public class FoodDetailActivity extends AppCompatActivity {
         });
 
         foodId = getIntent().getIntExtra("foodId", -1);
+
         if (foodId != -1) {
             DatabaseHelper dbHelper = new DatabaseHelper(FoodDetailActivity.this);
             FoodDao foodDao = new FoodDao(dbHelper, new FoodCategoryDao(dbHelper), new RestaurantDao(dbHelper, new RestaurantCategoryDao(dbHelper)));
             Food food = foodDao.getFoodById(foodId);
 
+            tvFoodDescription.setText(food.getDescription());
+
+            int numberSold = dbHelper.foodDao.getNumberSold(food.getId());
+            LoadImageUtil.loadImage(ivFoodAvatar, food.getAvatar());
+            tvFoodSold.setText(numberSold + " đã bán");
+            double foodRating = food.getRating();
+            if (foodRating > 0) {
+                ratingBar.setRating((float) food.getRating());
+            } else {
+                ratingBar.setVisibility(View.GONE);
+            }
+
+            double defaultPrice = food.getDiscount();
+            if (defaultPrice > 0) {
+                tvFoodDefaultPrice.setText(PriceUtil.formatNumber(food.getPrice()) + "đ");
+                tvFoodDiscountPrice.setText(PriceUtil.formatNumber(food.getPrice() - defaultPrice) + "đ");
+            } else {
+                tvFoodDefaultPrice.setVisibility(View.GONE);
+                tvFoodDiscountPrice.setText(PriceUtil.formatNumber(food.getPrice()) + "đ");
+            }
+
             tvFoodName.setText(food.getName());
-            tvFoodDiscountPrice.setText(PriceUtil.formatNumber(food.getPrice()) + "đ");
 
             List<ReviewFood> reviewFoods = dbHelper.reviewFoodDao.getReviewsByFoodId(foodId);
             for (ReviewFood reviewFood: reviewFoods) {
                 RattingCardView rattingCardView = new RattingCardView(FoodDetailActivity.this);
                 User user = reviewFood.getUser();
                 rattingCardView.setIvUserAvatar(user.getAvatar());
+                String foodCommentImage = reviewFood.getImage();
+                if (foodCommentImage != null) {
+                    rattingCardView.getIvCommentImage().setVisibility(View.VISIBLE);
+                    rattingCardView.setIvCommentImage(foodCommentImage);
+                }
+
                 rattingCardView.setTvUsername(user.getFullName());
                 rattingCardView.setTvComment(reviewFood.getComment());
                 double rating = reviewFood.getRating();
+
                 rattingCardView.getRatingBar().setRating((float) (rating));
 
-                String pattern = "MM/dd/yyyy HH:mm:ss";
+                String pattern = "dd/MM/yyyy HH:mm:ss";
                 DateFormat df = new SimpleDateFormat(pattern);
                 String todayAsString = df.format(reviewFood.getUpdatedDate());
                 rattingCardView.setTvTime(todayAsString);
@@ -98,5 +131,6 @@ public class FoodDetailActivity extends AppCompatActivity {
         btnPlus = findViewById(R.id.btnPlus);
         commentLayout = findViewById(R.id.commentLayout);
         btnBack = findViewById(R.id.btnBack);
+        ratingBar = findViewById(R.id.ratingBar);
     }
 }

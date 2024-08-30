@@ -117,8 +117,8 @@ public class RattingCardView extends LinearLayout {
         return ivCommentImage;
     }
 
-    public void setIvCommentImage(ImageView ivCommentImage) {
-        this.ivCommentImage = ivCommentImage;
+    public void setIvCommentImage(String image) {
+        LoadImageUtil.loadImage(ivCommentImage, image);
     }
 
     public LinearLayout getRattingStarContainer() {

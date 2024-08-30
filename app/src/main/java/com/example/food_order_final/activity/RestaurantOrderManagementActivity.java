@@ -94,8 +94,7 @@ public class RestaurantOrderManagementActivity extends AppCompatActivity {
                 foodOrderCardView.setTvFoodDescription(food.getDescription());
                 foodOrderCardView.setTvFoodName(food.getName());
                 foodOrderCardView.setTvFoodDiscountPrice(PriceUtil.formatNumber(food.getPrice()) + "đ");
-//                    foodOrderCardView.setIvFoodAvatar(cartDetail.getFood().getAvatar());
-
+                foodOrderCardView.setIvFoodAvatar(cartDetail.getFood().getAvatar());
                 foodsContainer.addView(foodOrderCardView);
             }
             paymentHistoryView.setTvRestaurantName(restaurant.getName());
