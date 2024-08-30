@@ -728,14 +728,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Food f10 = foodDao.getFoodById(10);
 
         // Cart data
-        cartDao.insertCart(new Cart(user1, res1, 0));
-        cartDao.insertCart(new Cart(user2, res1, 0));
-        cartDao.insertCart(new Cart(user3, res2, 0));
-        cartDao.insertCart(new Cart(user4, res3, 0));
-        cartDao.insertCart(new Cart(user5, res4, 0));
-        cartDao.insertCart(new Cart(user6, res5, 0));
-        cartDao.insertCart(new Cart(user7, res1, 0));
-        cartDao.insertCart(new Cart(user8, res2, 0));
+        cartDao.insertCart(new Cart(user1, res1, 1));
+        cartDao.insertCart(new Cart(user2, res1, 1));
+        cartDao.insertCart(new Cart(user3, res2, 1));
+        cartDao.insertCart(new Cart(user4, res3, 1));
+        cartDao.insertCart(new Cart(user5, res4, 1));
+        cartDao.insertCart(new Cart(user6, res5, 1));
+        cartDao.insertCart(new Cart(user7, res1, 1));
+        cartDao.insertCart(new Cart(user8, res2, 1));
         cartDao.insertCart(new Cart(user9, res3, 1));
         cartDao.insertCart(new Cart(user10, res4, 1));
         cartDao.insertCart(new Cart(user2, res5, 1));
@@ -855,6 +855,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
                 user10, f10));
     }
-
-
 }

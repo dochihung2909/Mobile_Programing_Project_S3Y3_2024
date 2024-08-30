@@ -231,39 +231,6 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/linearLayoutAdminHomePayment"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:background="@color/lightGray"
-                        android:padding="8dp"
-                        android:layout_marginStart="8dp">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_payment"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Payment"
-                            android:textSize="16sp"
-                            android:textColor="@color/white"
-                            android:gravity="center"/>
-                    </LinearLayout>
-                </LinearLayout>
-
-                <!-- Fourth Row -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="16dp">
-
-                    <LinearLayout
                         android:id="@+id/linearLayoutAdminHomeReview"
                         android:layout_width="0dp"
                         android:layout_height="80dp"
@@ -271,7 +238,8 @@
                         android:orientation="vertical"
                         android:gravity="center"
                         android:background="@color/lightBlue3"
-                        android:padding="8dp">
+                        android:padding="8dp"
+                        android:layout_marginStart="8dp">
 
                         <ImageView
                             android:layout_width="wrap_content"
@@ -288,6 +256,39 @@
                     </LinearLayout>
 
                 </LinearLayout>
+
+                <!-- Fourth Row -->
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="horizontal"-->
+<!--                    android:layout_marginBottom="16dp">-->
+
+<!--                    <LinearLayout-->
+<!--                        android:id="@+id/linearLayoutAdminHomeReview"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="80dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:orientation="vertical"-->
+<!--                        android:gravity="center"-->
+<!--                        android:background="@color/lightBlue3"-->
+<!--                        android:padding="8dp">-->
+
+<!--                        <ImageView-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:src="@drawable/ic_review"/>-->
+
+<!--                        <TextView-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:text="Review"-->
+<!--                            android:textSize="16sp"-->
+<!--                            android:textColor="@color/white"-->
+<!--                            android:gravity="center"/>-->
+<!--                    </LinearLayout>-->
+
+<!--                </LinearLayout>-->
 
             </LinearLayout>
         </ScrollView>

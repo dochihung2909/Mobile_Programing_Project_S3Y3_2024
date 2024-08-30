@@ -397,7 +397,6 @@ public class CartDao extends BaseDao {
                 totalDishes = cursor.getInt(0);
             }
 
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
