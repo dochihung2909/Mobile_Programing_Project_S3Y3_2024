@@ -28,6 +28,7 @@ import com.example.food_order_final.adapter.AdminUserAdapter;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Cart;
 import com.example.food_order_final.models.FoodCategory;
+import com.example.food_order_final.models.RestaurantCategory;
 import com.example.food_order_final.models.User;
 
 import java.util.ArrayList;
@@ -77,20 +78,27 @@ public class AdminCartManagement extends AppCompatActivity {
     }
 
     private void loadAllCategories() {
-        List<FoodCategory> categories = dbHelper.foodCateDao.getAllFoodCategories();
-        List<String> foodCateNames = new ArrayList<>();
-        foodCateNames.add("All Categories");
-        for (FoodCategory foodCate : categories) {
-            foodCateNames.add(foodCate.getName());
+        List<RestaurantCategory> categories = dbHelper.resCateDao.getAllRestaurantCategories();
+        List<String> resCateNames = new ArrayList<>();
+        resCateNames.add("All Categories");
+        for (RestaurantCategory restaurantCategory : categories) {
+            resCateNames.add(restaurantCategory.getName());
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, foodCateNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, resCateNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnAdminCartCategory.setAdapter(adapter);
     }
 
     private void loadMonths() {
-        String[] months = {"All Months", "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
-                "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"};
+        List<String> months = new ArrayList<>();
+        months.add("All Months");
+        for (int i = 1; i <= 12; i++) {
+            if (i < 10) {
+                months.add("0" + i);
+            } else {
+                months.add(String.valueOf(i));
+            }
+        }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, months);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
         spnAdminCartMonth.setAdapter(adapter);
@@ -100,7 +108,11 @@ public class AdminCartManagement extends AppCompatActivity {
         List<String> dates = new ArrayList<>();
         dates.add("All Dates");
         for (int i = 1; i <= 31; i++) {
-            dates.add(String.valueOf(i));
+            if (i < 10) {
+                dates.add("0" + i);
+            } else {
+                dates.add(String.valueOf(i));
+            }
         }
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, dates);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
@@ -134,6 +146,24 @@ public class AdminCartManagement extends AppCompatActivity {
         lvAdminCart.setAdapter(adapter);
     }
 
+    private void loadCartsByResCate(String resCateName) {
+        List<Cart> carts = dbHelper.cartDao.getCartsByResCateName(resCateName);
+        AdminCartAdapter adapter = new AdminCartAdapter(this, carts);
+        lvAdminCart.setAdapter(adapter);
+    }
+
+    private void loadCartsByMonth(int month) {
+        List<Cart> carts = dbHelper.cartDao.getCartsByMonth(month);
+        AdminCartAdapter adapter = new AdminCartAdapter(this, carts);
+        lvAdminCart.setAdapter(adapter);
+    }
+
+    private void loadCartsByDate(int date) {
+        List<Cart> carts = dbHelper.cartDao.getCartsByDate(date);
+        AdminCartAdapter adapter = new AdminCartAdapter(this, carts);
+        lvAdminCart.setAdapter(adapter);
+    }
+
     private void setOnClickListener() {
         btnBackToMain.setOnClickListener(v -> finish());
 
@@ -149,6 +179,35 @@ public class AdminCartManagement extends AppCompatActivity {
                 Intent intent = new Intent(AdminCartManagement.this, AdminCartDetail.class);
                 intent.putExtra("cart_id", selectedCart.getId());
                 startActivity(intent);
+            }
+        });
+
+        btnFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String selectedUser = spnAdminCartUser.getSelectedItem().toString();
+                String selectedCategory = spnAdminCartCategory.getSelectedItem().toString();
+                String selectedMonth = spnAdminCartMonth.getSelectedItem().toString();
+                String selectedDate = spnAdminCartDate.getSelectedItem().toString();
+                boolean isAllUsers = selectedUser.equals("All Users");
+                boolean isAllCategories = selectedCategory.equals("All Categories");
+                boolean isAllMonths = selectedMonth.equals("All Months");
+                boolean isAllDates = selectedDate.equals("All Dates");
+                if (isAllUsers && isAllCategories && isAllMonths && isAllDates) {
+                    loadAllCarts();
+                } else {
+                    if (!isAllUsers) {
+                        loadCartsByUsername(selectedUser);
+                    } else if (!isAllCategories){
+                        Log.d(TAG, "Load cart by cate");
+                        Log.d(TAG, "Load cart by cate: " + selectedCategory);
+                        loadCartsByResCate(selectedCategory);
+                    } else if (!isAllMonths) {
+                        loadCartsByMonth(Integer.parseInt(selectedMonth));
+                    } else {
+                        loadCartsByDate(Integer.parseInt(selectedDate));
+                    }
+                }
             }
         });
     }

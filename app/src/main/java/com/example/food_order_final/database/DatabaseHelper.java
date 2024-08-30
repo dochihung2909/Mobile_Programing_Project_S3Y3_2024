@@ -622,17 +622,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Food data
         foodDao.insertFood(new Food("Mì Ý Bò Băm",
-                45000, 0,
+                45000, 2000,
                 "https://hidafoods.vn/wp-content/uploads/2024/06/cach-lam-mi-y-sot-thit-bo-bam-ngon-chuan-vi-Y-1.jpg",
                 "Mì bò 2 trứng",
                 fc1, res1));
         foodDao.insertFood(new Food("Pizza Pepperoni",
-                50000, 0,
+                50000, 1000,
                 "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Eq_it-na_pizza-margherita_sep2005_sml.jpg/640px-Eq_it-na_pizza-margherita_sep2005_sml.jpg",
                 "Pizza Pepperoni với phô mai và ớt",
                 fc2, res2));
         foodDao.insertFood(new Food("Sushi California",
-                55000, 0,
+                55000, 5000,
                 "https://www.vinmec.com/static/uploads/20210317_143609_055773_sushi_max_1800x1800_jpg_3690d18076.jpg",
                 "Sushi California với cá hồi",
                 fc3, res3));
@@ -642,21 +642,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Bánh hamburger với phô mai và thịt bò",
                 fc4, res4));
         foodDao.insertFood(new Food("Tacos Bò",
-                35000, 0, "https://bizweb.dktcdn.net/100/004/714/files/banh-taco-mexico.jpg?v=1662973104483",
+                35000, 1500, "https://bizweb.dktcdn.net/100/004/714/files/banh-taco-mexico.jpg?v=1662973104483",
                 "Tacos bò với rau và sốt",
                 fc5, res5));
         foodDao.insertFood(new Food("Bánh Chocolate",
-                27000, 0,
+                27000, 2000,
                 "https://cdn.tgdd.vn/Files/2020/05/05/1253712/cach-lam-banh-fudge-socola-tan-chay-mem-min-thom-n-6-760x367.jpg",
                 "Bánh chocolate mềm với lớp kem",
                 fc8, res1));
         foodDao.insertFood(new Food("Pizza Margherita",
-                55000, 0,
+                55000, 1000,
                 "https://au.ooni.com/cdn/shop/articles/20220211142645-margherita-9920.jpg?crop=center&height=800&v=1662539926&width=800",
                 "Pizza Margherita với cà chua và phô mai",
                 fc2, res1));
         foodDao.insertFood(new Food("Pizza BBQ Chicken",
-                60000, 0,
+                60000, 2000,
                 "https://www.allrecipes.com/thmb/qZ7LKGV1_RYDCgYGSgfMn40nmks=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/AR-24878-bbq-chicken-pizza-beauty-4x3-39cd80585ad04941914dca4bd82eae3d.jpg",
                 "Pizza BBQ Chicken với gà và sốt BBQ",
                 fc2, res1));
@@ -666,12 +666,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Pizza Veggie với rau củ",
                 fc2, res1));
         foodDao.insertFood(new Food("Bánh Burger Gà",
-                42000, 0,
+                42000, 3000,
                 "https://cdn.tgdd.vn/Files/2022/01/06/1409368/3-cach-lam-banh-hamburger-ga-ngon-nhu-ngoai-tiem-202201070934570531.jpg",
                 "Bánh Burger với thịt gà",
                 fc4, res2));
         foodDao.insertFood(new Food("Bánh Burger Veggie",
-                40000, 0,
+                40000, 4000,
                 "https://cdn-images.vtv.vn/zoom/640_400/2019/10/10/0018livekindly-hungry-jacks-1-1570683910192838263212.jpg",
                 "Bánh Burger với rau củ",
                 fc4, res2));
@@ -681,17 +681,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Khoai tây chiên giòn",
                 fc4, res3));
         foodDao.insertFood(new Food("Sushi Ngũ Cốc",
-                60000, 0,
+                60000, 7000,
                 "https://afamilycdn.com/150157425591193600/2021/4/1/photo-1617291824523-16172918247441452577508.jpg",
                 "Sushi với ngũ cốc và rau củ",
                 fc3, res4));
         foodDao.insertFood(new Food("Sushi Salmon",
-                65000, 0,
+                65000, 8800,
                 "https://recipes.net/wp-content/uploads/2023/07/easy-salmon-sushi_e1b62dc704501a791c2bd8a92e60dd54.jpeg",
                 "Sushi với cá hồi tươi",
                 fc3, res4));
         foodDao.insertFood(new Food("Sushi Tuna",
-                62000, 0,
+                62000, 12500,
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbfV7iV6CZBb5VR_92P5pFHdcbtsNv8ABAKg&s",
                 "Sushi với cá ngừ tươi",
                 fc3, res4));
@@ -706,12 +706,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Burrito với thịt bò và rau",
                 fc5, res5));
         foodDao.insertFood(new Food("Quesadilla",
-                35000, 0,
+                35000, 2000,
                 "https://cdn.loveandlemons.com/wp-content/uploads/2024/01/quesadilla.jpg",
                 "Quesadilla với phô mai và gà",
                 fc5, res5));
         foodDao.insertFood(new Food("Nachos",
-                33000, 0,
+                33000, 1800,
                 "https://www.simplyrecipes.com/thmb/xTCx1mKCjjPYgGasys_JGafuem0=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2019__04__Nachos-LEAD-3-e6dd6cbb61474c9889e1524b3796601e.jpg",
                 "Nachos với sốt phô mai và thịt",
                 fc5, res5));
@@ -728,10 +728,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Food f10 = foodDao.getFoodById(10);
 
         // Cart data
-        cartDao.insertCart(new Cart(user1, res1, 0));
-        cartDao.insertCart(new Cart(user2, res1, 0));
-        cartDao.insertCart(new Cart(user3, res2, 0));
-        cartDao.insertCart(new Cart(user4, res3, 0));
+        cartDao.insertCart(new Cart(user1, res1, 1));
+        cartDao.insertCart(new Cart(user2, res1, 1));
+        cartDao.insertCart(new Cart(user3, res2, 1));
+        cartDao.insertCart(new Cart(user4, res3, 1));
         cartDao.insertCart(new Cart(user5, res4, 1));
         cartDao.insertCart(new Cart(user6, res5, 1));
         cartDao.insertCart(new Cart(user7, res1, 1));
@@ -855,6 +855,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "https://spicyfoodstudio.com/wp-content/uploads/2023/05/anh-do-an-vat-tu-chup-09.jpg",
                 user10, f10));
     }
-
-
 }
