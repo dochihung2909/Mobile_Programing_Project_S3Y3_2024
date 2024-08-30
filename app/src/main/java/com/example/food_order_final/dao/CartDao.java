@@ -2,6 +2,7 @@ package com.example.food_order_final.dao;
 
 import static com.android.volley.VolleyLog.TAG;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -193,6 +194,87 @@ public class CartDao extends BaseDao {
                 do {
                     Cart cart = getCartInfo(cursor);
                     Log.d("CartDao", "Cart Info: " + cart.getId() + " - User: " + cart.getUser().getId());
+                    carts.add(cart);
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null && db.isOpen()) {
+                db.close();
+            }
+        }
+        return carts;
+    }
+
+    public List<Cart> getCartsByResCateName(String resCateName) {
+        List<Cart> carts = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_CART_NAME +
+                            " INNER JOIN " + DatabaseHelper.TABLE_RESTAURANT_NAME +
+                            " ON " + DatabaseHelper.TABLE_CART_NAME + ".restaurant_id = " + DatabaseHelper.TABLE_RESTAURANT_NAME + ".id " +
+                            " WHERE " + DatabaseHelper.TABLE_RESTAURANT_NAME + ".name = ?",
+                    new String[]{resCateName});
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    Cart cart = getCartInfo(cursor);
+                    carts.add(cart);
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null && db.isOpen()) {
+                db.close();
+            }
+        }
+        return carts;
+    }
+
+    @SuppressLint("DefaultLocale")
+    public List<Cart> getCartsByMonth(int month) {
+        List<Cart> carts = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_CART_NAME +
+                    " WHERE strftime('%m', " + DatabaseHelper.UPDATED_DATE_FIELD + ") = ? ",
+                    new String[]{String.format("%02d", month)});
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    Cart cart = getCartInfo(cursor);
+                    Log.d(TAG, "updated month: " + cart.getUpdatedDate().getDate());
+                    carts.add(cart);
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null && db.isOpen()) {
+                db.close();
+            }
+        }
+        return carts;
+    }
+
+    @SuppressLint("DefaultLocale")
+    public List<Cart> getCartsByDate(int date) {
+        List<Cart> carts = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_CART_NAME +
+                            " WHERE strftime('%d', " + DatabaseHelper.UPDATED_DATE_FIELD + ") = ? ",
+                    new String[]{String.format("%02d", date)});
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    Cart cart = getCartInfo(cursor);
+                    Log.d(TAG, "updated date: " + cart.getUpdatedDate().getMonth());
                     carts.add(cart);
                 } while (cursor.moveToNext());
             }
