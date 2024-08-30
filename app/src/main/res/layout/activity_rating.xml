@@ -6,16 +6,14 @@
     android:padding="16dp"
     android:id="@+id/main">
 
-    <!-- Restaurant Avatar -->
-    <ImageView
-        android:id="@+id/ivRestaurantAvatar"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/undraw_breakfast_psiw"
-        android:scaleType="centerCrop"
-        android:background="@android:color/darker_gray"/>
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/circle_button"
+        android:padding="5dp"
+        android:src="@drawable/baseline_arrow_back_24" />
+
 
     <!-- Restaurant Name -->
     <TextView
@@ -25,16 +23,17 @@
         android:text="Tên Nhà Hàng"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:layout_below="@id/ivRestaurantAvatar"
+        android:layout_below="@id/btnBack"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"/>
 
     <!-- ScrollView for Rating and Feedback -->
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvRestaurantName"
-        android:layout_marginTop="16dp"
+        android:fitsSystemWindows="true"
+        android:layout_marginTop="20dp"
         android:layout_above="@id/btnSubmit">
 
         <LinearLayout
@@ -143,7 +142,7 @@
                 android:background="@android:drawable/edit_text"
                 android:padding="8dp"/>
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <!-- Submit Button -->
     <Button
@@ -151,7 +150,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="50dp"
         android:text="Xác nhận"
+        android:backgroundTint="@color/primaryColor"
         android:textColor="@android:color/white"/>
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package com.example.food_order_final.activity;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -34,6 +36,7 @@ import com.example.food_order_final.models.Cart;
 import com.example.food_order_final.models.CartDetail;
 import com.example.food_order_final.models.Food;
 import com.example.food_order_final.models.PaymentPending;
+import com.example.food_order_final.models.PaymentStatus;
 import com.example.food_order_final.models.Restaurant;
 import com.example.food_order_final.models.ReviewFood;
 import com.example.food_order_final.models.ReviewRestaurant;
@@ -46,21 +49,23 @@ import java.util.List;
 import java.util.Map;
 
 public class RatingActivity extends AppCompatActivity {
-    ImageView ivRestaurantAvatar, ivUploadedFood;
+    ImageView  ivUploadedFood;
     TextView tvRestaurantName, tvSubtitleFood, tvSubtitleRestaurant;
     LinearLayout ratingFoodLayout, ratingRestaurantLayout;
     RatingBar rbFood, rbRestaurant;
     EditText etCommentFood, etCommentRestaurant;
     Button btnUploadImageFood, btnSubmit;
-    DatabaseHelper dbHelper;
+    DatabaseHelper dbHelper = new DatabaseHelper(RatingActivity.this);
+    private ImageButton btnBack;
     private int paymentPendingId = -1;
     private int SELECT_PICTURE = 200;
     private boolean isUpload = false;
     private String cloudinaryPath;
     private Uri imagePath;
     private static boolean mediaManager = false;
+    private User currentUser = null;
 
-    private static final String TAG = "EditRestaurantActivity Upload ###";
+    private static final String TAG = "RatingActivity Upload ###";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +81,12 @@ public class RatingActivity extends AppCompatActivity {
             return insets;
         });
 
-        DatabaseHelper dbHelper = new DatabaseHelper(RatingActivity.this);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         paymentPendingId = getIntent().getIntExtra("paymentPendingId", -1);
         if (paymentPendingId != -1) {
@@ -86,9 +96,10 @@ public class RatingActivity extends AppCompatActivity {
             List<CartDetail> cartDetails = dbHelper.cartDetailDao.getAllCartDetailInCart(cart.getId());
             SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
             String currentUsername = sharedPreferences.getString("username", "Guest");
-            User user = dbHelper.userDao.getUserByUsername(currentUsername);
+            currentUser = dbHelper.userDao.getUserByUsername(currentUsername);
 
-            LoadImageUtil.loadImage(ivRestaurantAvatar, restaurant.getAvatar());
+            tvRestaurantName.setText(restaurant.getName());
+
             btnSubmit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -107,7 +118,7 @@ public class RatingActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(String requestId, Map resultData) {
                                 cloudinaryPath = (String) resultData.get("url");
-                                rating();
+                                rating(cartDetails,restaurant);
                                 Log.d(TAG, "onSuccess: " + resultData.get("url"));
                             }
 
@@ -122,19 +133,29 @@ public class RatingActivity extends AppCompatActivity {
                             }
                         }).dispatch();
                     } else {
-                        rating();
+                        rating(cartDetails,restaurant);
                     }
                 }
             });
-
         }
+
+        btnUploadImageFood.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestPermission();
+                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                photoPickerIntent.setType("image/*");
+                startActivityForResult(photoPickerIntent, SELECT_PICTURE);
+            }
+        });
+
+
 
 
 
     }
 
     private void initWidgets() {
-        ivRestaurantAvatar = findViewById(R.id.ivRestaurantAvatar);
         ivUploadedFood = findViewById(R.id.ivUploadedFood);
 
         tvRestaurantName = findViewById(R.id.tvRestaurantName);
@@ -152,6 +173,7 @@ public class RatingActivity extends AppCompatActivity {
 
         btnUploadImageFood = findViewById(R.id.btnUploadImageFood);
         btnSubmit = findViewById(R.id.btnSubmit);
+        btnBack= findViewById(R.id.btnBack);
     }
 
 
@@ -182,6 +204,8 @@ public class RatingActivity extends AppCompatActivity {
 
 
         if (resultCode == RESULT_OK && reqCode == SELECT_PICTURE && data != null && data.getData() != null) {
+            ivUploadedFood.setVisibility(View.VISIBLE);
+            isUpload = true;
             imagePath = data.getData();
             Picasso.get().load(imagePath).into(ivUploadedFood);
 
@@ -202,12 +226,47 @@ public class RatingActivity extends AppCompatActivity {
         }
     }
 
-    private void rating() {
+    private void rating(List<CartDetail> cartDetails, Restaurant restaurant) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(RatingActivity.this);
+        alertDialog.setTitle("Đánh giá").
+                setMessage("Xác nhận đánh giá đơn hàng này")
+                        .setPositiveButton("Đánh giá", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (ratingRestaurant(restaurant)) {
+                                    for (CartDetail cartDetail: cartDetails) {
+                                        ratingFood(cartDetail.getFood());
+                                    }
+                                    dbHelper.paymentPendingDao.changePaymentPendingStatus(paymentPendingId, PaymentStatus.RATED);
+                                    finish();
+
+                                }
+                            }
+                        })
+                .setNegativeButton("Huỷ", null).show();
+
+    }
+
+    private boolean ratingRestaurant(Restaurant restaurant) {
+        String resComment = String.valueOf(etCommentRestaurant.getText());
+        double resRating = rbRestaurant.getRating();
+
+        ReviewRestaurant reviewRestaurant = new ReviewRestaurant(resComment, resRating, currentUser, restaurant);
+
+        long insert  = dbHelper.reviewRestaurantDao.insertReview(reviewRestaurant);
+        if (insert == -1) {
+            return false;
+        }
+        return true;
+    }
+
+    private void ratingFood(Food food) {
         String foodComment = String.valueOf(etCommentFood.getText());
         double foodRating = rbFood.getRating();
 
+        ReviewFood reviewFood = new ReviewFood(foodComment, foodRating, cloudinaryPath, currentUser, food);
 
-//        ReviewFood reviewFood = new ReviewFood(foodComment, foodRating, cloudinaryPath, );
+        long insert = dbHelper.reviewFoodDao.insertReview(reviewFood);
     }
 
 }

@@ -60,7 +60,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="310 đã bán"
                     android:id="@+id/tvFoodSold"
                     android:padding="8dp"
                     android:textSize="13dp"
@@ -82,6 +81,8 @@
                     android:text="8 lượt thích"
                     android:padding="8dp"
                     android:textSize="13dp"
+                    android:gravity="center"
+                    android:drawableLeft="@drawable/baseline_star_24"
                     />
             </LinearLayout>
 

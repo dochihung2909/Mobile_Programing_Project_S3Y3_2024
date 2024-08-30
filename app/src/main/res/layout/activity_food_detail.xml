@@ -102,6 +102,25 @@
                 android:gravity="center_vertical"
                 >
 
+                <RatingBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:stepSize="0.1"
+                    android:rating="3"
+                    android:id="@+id/ratingBar"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:progressTint="@color/yellow"
+                    />
+
+                <TextView
+                    android:layout_width="2dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:textColor="@color/textSecondaryColor"
+                    android:background="@color/textSecondaryColor"
+                    />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -116,6 +135,7 @@
                     android:layout_marginHorizontal="10dp"
                     android:textColor="@color/textSecondaryColor"
                     android:background="@color/textSecondaryColor"
+                    android:visibility="gone"
                     />
 
                 <TextView
@@ -124,6 +144,7 @@
                     android:text="7 lượt thích"
                     android:textColor="@color/textSecondaryColor"
                     android:id="@+id/tvFoodLiked"
+                    android:visibility="gone"
                     />
 
             </LinearLayout>

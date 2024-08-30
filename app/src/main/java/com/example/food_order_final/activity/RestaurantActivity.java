@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -71,6 +72,7 @@ public class RestaurantActivity extends AppCompatActivity {
     User currentUser;
     
     int restaurantId;
+    private RatingBar ratingBar;
 
 
 
@@ -137,12 +139,7 @@ public class RestaurantActivity extends AppCompatActivity {
             tvRestaurantName.setText(restaurant.getName());
             tvRestaurantAddress.setText(restaurant.getAddress());
 
-            for (int i = 1; i <= restaurant.getId();i++) {
-                ImageView imageStar = new ImageView(RestaurantActivity.this);
-                imageStar.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                imageStar.setImageResource(R.drawable.baseline_star_24);
-                restaurantRatingContainer.addView(imageStar);
-            }
+            ratingBar.setRating((float) restaurant.getRating());
 //
 //
 //        // Get all foods of restaurant and render
@@ -213,6 +210,7 @@ public class RestaurantActivity extends AppCompatActivity {
         btnBackToMain = findViewById(R.id.btnBackToMain);
         mainLayout = findViewById(R.id.main);
         cartCardView = findViewById(R.id.cartCardView);
+        ratingBar = findViewById(R.id.ratingBar);
     }
 
     @Override

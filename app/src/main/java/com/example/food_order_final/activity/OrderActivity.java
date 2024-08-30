@@ -73,7 +73,7 @@ public class OrderActivity extends AppCompatActivity implements LocationListener
 
     private PaymentMethod paymentMethod = PaymentMethod.CASH;
     private PaymentPending paymentPending;
-    private String[] statusString = {"Nhận đơn", "Lấy hàng", "Giao hàng", "Thành công", "Thất bại"};
+    private String[] statusString = {"Nhận đơn", "Lấy hàng", "Giao hàng", "Thành công", "Thất bại", "", "Đã đánh giá"};
     private String[] methodString = {"Tiền mặt", "Momo"};
 
     private Cart cart;
@@ -120,7 +120,10 @@ public class OrderActivity extends AppCompatActivity implements LocationListener
                 if (currentUser.getId() != paymentPending.getCart().getRestaurant().getOwner().getId()) {
                     if (paymentPending.getPaymentStatus().getStatus() == 3) {
                         btnOrderSubmit.setText("Đánh giá đơn hàng");
-                    } else {
+                    } else if (paymentPending.getPaymentStatus().getStatus() == 6) {
+                        btnOrderSubmit.setText("Đã đánh giá");
+                    }
+                    else {
                         btnOrderSubmit.setText("Huỷ đơn");
                     }
                     isOwner = false;
@@ -176,7 +179,7 @@ public class OrderActivity extends AppCompatActivity implements LocationListener
             });
 
             if (paymentPendingId != -1) {
-                if (currentStatus < 3) {
+                if (currentStatus <= 3) {
                     btnOrderSubmit.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

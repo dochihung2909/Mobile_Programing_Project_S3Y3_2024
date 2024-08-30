@@ -29,6 +29,7 @@ import com.example.food_order_final.models.Food;
 import com.example.food_order_final.util.PriceUtil;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class SearchActivity extends AppCompatActivity {
@@ -66,7 +67,7 @@ public class SearchActivity extends AppCompatActivity {
                     if (foods.size() > 0) {
                         for (Food food: foods) {
                             FoodCardView foodCardView = new FoodCardView(SearchActivity.this);
-
+                            foodCardView.setIvFoodAvatar(food.getAvatar());
                             foodCardView.setTvFoodName(food.getName());
                             foodCardView.setFood(food);
                             if (food.getDiscount() > 0) {
@@ -77,7 +78,14 @@ public class SearchActivity extends AppCompatActivity {
                             }
                             foodCardView.setTvFoodDiscountPrice(PriceUtil.formatNumber(food.getPrice() - food.getDiscount()));
 
-                            foodCardView.findViewById(R.id.btnAddToCart).setVisibility(View.GONE);
+                            int numberSold = dbHelper.foodDao.getNumberSold(food.getId());
+                            foodCardView.setTvFoodName(food.getName());
+                            foodCardView.setTvFoodSold(numberSold + " đã bán");
+                            foodCardView.setIvFoodAvatar(food.getAvatar());
+                            DecimalFormat df = new DecimalFormat("#.#");
+                            foodCardView.setTvFoodLiked( df.format(food.getRating()));
+
+//                            foodCardView.findViewById(R.id.btnAddToCart).setVisibility(View.GONE);
 
                             foodCardView.setOnClickListener(new View.OnClickListener() {
                                 @Override
