@@ -1,5 +1,7 @@
 package com.example.food_order_final.activity.admin;
 
+import static com.android.volley.VolleyLog.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -30,7 +33,7 @@ public class AdminUserManagement extends AppCompatActivity {
     private DatabaseHelper dbHelper;
     private Spinner spnAdminRole;
     private ListView lvAdminUser;
-    private Button btnAdminAddUser;
+    private LinearLayout btnAdminAddUser;
     private ImageButton btnBackToMain;
 
     @Override
@@ -69,12 +72,9 @@ public class AdminUserManagement extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) { }
         });
 
-        btnAdminAddUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(AdminUserManagement.this, AdminUserDetail.class);
-                startActivity(intent);
-            }
+        btnAdminAddUser.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminUserManagement.this, AdminUserDetail.class);
+            startActivity(intent);
         });
 
         lvAdminUser.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -105,7 +105,7 @@ public class AdminUserManagement extends AppCompatActivity {
         spnAdminRole.setAdapter(adapter);
     }
 
-    private void loadAllUsers() {
+    public void loadAllUsers() {
         dbHelper = new DatabaseHelper(this);
         List<User> users = dbHelper.userDao.getAllUsers();
         AdminUserAdapter adapter = new AdminUserAdapter(this, users);
@@ -113,6 +113,7 @@ public class AdminUserManagement extends AppCompatActivity {
     }
 
     private void loadUsersByRole(String roleName) {
+        dbHelper = new DatabaseHelper(this);
         List<User> users = dbHelper.userDao.getUsersByRole(roleName);
         AdminUserAdapter adapter = new AdminUserAdapter(this, users);
         lvAdminUser.setAdapter(adapter);
@@ -129,7 +130,7 @@ public class AdminUserManagement extends AppCompatActivity {
 
         spnAdminRole = (Spinner) findViewById(R.id.spnAdminUserRole);
 
-        btnAdminAddUser = (Button) findViewById(R.id.btnAdminAddUser);
+        btnAdminAddUser = findViewById(R.id.btnAdminAddUser);
 
         btnBackToMain = (ImageButton) findViewById(R.id.btnBackToMain);
     }

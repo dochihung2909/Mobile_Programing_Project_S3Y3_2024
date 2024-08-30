@@ -28,19 +28,24 @@ public class FoodCategoryDao extends BaseDao{
         db.close();
     }
 
-    public int updateFoodCategory(FoodCategory foodCate){
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+    public int updateFoodCategory(FoodCategory foodCate) {
+        boolean isExists = isCategoryNameExists(foodCate.getName());
+        if (!isExists) {
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseHelper.FOOD_CATEGORY_NAME_FIELD, foodCate.getName());
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(DatabaseHelper.FOOD_CATEGORY_NAME_FIELD, foodCate.getName());
 
-        String whereClause = DatabaseHelper.ID_FIELD + " = ? ";
-        String[] whereArgs = new String[]{String.valueOf(foodCate.getId())};
-        int rowAffected = db.update(DatabaseHelper.TABLE_FOOD_CATEGORY_NAME, contentValues, whereClause, whereArgs);
+            String whereClause = DatabaseHelper.ID_FIELD + " = ? ";
+            String[] whereArgs = new String[]{String.valueOf(foodCate.getId())};
+            int rowsAffected = db.update(DatabaseHelper.TABLE_FOOD_CATEGORY_NAME, contentValues, whereClause, whereArgs);
 
-        db.close();
-        return rowAffected;
+            db.close();
+            return rowsAffected;
+        }
+        return -1;
     }
+
 
     public void deleteFoodCategory(int foodCateId) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();

@@ -250,7 +250,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String sqlCart = "CREATE TABLE " + TABLE_CART_NAME + " (" +
                 ID_FIELD + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-//                CART_ORDER_DATE + " TIMESTAMP, " +
                 CART_USER_FIELD + " INTEGER, " +
                 CART_RESTAURANT_FIELD + " INTEGER, " +
                 CART_STATUS + " INTEGER, " +
@@ -501,10 +500,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         userDao.insertUser(new User("phanvanq", "0898765433", "phanvanq@gmail.com",
                 "Phan Văn Quân", "admin@12345", ownerRole,
                 "https://img.freepik.com/free-photo/androgynous-avatar-non-binary-queer-person_23-2151100270.jpg?size=338&ext=jpg&ga=GA1.1.2008272138.1724630400&semt=ais_hybrid"));
-        userDao.insertUser(new User("vuongthanh", "0364623646", "vuongthanh@gmail.com",
+        userDao.insertUser(new User("vuongthanh", "0943745285", "vuongthanh@gmail.com",
                 "Vương Thành", "admin@12345", ownerRole,
                 "https://cdn1.iconfinder.com/data/icons/user-pictures/101/malecostume-512.png"));
-        userDao.insertUser(new User("daohoang", "0364623642", "daohoang@gmail.com",
+        userDao.insertUser(new User("daohoang", "0357462857", "daohoang@gmail.com",
                 "Đào Hoàng Nam", "admin@12345", userRole,
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIJxOLfDct_vEPdS-6OsRnS-kDl_HCv5nI2A&s"));
         userDao.insertUser(new User("ngoanguyen", "0854321099", "ngoanguyen@gmail.com",
@@ -550,27 +549,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         resDao.insertRestaurant(new Restaurant("Gà Rán KFC",
                 "123 Nguyễn Thị Minh Khai, Phường Bến Nghé, Quận 1, Thành phố Hồ Chí Minh",
                 "057265484", rc1,
-                "https://down-bs-vn.img.susercontent.com/vn-11134513-7r98o-lstz97xambb85d@resize_ss280x175!@crop_w280_h175_cT",
+                "https://static.topcv.vn/company_logos/dMKwa3WujNBoEIb959uwGS6oPD3jlsmi_1644404096____f13142150c2c72b783c60dda9da40d13.jpg",
                 user3));
         resDao.insertRestaurant(new Restaurant("Pizza Domino's",
                 "456 Lê Lai, Phường Bến Thành, Quận 1, Thành phố Hồ Chí Minh",
                 "0123456789", rc2,
-                "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSukna3h4vWuD3q52oWXpz00j8NBfeGQqg1cQ&s",
                 user4));
         resDao.insertRestaurant(new Restaurant("Burgers King",
                 "789 Phạm Văn Đồng, Phường 11, Quận Bình Thạnh, Thành phố Hồ Chí Minh",
                 "0987654321", rc3,
-                "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp",
+                "https://thietkelogo.mondial.vn/wp-content/uploads/2024/03/burger-king-vector.jpg",
                 user5));
         resDao.insertRestaurant(new Restaurant("Sakura Sushi",
                 "321 Đinh Tiên Hoàng, Phường 1, Quận 1, Thành phố Hồ Chí Minh",
                 "0234567890", rc4,
-                "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp",
+                "https://t4.ftcdn.net/jpg/02/04/59/29/360_F_204592936_rvFaR64FC4hEXaNzdCrti7fNdRIjNYN4.jpg",
                 user6));
         resDao.insertRestaurant(new Restaurant("Taco Bell",
                 "654 Nguyễn Huệ, Phường Bến Nghé, Quận 1, Thành phố Hồ Chí Minh",
                 "0345678901", rc5,
-                "https://food-cms.grab.com/compressed_webp/merchants/5-C6TFVTBYPEBVAN/hero/c28c456ed51847aea61c10191cdaafad_1720594176567847800.webp",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmHrCOw9twgwvi9KPKCO8Svhl_Upr9pJKpmQ&s",
                 user7));
 
         Restaurant res1 = resDao.getRestaurantByName("Gà Rán KFC");

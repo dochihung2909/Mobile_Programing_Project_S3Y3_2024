@@ -35,18 +35,22 @@ public class RoleDao extends BaseDao {
     }
 
     public int updateRole(Role role){
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        boolean isRoleExist = dbHelper.roleDao.isRoleNameExists(role.getName());
+        if (!isRoleExist) {
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseHelper.ROLE_NAME_FIELD, role.getName());
-        contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(DatabaseHelper.ROLE_NAME_FIELD, role.getName());
+            contentValues.put(DatabaseHelper.UPDATED_DATE_FIELD, DateUtil.dateToTimestamp(new Date()));
 
-        String whereClause = DatabaseHelper.ID_FIELD + " = ? ";
-        String[] whereArgs = new String[]{String.valueOf(role.getId())};
-        int rowAffected = db.update(DatabaseHelper.TABLE_ROLE_NAME, contentValues, whereClause, whereArgs);
+            String whereClause = DatabaseHelper.ID_FIELD + " = ? ";
+            String[] whereArgs = new String[]{String.valueOf(role.getId())};
+            int rowAffected = db.update(DatabaseHelper.TABLE_ROLE_NAME, contentValues, whereClause, whereArgs);
 
-        db.close();
-        return rowAffected;
+            db.close();
+            return rowAffected;
+        }
+        return -1;
     }
 
     public void deleteRole(int roleId) {

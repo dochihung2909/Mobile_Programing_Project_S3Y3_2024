@@ -23,16 +23,19 @@
             android:name=".activity.RestaurantEmployeeManagementActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.RestaurantOrderDetailActivity"
+            android:name=".activity.admin.AdminCartDetail"
+            android:exported="false" />
+        <activity
+            android:name=".activity.admin.AdminCartManagement"
+            android:exported="false" />
+        <activity
+            android:name=".activity.admin.AdminReviewManagement"
             android:exported="false" />
         <activity
             android:name=".activity.RestaurantOrderManagementActivity"
             android:exported="false" />
         <activity
             android:name=".activity.EditRestaurantActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activity.CreateRestaurantActivity"
             android:exported="false" />
         <activity
             android:name=".activity.PaymentSuccess"

@@ -8,14 +8,16 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 
 import com.example.food_order_final.R;
+import com.example.food_order_final.activity.admin.AdminFoodManagement;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Food;
-import com.example.food_order_final.models.Restaurant;
 
 import java.util.List;
 
@@ -37,26 +39,43 @@ public class AdminFoodAdapter extends ArrayAdapter<Food> {
         }
         Food food = foods.get(position);
 
-        TextView tvAdminFoodId = convertView.findViewById(R.id.tvAdminFoodId);
         TextView tvAdminFoodName = convertView.findViewById(R.id.tvAdminFoodName);
         TextView tvAdminFoodRes = convertView.findViewById(R.id.tvAdminFoodRestaurant);
-        ImageView ivAdminFoodAvatar = convertView.findViewById(R.id.ivAdminFoodAvatar);
+        ImageView btnDelete = convertView.findViewById(R.id.btnDelete);
 
         if (food != null) {
-            if (tvAdminFoodId != null) {
-                tvAdminFoodId.setText(String.valueOf(food.getId()));
-            }
             if (tvAdminFoodName != null) {
                 tvAdminFoodName.setText(food.getName());
+            } else {
+                tvAdminFoodName.setText("Name: N/A");
             }
             if (tvAdminFoodRes != null) {
                 tvAdminFoodRes.setText(food.getRestaurant().getName());
-            }
-            if (ivAdminFoodAvatar != null) {
-                // Optional: Set default image or handle image setting
-                // ivAdminFoodAvatar.setImageResource(R.drawable.default_image); // Example
+            } else {
+                tvAdminFoodRes.setText("Cate: N/A");
             }
         }
+
+        btnDelete.setOnClickListener(v -> showConfirmDeleteDialog(food));
+
         return convertView;
+    }
+
+    private void showConfirmDeleteDialog(Food food) {
+        new AlertDialog.Builder(context)
+                .setTitle("Xóa món ăn")
+                .setMessage("Bạn có chắc muốn xóa món ăn " + food.getName() + " không ?")
+                .setPositiveButton("Đồng ý", (dialog, which) -> {
+                    deleteFood(food);
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
+    }
+
+    private void deleteFood(Food food) {
+        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        dbHelper.foodDao.deleteFood(food.getId());
+        ((AdminFoodManagement) context).loadFoods();
+        Toast.makeText(context, "Food deleted", Toast.LENGTH_SHORT).show();
     }
 }

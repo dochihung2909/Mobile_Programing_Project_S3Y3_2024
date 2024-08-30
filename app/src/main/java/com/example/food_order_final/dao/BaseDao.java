@@ -33,6 +33,13 @@ public abstract class BaseDao {
         throw new SQLException("Column " + columnName + " not found !");
     }
 
+    protected long getLong(Cursor cursor, String columnName) {
+        int index = cursor.getColumnIndex(columnName);
+        if (index != -1)
+            return cursor.getLong(index);
+        throw new SQLException("Column " + columnName + " not found !");
+    }
+
     protected double getDouble(Cursor cursor, String columnName) {
         int index = cursor.getColumnIndex(columnName);
         if (index != -1)

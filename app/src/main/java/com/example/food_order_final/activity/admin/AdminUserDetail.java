@@ -1,5 +1,7 @@
 package com.example.food_order_final.activity.admin;
 
+import static com.android.volley.VolleyLog.TAG;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -29,17 +32,22 @@ import com.example.food_order_final.R;
 import com.example.food_order_final.database.DatabaseHelper;
 import com.example.food_order_final.models.Role;
 import com.example.food_order_final.models.User;
+import com.example.food_order_final.util.LoadImageUtil;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AdminUserDetail extends AppCompatActivity {
+    String avatarUrl = null;
     ImageButton btnBackToMain, btnEditUserSave;
     TextView tvEditUserTitle;
     Button btnEditUserAvatar, btnEditUserDelete;
     ImageView imgEditUserAvatar;
     EditText edtEditUserUsername, edtEditUserPhone, edtEditUserEmail, edtEditUserFullName, edtEditUserPassword;
     Spinner spnEditUserRole;
+    TextInputLayout inputLayoutEditUserPassword;
+    CheckBox cbEditUserActived;
     private DatabaseHelper dbHelper;
     private User selectedUser;
     private AwesomeValidation awesomeValidation;
@@ -76,32 +84,31 @@ public class AdminUserDetail extends AppCompatActivity {
             edtEditUserEmail.setText(selectedUser.getEmail());
             edtEditUserFullName.setText(selectedUser.getFullName());
             edtEditUserPassword.setText(selectedUser.getPassword());
-
+            cbEditUserActived.setChecked(selectedUser.isActived());
+            inputLayoutEditUserPassword.setVisibility(View.GONE);
+            LoadImageUtil.loadImage(imgEditUserAvatar, selectedUser.getAvatar());
             List<Role> roles = dbHelper.roleDao.getAllRoles();
             List<String> roleNames = new ArrayList<>();
-
             for (Role role : roles) {
                 roleNames.add(role.getName());
             }
-
             String userRole = selectedUser.getRole().getName();
-
             int position = roleNames.indexOf(userRole);
-
             if (position != -1)
                 spnEditUserRole.setSelection(position);
             else
                 spnEditUserRole.setSelection(0);
 
-        } else
+        } else {
             btnEditUserDelete.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void setOnClickListener() {
         btnEditUserSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dbHelper = new DatabaseHelper(AdminUserDetail.this);
+//                dbHelper = new DatabaseHelper(AdminUserDetail.this);
                 String username = String.valueOf(edtEditUserUsername.getText());
                 String phone = String.valueOf(edtEditUserPhone.getText());
                 String email = String.valueOf(edtEditUserEmail.getText());
@@ -109,10 +116,11 @@ public class AdminUserDetail extends AppCompatActivity {
                 String password = String.valueOf(edtEditUserPassword.getText());
                 String roleName = spnEditUserRole.getSelectedItem().toString();
                 Role role = dbHelper.roleDao.getRoleByName(roleName);
+                boolean isActived = cbEditUserActived.isChecked();
                 if (selectedUser == null) {
                     if (isValidate()) {
                         if (!dbHelper.userDao.checkUsername(username)) {
-                            User newUser = new User(username, phone, email, fullName, password, role);
+                            User newUser = new User(username, phone, email, fullName, password, role, avatarUrl, isActived);
                             dbHelper.userDao.insertUser(newUser);
                             Toast.makeText(AdminUserDetail.this, "Tạo User mới thành công", Toast.LENGTH_SHORT).show();
                             finish();
@@ -129,17 +137,26 @@ public class AdminUserDetail extends AppCompatActivity {
                     selectedUser.setFullName(fullName);
                     dbHelper.userDao.updateUserPassword(selectedUser.getId(), password);
                     selectedUser.setRole(role);
-                    dbHelper.userDao.updateUser(selectedUser);
-                    Toast.makeText(AdminUserDetail.this, "Cập nhật User thành công", Toast.LENGTH_SHORT).show();
-                    finish();
+                    selectedUser.setActived(isActived);
+                    selectedUser.setAvatar(avatarUrl);
+
+                    int result = dbHelper.userDao.updateUser(selectedUser);
+                    if (result != -1) {
+                        Toast.makeText(AdminUserDetail.this, "Cập nhật User thành công", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                    else
+                        Toast.makeText(AdminUserDetail.this, "Cập nhật thông tin thất bại vui lòng kiểm tra lại thông tin!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
+        imgEditUserAvatar.setOnClickListener(v -> showInputAvatarUrl());
+
         btnEditUserDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dbHelper = new DatabaseHelper(AdminUserDetail.this);
+//                dbHelper = new DatabaseHelper(AdminUserDetail.this);
                 showDeleteConfirmDialog();
             }
         });
@@ -151,17 +168,29 @@ public class AdminUserDetail extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Xác nhận xóa")
                 .setMessage("Bạn có chắc muốn xóa người dùng này?")
-                .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dbHelper.userDao.deleteUser(selectedUser.getId());
-                        Toast.makeText(AdminUserDetail.this, "Xóa thành công", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
+                .setPositiveButton("Xóa", (dialog, which) -> {
+                    dbHelper.userDao.deleteUser(selectedUser.getId());
+                    Toast.makeText(AdminUserDetail.this, "Xóa thành công", Toast.LENGTH_SHORT).show();
+                    finish();
                 })
                 .setNegativeButton("Hủy", null)
                 .show();
     }
+    private void showInputAvatarUrl() {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_input_avatar_url, null);
+        final EditText edtImageUrl = dialogView.findViewById(R.id.edtImageUrl);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter image URL");
+        builder.setView(dialogView);
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            avatarUrl = edtImageUrl.getText().toString();
+            LoadImageUtil.loadImage(imgEditUserAvatar, avatarUrl);
+        });
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
+    }
+
 
     private void loadRoles() {
         List<Role> roles = dbHelper.roleDao.getAllRoles();
@@ -211,5 +240,9 @@ public class AdminUserDetail extends AppCompatActivity {
         edtEditUserPassword = (EditText) findViewById(R.id.edtEditUserPassword);
 
         spnEditUserRole = (Spinner) findViewById(R.id.spnEditUserRole);
+
+        inputLayoutEditUserPassword = (TextInputLayout) findViewById(R.id.inputLayoutEditUserPassword);
+
+        cbEditUserActived = (CheckBox) findViewById(R.id.cbEditUserActived);
     }
 }

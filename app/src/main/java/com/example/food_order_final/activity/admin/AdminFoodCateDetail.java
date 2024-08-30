@@ -1,7 +1,10 @@
 package com.example.food_order_final.activity.admin;
 
+import static com.android.volley.VolleyLog.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -79,11 +82,16 @@ public class AdminFoodCateDetail extends AppCompatActivity {
                 }
             } else {
                 selectedCategory.setName(categoryName);
-                dbHelper.foodCateDao.updateFoodCategory(selectedCategory);
-                Toast.makeText(AdminFoodCateDetail.this, "Cập nhật loại thành công", Toast.LENGTH_SHORT).show();
-                finish();
+                int rowsAffected = dbHelper.foodCateDao.updateFoodCategory(selectedCategory);
+                if (rowsAffected > 0) {
+                    Toast.makeText(AdminFoodCateDetail.this, "Cập nhật loại thành công", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(AdminFoodCateDetail.this, "Cập nhật loại thất bại! \nTên loại đã tồn tại", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
 
         btnEditFoodCateDelete.setOnClickListener(v -> showDeleteConfirmDialog());
 

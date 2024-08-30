@@ -61,24 +61,6 @@ public class RestaurantDao extends BaseDao{
             ContentValues restaurantValues = dbHelper.getRestaurantContentValues(restaurant);
             result = db.insert(DatabaseHelper.TABLE_RESTAURANT_NAME, null, restaurantValues);
 
-            // Update user role if create restaurant successful
-
-//            Role ownerRole = dbHelper.roleDao.getRoleByName("Owner");
-//            if (ownerRole != null) {
-//                ContentValues userValues = dbHelper.getUserContentValues(owner);
-//                userValues.put(DatabaseHelper.USER_ROLE_FIELD, ownerRole.getId());
-//                String whereClause = DatabaseHelper.ID_FIELD + " = ?";
-//                String[] whereArgs = new String[]{String.valueOf(owner.getId())};
-//                int rowUpdated = db.update(DatabaseHelper.TABLE_USER_NAME, userValues, whereClause, whereArgs);
-//                if (rowUpdated != -1) {
-//                    Log.d(TAG, "Role user " + owner.getUsername() + " updated successful");
-//                } else {
-//                    Log.d(TAG, "Role user " + owner.getUsername() + " updated failed!");
-//                }
-//            } else {
-//                Log.d(TAG, "Role 'Owner' not found!");
-//            }
-
             db.close();
         }
 
@@ -93,24 +75,36 @@ public class RestaurantDao extends BaseDao{
     }
 
     public int updateRestaurant(Restaurant restaurant){
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Log.d("RestaurantDAO", "Restaurannt Name: " + restaurant.getName());
+        Log.d("RestaurantDAO", "Restaurannt Address: " + restaurant.getAddress());
+        Log.d("RestaurantDAO", "Restaurannt Phone: " + restaurant.getPhoneNumber());
+        Log.d("RestaurantDAO", "Restaurannt Category: " + restaurant.getCategory().getName());
+        Log.d("RestaurantDAO", "Restaurannt Owner: " + restaurant.getOwner().getUsername());
+        Log.d("RestaurantDAO", "Restaurannt Avatar: " + restaurant.getAvatar());
+        boolean isResExists = dbHelper.resDao.isRestaurantExists(restaurant);
+        if (!isResExists) {
+            Log.d("RestaurantDAO", "Not exists restaurant before");
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseHelper.RESTAURANT_NAME_FIELD, restaurant.getName());
-        contentValues.put(DatabaseHelper.RESTAURANT_ADDRESS_FIELD, restaurant.getAddress());
-        contentValues.put(DatabaseHelper.RESTAURANT_PHONE_FIELD, restaurant.getPhoneNumber());
-        contentValues.put(DatabaseHelper.RESTAURANT_CATEGORY_FIELD, restaurant.getCategory().getId());
-        contentValues.put(DatabaseHelper.RESTAURANT_IS_PARTNER_FIELD, restaurant.isPartner());
-        contentValues.put(DatabaseHelper.RESTAURANT_AVATAR_FIELD, restaurant.getAvatar());
-        contentValues.put(DatabaseHelper.RESTAURANT_USER_FIELD, restaurant.getOwner().getId());
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(DatabaseHelper.RESTAURANT_NAME_FIELD, restaurant.getName());
+            contentValues.put(DatabaseHelper.RESTAURANT_ADDRESS_FIELD, restaurant.getAddress());
+            contentValues.put(DatabaseHelper.RESTAURANT_PHONE_FIELD, restaurant.getPhoneNumber());
+            contentValues.put(DatabaseHelper.RESTAURANT_CATEGORY_FIELD, restaurant.getCategory().getId());
+            contentValues.put(DatabaseHelper.RESTAURANT_USER_FIELD, restaurant.getOwner().getId());
+            contentValues.put(DatabaseHelper.RESTAURANT_IS_PARTNER_FIELD, restaurant.isPartner());
+            contentValues.put(DatabaseHelper.RESTAURANT_AVATAR_FIELD, restaurant.getAvatar());
+            contentValues.put(DatabaseHelper.RESTAURANT_USER_FIELD, restaurant.getOwner().getId());
 
-        String whereClause = DatabaseHelper.ID_FIELD + " = ? ";
-        String[] whereArgs = new String[]{String.valueOf(restaurant.getId())};
+            String whereClause = DatabaseHelper.ID_FIELD + " = ? ";
+            String[] whereArgs = new String[]{String.valueOf(restaurant.getId())};
 
-        int rowAffected = db.update(DatabaseHelper.TABLE_RESTAURANT_NAME, contentValues, whereClause, whereArgs);
+            int rowAffected = db.update(DatabaseHelper.TABLE_RESTAURANT_NAME, contentValues, whereClause, whereArgs);
 
-        db.close();
-        return rowAffected;
+            db.close();
+            return rowAffected;
+        }
+        return -1;
     }
 
     public void deleteRestaurant(int restaurantId) {
@@ -208,6 +202,23 @@ public class RestaurantDao extends BaseDao{
         }
         return result;
     }
+
+    public long countRestaurant() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        long total = 0;
+        try {
+            cursor = db.rawQuery("SELECT COUNT(*) AS total FROM " + DatabaseHelper.TABLE_RESTAURANT_NAME, null);
+            if (cursor.moveToFirst()) {
+                total = getLong(cursor, "total");
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+        return total;
+    }
  
     public List<Restaurant> getAllRestaurants() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -252,7 +263,6 @@ public class RestaurantDao extends BaseDao{
 
         return restaurant;
     }
-
 
     public Restaurant getRestaurantByUserId(int ownerId) {
         Restaurant restaurant = null;
@@ -352,6 +362,31 @@ public class RestaurantDao extends BaseDao{
             db.close();
         }
         return restaurant;
+    }
+
+    public List<Food> getAllFoodsInRestaurant(int restaurantId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        List<Food> foods = new ArrayList<>();
+        Cursor cursor = null;
+
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_FOOD_NAME
+                            + " WHERE " + DatabaseHelper.FOOD_RESTAURANT_FIELD + " = ?",
+                    new String[]{String.valueOf(restaurantId)});
+            if (cursor.moveToFirst()) {
+                do {
+                    Food food = dbHelper.foodDao.getFoodInfo(cursor);
+                    foods.add(food);
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            if (db != null && db.isOpen())
+                db.close();
+        }
+
+        return foods;
     }
 
     private Restaurant getRestaurantInfo(Cursor cursor) {

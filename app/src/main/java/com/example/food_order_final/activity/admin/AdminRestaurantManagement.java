@@ -59,7 +59,7 @@ public class AdminRestaurantManagement extends AppCompatActivity {
         btnBackToMain.setOnClickListener(v -> finish());
     }
 
-    private void loadRestaurants() {
+    public void loadRestaurants() {
         List<Restaurant> restaurants = dbHelper.resDao.getAllRestaurants();
         AdminRestaurantAdapter adapter = new AdminRestaurantAdapter(this, restaurants);
         lvAdminRestaurant.setAdapter(adapter);
@@ -69,10 +69,6 @@ public class AdminRestaurantManagement extends AppCompatActivity {
         btnBackToMain = findViewById(R.id.btnBackToMain);
         btnAdminAddRestaurant = findViewById(R.id.btnAdminAddRes);
         lvAdminRestaurant = findViewById(R.id.lvAdminRestaurant);
-
-        if (btnBackToMain == null || btnAdminAddRestaurant == null || lvAdminRestaurant == null) {
-            throw new NullPointerException("One or more views were not found. Check your layout XML.");
-        }
     }
 
     @Override

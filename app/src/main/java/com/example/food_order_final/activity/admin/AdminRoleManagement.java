@@ -45,12 +45,9 @@ public class AdminRoleManagement extends AppCompatActivity {
     }
 
     private void setOnClickListener() {
-        btnAdminAddRole.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(AdminRoleManagement.this, AdminRoleDetail.class);
-                startActivity(intent);
-            }
+        btnAdminAddRole.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminRoleManagement.this, AdminRoleDetail.class);
+            startActivity(intent);
         });
 
         lvAdminRole.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -66,7 +63,7 @@ public class AdminRoleManagement extends AppCompatActivity {
         btnBackToMain.setOnClickListener(v -> finish());
     }
 
-    private void loadRoles() {
+    public void loadRoles() {
         dbHelper = new DatabaseHelper(this);
         List<Role> roles = dbHelper.roleDao.getAllRoles();
         AdminRoleAdapter adapter = new AdminRoleAdapter(this, roles);
