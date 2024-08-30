@@ -164,11 +164,10 @@ public class HomeFragment extends Fragment {
                     List<Food> foods = databaseHelper.foodDao.getAllFoods();
                     updateUI(foods);
                 } else {
-                    FoodCategory foodCategory = foodCategories.get(position + 1);
+                    FoodCategory foodCategory = foodCategories.get(position - 1);
                     List<Food> foods = databaseHelper.foodDao.getAllFoodsByCategory(foodCategory.getId());
                     updateUI(foods);
                 }
-
             }
 
             @Override
@@ -248,6 +247,16 @@ public class HomeFragment extends Fragment {
             foodCardView.setIvFoodAvatar(food.getAvatar());
             DecimalFormat df = new DecimalFormat("#.#");
             foodCardView.setTvFoodLiked( df.format(food.getRating()));
+
+            foodCardView.findViewById(R.id.btnAddToCart).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), RestaurantActivity.class);
+                    Restaurant restaurant = dbHelper.resDao.getRestaurantByFoodId(food.getId());
+                    intent.putExtra("restaurant", restaurant.getId());
+                    startActivity(intent);
+                }
+            });
 
             foodCardView.setOnClickListener(new View.OnClickListener() {
                 @Override

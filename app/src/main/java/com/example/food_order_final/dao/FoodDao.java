@@ -84,7 +84,7 @@ public class FoodDao extends BaseDao{
     public void deleteFood(int foodId) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseHelper.ACTIVE_FIELD, false);
+        contentValues.put(DatabaseHelper.ACTIVE_FIELD, 0);
         String whereClause = DatabaseHelper.ID_FIELD + " = ?";
         String[] whereArgs = new String[]{String.valueOf(foodId)};
 

@@ -46,6 +46,7 @@ import com.example.food_order_final.models.User;
 import com.example.food_order_final.util.LoadImageUtil;
 import com.example.food_order_final.util.PriceUtil;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class RestaurantActivity extends AppCompatActivity {
@@ -158,6 +159,13 @@ public class RestaurantActivity extends AppCompatActivity {
                 foodCardView.setTvFoodDiscountPrice(PriceUtil.formatNumber(food.getPrice() - food.getDiscount()));
 
                 foodCardView.setIvFoodAvatar(food.getAvatar());
+                int numberSold = dbhelper.foodDao.getNumberSold(food.getId());
+                foodCardView.setTvFoodName(food.getName());
+                foodCardView.setTvFoodSold(numberSold + " đã bán");
+                foodCardView.setIvFoodAvatar(food.getAvatar());
+                DecimalFormat df = new DecimalFormat("#.#");
+                foodCardView.setTvFoodLiked( df.format(food.getRating()));
+
                 TextView btnAddToCart = foodCardView.findViewById(R.id.btnAddToCart);
 
                 foodCardView.setOnClickListener(new View.OnClickListener() {
